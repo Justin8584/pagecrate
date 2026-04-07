@@ -1,0 +1,60 @@
+# ── Output directories ──
+bbg_offline/
+websaver_output/
+raw/
+clean/
+clean_output/
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+*.whl
+pip-log.txt
+
+# ── Virtual environments ──
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# ── Playwright ──
+.websaver_profile/
+.bbg_crawler_profile/
+
+# ── OS files ──
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ── IDE / Editor ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# ── Saved HTML/PDF output (don't commit large files) ──
+*.pdf
+*.html
+!README.md
+!DESIGN.md
+
+# ── Misc ──
+*.log
+*.tmp
+.env
+.env.*
