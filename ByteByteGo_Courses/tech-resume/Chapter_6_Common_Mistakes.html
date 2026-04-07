@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6: Common Mistakes</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Chapter 6: Common Mistakes</h1>
+</div>
+
+<p>I’ve noticed certain repeating themes I am calling “mistakes” with resumes. These are areas of improvement, which almost always make resumes better. Let’s go through these.</p>
+
+<h2>Poor Format</h2>
+<p>I have seen too many resumes where developers had good and relevant experience, but this became hard to understand, due to poor choices in formatting. The most common issues are:</p>
+<ul>
+  <li><strong>Hard-to-scan resumes</strong>. Multi-column resume formats are far harder to scan than the one-column ones. While candidates are often proud of how much information they squeezed on one page, this format often leads to their resume being read in less detail. Simple formats work better.</li>
+  <li><strong>Too much bolding</strong>. Your resume should have little bolding, and that bolding should be consistent, limited to key parts, like dates, titles and companies. I see too many resumes bold out seemingly <strong>random</strong> parts in the middle of the sentence that <strong>don’t</strong> seem to <strong>make sense</strong>. Focus on concise descriptions, and a clean format, and be very careful with bolding within sentences.</li>
+  <li><strong>Too “flashy” resumes</strong>. A developer resume is 95% about the content, 5% about the style. Still, some people go overboard, choosing eye-catching templates, to the point that contrasts can make things hard to read, and recruiters struggle to find relevant information. Resumes like this can work well for design- or UX-heavy positions, though.</li>
+  <li><strong>Inconsistent formatting</strong>. Different font sizes, key information being misaligned or positioning elements with spaces over tabs can all lead to resumes that show amateur formatting. While this itself will not result in a rejection for more senior candidates, it conveys that you don’t have much attention to detail, and don’t know how to present yourself well.</li>
+  <li><strong>Sloppy phrases</strong> scattered across the resume. For example, using “etc.”, “and so on”, slang or unprofessional language. Use clear and neat grammar, and full sentences.</li>
+</ul>
+<p><strong>Common mistakes: bolding and inconsistent formatting</strong></p>
+<p>Take a look at this resume. What seems to be issues that stand out immediately?</p>
+<p>As a hiring manager, a few things immediately pop out. First, there is far too much bolding. And the things that are bolded are inconsistent. Why is “W4 forms” bolded, when the application is for a tech company where the work has nothing to do with taxes? Second, the formatting is inconsistent. Font sizes are different, and alignment is off. Finally, the language used is sloppy in places.</p>
+<p><strong>Visualizing the issues:</strong></p>
+<p>While the content of the resume is decent, these issues convey the perception of a person who doesn’t have good attention to detail. It also makes the resume harder to read and to comprehend.</p>
+
+<h2>Forgetting About Your Audience</h2>
+<p>You are writing your resume for recruiters and hiring managers who you do not know. You want to convey your skills and tell a story to them, assuming they know nothing about you. Common mistakes people make include these:</p>
+<ul>
+  <li><strong>Using internal acronyms and jargon.</strong> Avoid using project names and acronyms that are internal and people outside the company don’t understand. <em>“I did QA for the N94 and E70 programs.”</em> The recruiter reading the resume will not know what N94 was—nor would most people outside the company you worked for.</li>
+  <li><strong>Not reflecting on the job, and not tailoring the resume for the position</strong>. Make sure you keep the audience of your resume in mind. The audience is the recruiter who is recruiting for <em>that</em> specific position which you are applying for. So, say you are applying for a frontend position and have both frontend and backend experience: in your examples, always start with the frontend ones, not the other way around.</li>
+  <li><strong>Using cliches over statements backed by evidence</strong>. What does the following sentence tell about you? <em>“I am a team player and a fast learner who can hit the ground running.”</em> From the point of the recruiter, it doesn’t give them any information. It doesn’t contain facts, examples or specifics. It is a cliche, in its current form. Use the “results, impact and your contribution” structure in your experiences section instead to demonstrate any traits through what you have delivered. If you really think it’s important to convey these, save them for a cover letter—but even there, back it up by examples. Instead of “I am a team player”, let your actions speak for themselves: “I organized two team offsites and onboarded three new starters.”</li>
+  <li><strong>Being too verbose</strong>. The attention of recruiters is limited: they will glance at your resume for seconds. Avoid large blocks of text or long sentences. Optimize for quick and easy reading. It’s not easy to distill years of experience in a few short sentences. Still, you need to do this, and ruthlessly edit your resume.</li>
+</ul>
+
+<h2>Unnecessary Details</h2>
+<p>Many resumes include details that are a waste of space. These are most frequently added because traditional resume templates have them, and candidates assume they should share these details. Here are the most common details that you can skip, in the vast majority of cases.</p>
+<ul>
+  <li><strong>Photos.</strong> Skip the photo is the strong recommendation of this book, due to <a href="/courses/tech-resume/p2-c1-tech-resume-basics#avoiding-biases-personal-details-and-photos">the biases it creates</a>. In the rare cases in very few countries where you are <em>required</em> to add a photo, use a professional one that makes you look <em>good</em>. Smile on the photo or have a positive vibe and avoid the mugshot-like passport photos that make you look grumpy.</li>
+  <li><strong>Too many contact details / social profiles</strong>. For contact details, don’t share more than four. The most common ones I see are phone, email, LinkedIn, GitHub and website. Choose no more than four of these—and list them so they take up little real estate, on the top of your resume. Anything beyond this is irrelevant. Most recruiters and hiring managers won’t even click through on these ones. I’ve seen resumes that list Skype, Instagram, Twitter, Upwork, Medium—on top of LinkedIn, Github and a website. Stick to very few and relevant links.</li>
+  <li><strong>Spoken languages</strong>. Many resume templates come with a “Languages” section and people who are non-native English speakers keep this separate section that usually says <em>“Languages: Hungarian (mother tongue), English (fluent).”</em> This doesn’t add much value—unless you’re interviewing for a Hungarian company, that is. For a tech resume for an English-first company, people assume you are fluent in English and they care about your programming languages, not the different ones you speak.</li>
+  <li><strong>Self-rating your skill level</strong> on languages or technologies. Some resumes have stats, percentages, or X out of 5 scores next to languages and technologies. This self-rating can only backfire. First, if you rate yourself as 5/5 or 100%, hiring managers will be dubious. No one really knows <em>everything</em> about a programming language. However, if you rate yourself at 75% or 3 stars, other hiring managers will assume you’re not that proficient. And your rating will be off, anyway. Remove all ratings, and just list things you have proficiency with. If people will want to probe this on the interview, that’s fair game. But that self-rating is not necessary.</li>
+  <li><strong>List of references or “references available on request”</strong>. Both are a waste of space. References will only be important after you pass the interviews. And it is expected in tech that you’ll be able and willing to provide these. Large companies use background checks, and smaller ones follow up themselves, usually after asking you. But save the space from your resume for this.</li>
+  <li><strong>Quotes from references praising you</strong>. Some resumes add quotes from others, such as <em>“Described as ‘executing at extremely high standard’ on previous performance reviews”</em> or quotes from referrals praising you. These look out of place. Your developer resume is about you selling yourself, not adding quotes from others. It’s best to save any quotes for the recommendations section on LinkedIn.</li>
+</ul>
+<div class="table-wrap"><table><tbody><tr><td>From the inside out: clicking through to outdated links Jorick Thijs Polderman, senior technical recruiter at Transferwise, mentions a common anti-pattern where candidates add links to resumes that are not up to date: “What I often see is that there are either no contributions or repositories on the candidate's Github pages, or a personal website that isn't functioning. I often see GitHub pages or personal websites not giving away more information that could be beneficial to the candidate's application process — such as a more detailed resume or a technical blog. When adding a link, make sure the links work and the information is up to date.  For example, your LinkedIn should be reflecting your resume. If you have nothing visible on GitHub, it might as well not be included. The same goes for personal websites.”</td></tr></tbody></table></div>
+<p><strong>Common mistakes: unnecessary details</strong></p>
+<p>Take a look at the following resume that is for an application for a position in the UK. What sections don’t add much to the content?</p>
+<p>Outside the core content, not many of the sections do add value. The photo introduces bias. There are far too many contact details and social accounts listed. There’s no reason to add all of these. Spoken languages are unimportant in a market or company where English is the only language spoken. And references don’t have a place on the resume, including praise. Let’s remove all the unnecessary sections:</p>
+<p>Now we only have information that is relevant for the position: the “meat” of the resume.</p>
+
+<h2>Links</h2>
+<p>Links taking up too much attention (coloraturas or space), dead links, pointing to non-high-quality content.</p>
+<ul>
+  <li><strong>Non-clickable links</strong>. I often see links to projects, GitHub or other sites that are not clickable. The recruiter will never copy-and-paste this link, and as a hiring manager, I will also do this once in a blue moon. Make that link clickable like I did this one:<br/>
+<a href="https://github.com/gergelyorosz" rel="noopener noreferrer" target="_blank">https://github.com/gergelyorosz</a>.</li>
+  <li><strong>Linking to stale GitHub, Linkedin or websites.</strong> Many dev resumes have links to GitHub, Linkedin or a website. While most recruiters and hiring managers won’t bother clicking through, the thorough ones will. There are few more disappointing things than seeing that your GitHub is untouched for years, your pinned repos do not have READMEs or that your website was last updated 4 years ago. Link only if they are up to date. Otherwise, save the space and remove it. Contrary to popular belief, you don’t need to have these links on your resume—especially when their contents don’t add value to your current application.</li>
+  <li><strong>Leaving in the full URL of the link.</strong> In some resumes, links to portfolios or projects are pasted in their full length, such as<br/>
+<a href="https://github.com/gergelyorosz/PythonGettingStarted/blob/master/README.md" rel="noopener noreferrer" target="_blank">https://github.com/gergelyorosz/PythonGettingStarted/blob/master/README.md</a><br/>
+Don’t do this. Make links clickable, and hide the full URL behind a name that describes what the link is for. No one will print out your resume, then type in the URL into a browser.</li>
+  <li><strong>Links standing out too much in color and style.</strong> Many resumes leave links as they are, with the default blue color. While this would not be a problem, this is often the only color in the resume, pulling eyes to links that are meant to be details. Consider making links blend in, rather than standing out, by keeping them the same color as text, and underlining them.</li>
+</ul>
+<p><strong>Common mistakes: links</strong></p>
+<p>Take a look at a section of this resume, which contains several links.</p>
+<p>This resume section contains most of the common mistakes with links. The color of them stands out and draws attention to the links instead of the relevant content. The links take up too much space by typing out the full URL. The font for the links stands out—there is little reason to use a distinct font. Let’s address these issues. Note that there’s a lot more to improve on in the resume content. In this example, we'll only improve links and highlighting.</p>
+<p>With the changes, we’ve removed the highlight colors for the links. Now, these don’t draw any attention. Instead, we can focus on drawing attention to where we’d like the recruiter and hiring manager to look first. In this case, this person chose to focus on the titles, the dates of employment, and the names of the personal projects. There’s also an option to use a highlight color to make the resume even more readable, for example, by coloring the parts that are just section names with a highlight color:</p>
+<p>We’ve gone from having the default link color highlighting parts of the resume that were unimportant, to the important parts of the resume standing out. Now the “placeholder” information stands out with a color of choice and makes the resume easier to scan. Links are still clickable, and an underline invites people to click them. In practice, recruiters and hiring managers will only click these links after finding the key information they are looking for in the first scan.</p>
+
+<h2>Recap: Actions to Improve Your Resume</h2>
+<p>In this chapter, we’ve looked at some of the most common mistakes with developer resumes. Poor format with sloppy phrasing and forgetting about who you are writing for—the recruiter and the hiring manager for <em>that</em> specific position—are common ones. Adding unnecessary details, from personal details to spoken languages or a list of references is another one. And drawing the reader’s attention to things that are not really important—for example, by using links that are long and have a standout color—is also something that you’ll want to avoid.</p>
+<p>Do the following checks to ensure your resume does not have a “classic” mistake that will make a recruiter roll their eyes:</p>
+<ol>
+  <li><strong>Do you have a photo on your resume?</strong> Remove it.</li>
+  <li><strong>How many contact details and social profile links do you have on your resume?</strong> You should have no more than four. Do you need all of these?</li>
+  <li><strong>Do all the links work on your resume?</strong> Click through each of them.</li>
+  <li><strong>Do all the links point to professional pages on your resume?</strong> When you click through, will people see well-formatted, well-written content that conveys the type of work they can expect from you? Ensure this is the case also for your blog, GitHub, LinkedIn and any other links you provide.</li>
+  <li><strong>Is your resume easy to scan?</strong> Give your resume to a friend and ask them to take a look at it for 5 seconds, then tell you their immediate impression. Did they see key details? Did they think it’s too crowded? Or that it has too little information?</li>
+  <li><strong>Is your resume simple enough?</strong> Are you using any “fancy” designs? If so, is this kind of “fanciness” getting in the way of readability? If it’s not in the way of readability, that’s great. However, if it’s making things harder to scan, consider going with something more simple. Note that for frontend, UX or design-heavy positions, some nice flair can be a great touch.</li>
+  <li><strong>Is the resume concise and to the point?</strong> Are you using short sentences? Do you have bullet points with rarely more than two lines?</li>
+  <li><strong>Are you bolding too much?</strong> Aim to not bold anything <strong>inside</strong> a sentence, like in this one. Only bold important things like job title, company name, date, or headers.</li>
+  <li><strong>Is formatting consistent?</strong> Are you using standard font sizes, and aligning with tabs, over spacing things to be approximately close?</li>
+  <li><strong>Are you using internal company jargon?</strong> Do you have project names that only people inside the company would understand? If so, consider changing them to describing the project.</li>
+  <li><strong>Do you have a (spoken) languages or a references section?</strong> You can probably remove both of these.</li>
+  <li><strong>Do links stand out with a different color or formatting?</strong> They shouldn’t. They take away space and attention.</li>
+</ol>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

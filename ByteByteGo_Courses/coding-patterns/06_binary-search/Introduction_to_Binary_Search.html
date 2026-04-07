@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to Binary Search</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Introduction to Binary Search</h1>
+</div>
+
+
+<h2>Intuition</h2>
+<p>Let's say you have a standard, hard-copy English dictionary, and you want to find the definition of the word "inheritance." How could we do this?</p>
+<p>One approach is to flick through it page by page, until reaching the page with "inheritance." But this is inefficient, and realistically, you're more likely to immediately open a page somewhere in the middle.</p>
+<p>Let's say you do this and land on a page of words beginning with "M." Realizing that "inheritance" is somewhere to the left of "M" in the alphabet, you open a page somewhere between the letters "A" and "M." You continue this process of checking if "inheritance" is to the right or left of the current page, and narrowing the search down until you find the correct page. With this method, you've significantly reduced the number of pages to be searched, in contrast to linearly turning every page in order. This is the fundamental concept of binary search.</p>
+
+<h2>Implementing Binary Search</h2>
+<p>Binary search is an algorithm that searches for a value in a <strong>sorted data set</strong>.</p>
+<p>Even experienced developers can find it quite tricky to implement binary search correctly because "the devil's in the detail."</p>
+<ul>
+  <li>How should the boundary variables <code>left</code> and right be initialized?</li>
+  <li>Should we use <code>left &lt; right</code> or <code>left ≤ right</code> as the exit condition in our while-loop?</li>
+  <li>How should the boundary variables be updated? Should we choose <code>left = mid</code>, <code>left = mid + 1</code>, <code>right = mid</code>, or <code>right = mid - 1</code>?</li>
+</ul>
+<p>This chapter offers clear, intuitive guidance on how to master these challenges, and confidently handle even the trickiest edge case.</p>
+<p>To begin any binary search implementation, do the following:</p>
+<ol>
+  <li>Define the search space.</li>
+  <li>Define the behavior inside the loop for narrowing the search space.</li>
+  <li>Choose an exit condition for the while-loop.</li>
+  <li>Return the correct value.</li>
+</ol>
+<p>Let's break down these steps.</p>
+<p><strong>1. Defining the search space</strong><br/>
+The search space encompasses all possible values that may include the value we're searching for. For instance, when searching for a target in a sorted array, the search space should cover the entire array, as the target could be anywhere within it. This is illustrated in the array below, where the left and right pointers define the search space:</p>
+<p><strong>2. Narrowing the search space</strong><br/>
+Narrowing the search space involves progressively moving the left or right pointer inward until the search space is reduced to one element or none.</p>
+<p>At each point in the binary search, we need to decide how we narrow our search space. We can either:</p>
+<ul>
+  <li><strong>Narrow the search space toward the left</strong> (by moving the right pointer inward):</li>
+</ul>
+<ul>
+  <li><strong>Narrow the search space toward the right</strong> (by moving the left pointer inward):</li>
+</ul>
+<p>Using the midpoint<br/>
+We decide whether to move the left or right pointer based on the value in the middle of the search space, indicated by the midpoint variable (<code>mid</code>).</p>
+<p>The main question to ask at each iteration of binary search is: <strong>is the value being searched for to the left or the right of the midpoint?</strong></p>
+<p>Here's the general idea: if the value we're looking for is to the right of the midpoint, narrow the search space toward the right. Otherwise, narrow the search space toward the left.</p>
+<p>To narrow the search space towards the right, there are two options:</p>
+<ul>
+  <li><code>left = mid + 1</code></li>
+</ul>
+<p>We do this if the midpoint value is definitively not the value we're looking for
+and should <strong>excluded</strong> from the search space.</p>
+<ul>
+  <li><code>left = mid</code>
+<img src="data:image/webp;base64,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" alt="Image represents a visual depiction of a coding pattern, likely illustrating a divide-and-conquer algorithm or a similar approach to processing data.  The image is divided into two parts. The left part shows three rectangular boxes labeled &#x27;left&#x27; (orange), &#x27;mid&#x27; (light blue), and &#x27;right&#x27; (orange), each pointing downwards with an arrow to a representation of a data array shown as a sequence of black dots within square brackets. The &#x27;left&#x27; box points to the beginning of the array, &#x27;mid&#x27; to the middle, and &#x27;right&#x27; to the end. The right part of the image shows a similar arrangement of &#x27;left&#x27;, &#x27;mid&#x27;, and &#x27;right&#x27; boxes, but this time the &#x27;left&#x27; and &#x27;mid&#x27; boxes are connected with arrows to a smaller, processed array (represented by fewer black dots and grey lines connecting them). A solid black arrow connects the initial array (from the left part) to the processed array (in the right part), with the label &#x27;left = mid&#x27; written above it.  A dashed orange line connects the &#x27;left&#x27; box in the right part to the beginning of the processed array, suggesting a potential recursive call or iterative step.  The &#x27;mid&#x27; box in the right part points directly to a point within the processed array, indicating the new midpoint. The &#x27;right&#x27; box in the right part points to the end of the processed array. The overall diagram illustrates a process where an array is divided into sub-arrays, processed, and then recombined, possibly to find a specific element or perform a similar operation." style="display: block; max-width: 100%; height: auto; margin: 0 auto">
+We do this if the midpoint value itself could potentially be the value we're looking
+for and should still be <strong>included</strong> in the search space.</li>
+</ul>
+<p>The exclude/include logic applies when narrowing the search space towards the left, as well (i.e., between <code>right = mid - 1</code> and <code>right = mid</code>).</p>
+<p>Calculating the midpoint<br/>
+In most cases, the midpoint is calculated using <strong><code>mid = (left + right) // 2</code></strong> in Python.<sup><a aria-describedby="footnote-label" data-footnote-ref="true" href="/courses/coding-patterns/binary-search/introduction-to-binary-search#user-content-fn-1" id="user-content-fnref-1">1</a></sup> To lower the risk of integer overflow, <code>mid = left + (right - left) // 2</code> is preferred in many other languages.</p>
+<p><strong>3. Choosing an exit condition</strong><br/>
+Choosing an exit condition for when the while-loop should terminate can be tricky. Our choices are primarily between <code>left &lt; right</code> and <code>left ≤ right</code>. Both conditions are applicable in different situations.</p>
+<ul>
+  <li>When the exit condition is <code>left &lt; right</code>, the while-loop will break when <code>left</code> and <code>right</code> meet.<sup><a aria-describedby="footnote-label" data-footnote-ref="true" href="/courses/coding-patterns/binary-search/introduction-to-binary-search#user-content-fn-2" id="user-content-fnref-2">2</a></sup></li>
+  <li>On the other hand, <code>left ≤ right</code> ends once <code>left</code> has surpassed right.</li>
+</ul>
+<p>When the left and right pointers meet after exiting the <code>left &lt; right</code> condition, both converge to a single value. This is the final value in the search space after the binary search process is complete. This will be the exit condition we use throughout this chapter.</p>
+<p><strong>4. Returning the correct value</strong><br/>
+As previously mentioned, the while-loop <strong>terminates once</strong> <strong>we've narrowed the search space down to a final value</strong> (assuming no value was returned during earlier iterations), pointed at by both <code>left</code> and <code>right</code>:</p>
+<p>This final value is the answer we're looking for, assuming a valid answer exists.</p>
+
+<h2>Time Complexity</h2>
+<p>The time complexity of the binary search is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(\log(n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> is the number of values in the search space. The algorithm is logarithmic because, in each iteration of the algorithm, it divides the search space in half until a single value is located, or no value is found. This reduction by half in each step is characteristic of logarithmic behavior.</p>
+
+<h2>Real-world Example</h2>
+<p><strong>Transaction search in financial systems:</strong> In financial systems, a binary search can be used to quickly find a transaction or record by narrowing down the search range, as the data is typically stored in order. This makes it efficient to retrieve specific entries without searching through the entire database.</p>
+
+<h2>Chapter Outline</h2>
+<p>Binary search has many applications, and we explore a range of problems covering various uses.</p>
+<section class="footnotes" data-footnotes="true"><h2 class="sr-only" id="footnote-label">Footnotes</h2>
+<ol>
+<li id="user-content-fn-1">
+<p>In rare cases, we calculate the midpoint differently, such as when doing an upper-bound binary search. The details are explained in the <em>First and Last Occurrences of a Number</em> problem. <a aria-label="Back to reference 1" class="data-footnote-backref" data-footnote-backref="" href="/courses/coding-patterns/binary-search/introduction-to-binary-search#user-content-fnref-1">↩</a></p>
+</li>
+<li id="user-content-fn-2">
+<p>There are some rare situations where <code>left</code> and <code>right</code> will cross, which is also explored in the <em>First and Last Occurrences of a Number</em> problem. <a aria-label="Back to reference 2" class="data-footnote-backref" data-footnote-backref="" href="/courses/coding-patterns/binary-search/introduction-to-binary-search#user-content-fnref-2">↩</a></p>
+</li>
+</ol>
+</section>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

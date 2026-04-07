@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to Hash Maps and Sets</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Introduction to Hash Maps and Sets</h1>
+</div>
+
+
+<h2>Intuition</h2>
+<p>Picture working in a grocery store. A customer asks for the price of a fruit. If you just have a paper list of all the fruits, you would need to look through it to find the specific fruit, which can be time-consuming. However, by memorizing the list, you can know the prices of all fruits instantly, enabling you to promptly give the correct price to the customer. This is similar to how hash maps work, enabling quick access to information.</p>
+<p><strong>Hash maps</strong><br/>
+A hash map – also known as a hash table or dictionary, depending on the language – is a data structure that pairs keys with values. Let's illustrate this using the example of fruits and their prices:</p>
+<p>Having a mental map of fruit prices is conceptually similar to being able to instantly access fruit prices using a hash map, where the fruit name is the key, and its price is the value. When we look up a price using the fruit's name as the key, the hash map will immediately return its price:</p>
+<p>Hash maps are incredibly efficient for lookups, insertions, and deletions, as they typically perform these operations in constant time: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>. They are one of the most versatile, widely-used data structures in computer science, used for tasks such as counting the frequency of elements, caching data, and more.</p>
+<p>Properties of hash maps:</p>
+<ul>
+  <li>Data is stored in the form of key-value pairs.</li>
+  <li>Hash maps don't store duplicates. Every key in a hash map is unique, ensuring each value can be distinctly identified and accessed.</li>
+  <li>Hash maps are unordered data structures, meaning keys are not stored in any specific order.</li>
+</ul>
+<p><strong>Time complexity breakdown</strong><br/>
+Below, n denotes the number of entries in the hash map.</p>
+<div class="table-wrap"><table><thead><tr><th>Operation</th><th>Average case</th><th>Worst case</th><th>Description</th></tr></thead><tbody><tr><td>Insert</td><td>O ( 1 ) O(1) O ( 1 )</td><td>O ( n ) O(n) O ( n )</td><td>Add a key-value pair to the hash map.</td></tr><tr><td>Access</td><td>O ( 1 ) O(1) O ( 1 )</td><td>O ( n ) O(n) O ( n )</td><td>Find or retrieve an element.</td></tr><tr><td>Delete</td><td>O ( 1 ) O(1) O ( 1 )</td><td>O ( n ) O(n) O ( n )</td><td>Delete a key-value pair.</td></tr></tbody></table></div>
+<p><strong>In coding interviews, we generally consider hash map operations to have a fast average time complexity of</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>, as opposed to their worst-case complexities. This is based on the assumption that an efficient hash function minimizes collisions [HashCollision]. However, in the worst-case scenario where a poorly optimized hash function results in frequent collisions, the time complexity can deteriorate to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, necessitating a linear search through all entries.</p>
+<p><strong>Hash sets</strong><br/>
+Hash sets are a simpler form of hash maps. Instead of storing key-value pairs, they store only the keys. Using the grocery store analogy, a hash set is like having a mental checklist of fruits without their prices. It's useful for quickly checking the presence or absence of an item, like checking whether a particular fruit is in stock.</p>
+<p><strong>When to use hash maps or sets</strong><br/>
+Common use cases of hash maps include implementing dictionaries, counting frequencies, storing key-value pairs, and handling scenarios requiring quick lookups.</p>
+<p>Common use cases of hash sets include storing unique elements, marking elements as used or visited, and checking for duplicates.</p>
+<p>In the description of a problem, pay attention to keywords like "frequency", "unique", "map", "dictionary", or "fast lookup", because these often indicate that hash maps or sets could be useful.</p>
+<p><strong>Essential concepts for mastering hash maps and sets</strong><br/>
+This chapter discusses the practical uses of hash maps and sets. For a more complete understanding of how they work and why they're so efficient, please explore topics that go beyond the scope of this chapter, such as:</p>
+<ul>
+  <li>Hash functions: explore the intricacies of how keys are mapped to specific values in a hash table <a href="https://en.wikipedia.org/wiki/Hash_function" rel="noopener noreferrer" target="_blank">[1]</a>.</li>
+  <li>Collision and collision-handling techniques: understand methods like chaining, or open addressing for resolving hash collisions <a href="https://en.wikipedia.org/wiki/Hash_collision" rel="noopener noreferrer" target="_blank">[2]</a>.</li>
+  <li>Load factors and rehashing: these make it easier to understand how hash tables grow and change size <a href="https://www.scaler.com/topics/data-structures/load-factor-and-rehashing/" rel="noopener noreferrer" target="_blank">[3]</a>.</li>
+</ul>
+
+<h2>Real-world Example</h2>
+<p><strong>Web browser cache</strong>: Hash maps and sets are used everywhere in real-world systems. A classic example of hash maps in action is in caching systems within web browsers. When you visit a website, your browser stores data such as images, HTML, and CSS files in a cache so it can load much faster on future visits.</p>
+
+<h2>Chapter Outline</h2>
+<p>This chapter includes problems involving the most popular use cases of hash maps and sets, aiming to improve your understanding and effectiveness in utilizing them.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

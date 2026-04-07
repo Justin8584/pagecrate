@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reverse 32-Bit Integer</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Reverse 32-Bit Integer</h1>
+</div>
+
+<div><p><strong>Reverse the digits</strong> of a signed 32-bit integer. If the reversed integer overflows (i.e., is outside the range [<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>−</mo><msup><mn>2</mn><mn>31</mn></msup></mrow><annotation encoding="application/x-tex">-2^{31}</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.8974em; vertical-align: -0.0833em;"></span><span class="mord">−</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">31</span></span></span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>31</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{31} - 1</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.8974em; vertical-align: -0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">31</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">1</span></span></span></span>]), return 0. Assume the environment only allows you to store integers within the signed 32-bit integer range.</p>Example 1:<code class="hljs language-python">Input: n = <span class="hljs-number">420</span>
+Output: <span class="hljs-number">24</span>
+</code>Example 2:<code class="hljs language-python">Input: n = -<span class="hljs-number">15</span>
+Output: -<span class="hljs-number">51</span>
+</code></div>
+
+<h2>Intuition</h2>
+<p>The primary challenge with this problem is in handling its edge cases. Before tackling these edge cases, let’s first try handling the more basic cases and later see how we would need to modify our strategy.</p>
+<p><strong>Reversing positive numbers</strong><br/>
+Consider n = 123. Let's try building the reversed integer one digit at a time. The first thing to figure out is how to iterate through the digits of n to build our reversed number (initially set to 0):</p>
+<p>One way to do this is by starting at the last digit of <code>n</code> and appending each digit to <code>reversed_n</code>:</p>
+<p>Let’s explore how we can do this. To extract the last digit, we can use the modulus operator: <code>n % 10</code>. This operation effectively finds what the remainder of <code>n</code> would be if divided by 10:</p>
+<p>After extracting the last digit, we can remove it by dividing <code>n</code> by 10, which shifts the second-to-last digit to the last position, preparing it for the next iteration:</p>
+<p>Once that’s done, let’s add the last digit extracted to our reversed number:</p>
+<p>Below, we see the current states of <code>n</code> and <code>reversed_n</code>:</p>
+<p>To process the next digit, let’s extract it from <code>n</code> using the modulus operation, then remove it by dividing n by 10:</p>
+<p>To append this digit to <code>reversed_n</code>, we can multiply <code>reversed_n</code> by 10 to shift its digits to the left, making space for the new digit. Then, we just add the new digit as before:</p>
+<p>We can repeat the above process until all digits of n are appended to <code>reversed_n</code> (i.e., until <code>n</code> equals 0). Here’s a breakdown of this process:</p>
+<ol>
+  <li>Extract the last digit: <code>digit = n % 10</code>.</li>
+  <li>Remove the last digit: <code>n = n // 10</code>.</li>
+  <li>Append the digit: <code>reversed_n = reversed_n * 10 + digit</code>.</li>
+</ol>
+<p><strong>Reversing negative numbers</strong><br/>
+Before considering a separate strategy to handle negative numbers, let's first check if the set of steps above also work for negative numbers. Applying these steps to n = -15 gives:</p>
+<p>As we can see, it works for negative numbers. Now, let’s tackle situations in which reversing a number could result in integer overflow or underflow.</p>
+<p><strong>Detecting integer overflow</strong><br/>
+If the reverse of a positive number is larger than <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>31</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{31} - 1</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.8974em; vertical-align: -0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">31</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">1</span></span></span></span>, it will overflow, and we should return 0. Let’s call this maximum value <code>INT_MAX</code>.</p>
+<p>Initially, it might seem sufficient to reverse the number completely, check if it exceeds <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>31</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{31} - 1</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.8974em; vertical-align: -0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">31</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">1</span></span></span></span>, and return 0 if it does. However, in an environment where integers larger than <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>31</mn></msup><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">2^{31} - 1</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.8974em; vertical-align: -0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">31</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">1</span></span></span></span> cannot be stored, attempting to reverse such an integer would cause an overflow:</p>
+<p>So, let’s think of another way to detect overflow.</p>
+<p>We're constructing the number <code>reversed_n</code> one digit at a time, which means we need to ensure not to cause the number to overflow with each new digit we add. Let's think about when adding a new digit might cause <code>reversed_n</code> to become too large. Here's how we can analyze this:</p>
+<p>If <code>reversed_n</code> is equal to <code>214748364</code> (i.e., <code>INT_MAX // 10</code>), then the final digit we can add to it must be less than or equal to 7 to avoid an overflow (since <code>214748364**7** == INT_MAX</code>):</p>
+<p>Now, keep in mind that when <code>reversed_n == INT_MAX // 10</code>, only one more digit can be added to it. The key observation here is that this digit can only ever be 1 because a larger final digit would be impossible, as shown below:</p>
+<p>This means that when <code>reversed_n == INT_MAX // 10</code>, the last digit added to it won’t cause an overflow, meaning we don’t need to check the last digit in this case.</p>
+<p>If <code>reversed_n</code> is already larger than <code>INT_MAX // 10</code>, adding any digit will cause it to overflow. We can handle this case with the following condition:</p>
+<blockquote>
+<code>if reversed_n &gt; INT_MAX // 10: return 0</code>
+</blockquote>
+<p><strong>Detecting integer underflow</strong><br/>
+We can apply similar logic to the above for handling integer underflow. Here, we just need to check that <code>reversed_n</code> never falls below <code>INT_MIN // 10</code>:</p>
+<blockquote>
+<code>if reversed_n &lt; INT_MIN // 10: return 0</code>
+</blockquote>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/math-and-geometry/reverse-32-bit-integer" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<p>In Python, using the modulus operator (%) with a negative number gives a positive result. To avoid this, we can instead use <strong>math.fmod</strong> and cast its result to an integer to attain a negative modulus value.</p>
+<p>For division, Python's // operator performs floor division, which can result in an undesired value when dealing with negative numbers (e.g., -15 // 10 results in -2, instead of the desired -1). To achieve the desired behavior, use <strong>/</strong> for division and cast its result to an integer.</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">import</span> math
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">reverse_32_bit_integer</span>(<span class="hljs-params">n: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">int</span>:
+    INT_MAX = <span class="hljs-number">2</span>**<span class="hljs-number">31</span> - <span class="hljs-number">1</span>
+    INT_MIN = -<span class="hljs-number">2</span>**<span class="hljs-number">31</span>
+    reversed_n = <span class="hljs-number">0</span>
+    <span class="hljs-comment"># Keep looping until we've added all digits of 'n' to 'reversed_n' in reverse</span>
+    <span class="hljs-comment"># order.</span>
+    <span class="hljs-keyword">while</span> n != <span class="hljs-number">0</span>:
+        <span class="hljs-comment"># digit = n % 10</span>
+        digit = <span class="hljs-built_in">int</span>(math.fmod(n, <span class="hljs-number">10</span>))
+        <span class="hljs-comment"># n = n // 10</span>
+        n = <span class="hljs-built_in">int</span>(n / <span class="hljs-number">10</span>)
+        <span class="hljs-comment"># Check for integer overflow or underflow.</span>
+        <span class="hljs-keyword">if</span> reversed_n &gt; <span class="hljs-built_in">int</span>(INT_MAX / <span class="hljs-number">10</span>) <span class="hljs-keyword">or</span> reversed_n &lt; <span class="hljs-built_in">int</span>(INT_MIN / <span class="hljs-number">10</span>):
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
+        <span class="hljs-comment"># Add the current digit to 'reversed_n'.</span>
+        reversed_n = reversed_n * <span class="hljs-number">10</span> + digit
+    <span class="hljs-keyword">return</span> reversed_n
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of reverse_32_bit_integer is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(\log(n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span> because we loop through each digit of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>, of which there are roughly <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\log(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> digits. As this environment only supports 32-bit integers, the time complexity can also be considered <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

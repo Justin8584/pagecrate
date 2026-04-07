@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Largest Number to the Right</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Next Largest Number to the Right</h1>
+</div>
+
+<div>Given an integer array <code>nums</code>, return an output array res where, for each value <code>nums[i]</code>, <code>res[i]</code> is the first number to the right that's larger than <code>nums[i]</code>. If no larger number exists to the right of <code>nums[i]</code>, set <code>res[i]</code> to ‐1.Example:<img src="data:image/webp;base64,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" alt="The image represents a bar chart illustrating a data transformation or accumulation process.  The horizontal axis displays an unsorted sequence of numerical values (5, 2, 4, 6, 1), each represented by a black vertical bar whose height corresponds to its magnitude.  Below the chart, a list `res = [6 4 6 -1 -1]` shows the resulting data after some operation.  Dashed orange arrows connect the tops of the bars to corresponding values in the `res` list, indicating a mapping or transformation.  For instance, the bar representing &#x27;5&#x27; maps to &#x27;6&#x27; in the `res` list, the bar representing &#x27;2&#x27; maps to &#x27;4&#x27;, and so on.  The vertical axis represents the magnitude of the values, ranging from 0 to 6.  The chart visually demonstrates how the input values are processed to produce the output values in the `res` list, suggesting a potential algorithm involving accumulation or modification of the input sequence.  The negative values in `res` suggest a possible subtraction or other negative transformation applied to some input values." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: nums = [<span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>, <span class="hljs-number">1</span>]
+Output: [<span class="hljs-number">6</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>, -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>]
+</code></div>
+
+<h2>Intuition</h2>
+<p>A brute-force solution to this problem involves iterating through each number in the array and, for each of these numbers, linearly searching to their right to find the first larger number. This approach takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1.0641em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> time, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the length of the array. Can we think of something better?</p>
+<p>Let’s approach this problem from a different perspective. Instead of finding the next largest number for each value, what if we <strong>check whether the value itself is the next largest number for any value(s) to its left</strong>? For example, can we figure out which values in the following example have 6 as their next largest number?:</p>
+<p>With this shift in perspective, we should search the array from right to left: certain values we encounter from the right could potentially be the next largest number of values to their left. Let’s call these values “<strong>candidates</strong>.” But how do we determine which numbers qualify as candidates?</p>
+<p>Consider the example below:</p>
+<p>Let’s start at the rightmost index, where the only value we know initially is 4:</p>
+<p>Right now, we can say 4 is a candidate as it might be the next largest number of values to its left. No candidates have been encountered before 4 because it’s the rightmost element, so we should mark the result for 4 in res as -1:</p>
+<p>Next, we encounter a 2. The next largest number of 2 is the most recently added candidate that’s larger than it. In this case, the rightmost candidate in the candidates list represents the most recently added candidate, which is 4 in this case.</p>
+<p>Record 4 as the next largest number of 2 in res, and then add 2 to the candidates list because it could be the next largest number of elements to its left:</p>
+<p>The next number is 3. Notice that with the introduction of 3, number 2 should no longer be considered a candidate. This is because it’s now impossible for 2 to be the next largest number of any value to its left. Since 3 is both larger and further to the left, it will always be prioritized over 2 as the next largest number. So, let’s remove 2 from the candidates list, as well as any other candidate that’s less than or equal to 3:</p>
+<p>Since we removed all candidates smaller than 3, the rightmost candidate is now 4. So, let’s record 4 as the next largest number of 3 in res and add 3 to the candidates list:</p>
+<p>This provides a crucial insight:</p>
+<blockquote>
+Whenever we move to a new number, all candidates less than or equal to this number should be removed from the candidates list.
+</blockquote>
+<p>Another key observation is that <strong>the list of candidates always maintains a strictly decreasing order of values</strong>. This is because we always remove candidates less than or equal to each new value, ensuring values are added in decreasing order. We can see this more clearly in the final state of the candidates list of the previous example:</p>
+<p>This indicates a <strong>stack</strong> is the ideal data structure for storing the candidates list, since stacks can be used to efficiently maintain a <strong>monotonic decreasing order</strong> of values, as mentioned in the introduction.</p>
+<p>The top of the stack represents the most recent candidate to the right of each new number encountered. Given this, here’s how to use the stack to add and remove candidates at each value:</p>
+<ol>
+  <li>Pop off all candidates from the top of the stack less than or equal to the current value.</li>
+  <li>The top of the stack will then represent the next largest number of the current value.</li>
+</ol>
+<ul>
+  <li>Record the top of the stack as the answer for the current value.</li>
+  <li>If the stack is empty, there’s no next largest number for the current value. So, record -1.</li>
+</ul>
+<ol>
+  <li>Add the current value as a new candidate by pushing it to the top of the stack.</li>
+</ol>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/stacks/next-largest-number-to-the-right" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">next_largest_number_to_the_right</span>(<span class="hljs-params">nums: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]</span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]:
+    res = [<span class="hljs-number">0</span>] * <span class="hljs-built_in">len</span>(nums)
+    stack = []
+    <span class="hljs-comment"># Find the next largest number of each element, starting with the rightmost</span>
+    <span class="hljs-comment"># element.</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(nums) - <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>):
+        <span class="hljs-comment"># Pop values from the top of the stack until the current value's next largest</span>
+        <span class="hljs-comment"># number is at the top.</span>
+        <span class="hljs-keyword">while</span> stack <span class="hljs-keyword">and</span> stack[-<span class="hljs-number">1</span>] &lt;= nums[i]:
+            stack.pop()
+        <span class="hljs-comment"># Record the current value's next largest number, which is at the top of the</span>
+        <span class="hljs-comment"># stack. If the stack is empty, record -1.</span>
+        res[i] = stack[-<span class="hljs-number">1</span>] <span class="hljs-keyword">if</span> stack <span class="hljs-keyword">else</span> -<span class="hljs-number">1</span>
+        stack.append(nums[i])
+    <span class="hljs-keyword">return</span> res
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>next_largest_number_to_the_right</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>. This is because each value of <code>nums</code> is pushed and popped from the stack at most once.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because the stack can potentially store all <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> values.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

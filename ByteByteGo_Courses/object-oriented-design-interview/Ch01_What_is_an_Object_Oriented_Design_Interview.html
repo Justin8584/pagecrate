@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.01 - What is an Object-Oriented Design Interview</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <span class="chapter-number">01</span>
+  <h1>What is an Object-Oriented Design Interview</h1>
+</div>
+
+<p>Object-oriented design interviews have become increasingly popular in technical hiring. This shift reflects companies’ growing emphasis on skills that align with real-world software development. OOD interviews are important at companies like Amazon, Bloomberg, and Uber, serving as a practical coding exercise. These interviews test your ability to build logical, maintainable systems and gauge how effectively you apply object-oriented design principles and patterns.</p>
+<p>Unlike algorithm interviews, which demand a single, optimal solution, OOD interviews leave space for creativity. There’s no one-size-fits-all answer, as various approaches can produce a coherent and working design. For example, some questions focus on real-world systems like a Parking Lot or a Vending Machine, while others take a more abstract turn, such as a Unix File Search or a Tic-Tac-Toe game. Each question presents unique challenges to test your skills, but they all build on the same basic knowledge and follow a similar interview structure.</p>
+
+<h2>How Is This Book Structured?</h2>
+<p>This brief chapter explains what OOD interview questions are. Next, we’ll present a framework for approaching OOD interviews and guide you through a complete end-to-end example. Then, we’ll cover common design principles and patterns used in OOD. After that, the rest of the book focuses on typical case study questions, tackling them one at a time.</p>
+
+<h2>Why Do Companies Use OOD Interviews?</h2>
+<p>Companies use OOD interviews to hire skilled developers who can write effective code fast. They look for candidates who can define the problem scope, clarify requirements and edge cases, create practical, low-level designs, and build software that is easy to understand, maintain, and extend.</p>
+<p>OOD interviews, along with System Design and Behavioral Questions, help companies decide a candidate’s level. Doing well in OOD often sets intermediate and senior engineers apart by showing deeper design skills.</p>
+<p>Here’s what interviewers are typically looking for:</p>
+<p><strong>Product Sense:</strong> Translate real-world needs into software by applying domain knowledge and making user-centered decisions.</p>
+<p><strong>Systems Thinking:</strong> Break down a complex system into subsystems and components. Set clear roles for each and define how they work together.</p>
+<p><strong>Decision Making:</strong> See beyond immediate requirements, anticipate future needs, and design with flexibility in mind. Strike the right balance between making designs too complicated and keeping them too basic.</p>
+<p><strong>Code Quality:</strong> Write clean, logical, and maintainable code to implement your design. That’s why modern OOD questions focus on coding, not just diagrams.</p>
+<p><strong>OOP Knowledge:</strong> Use object-oriented techniques, SOLID principles, and design patterns to make software simple and production-ready.</p>
+<p><strong>Communication:</strong> Ask clear questions, guide the discussion, explain your ideas well, and stand by your solutions confidently.</p>
+
+<h2>How Are OOD Interviews Different From Coding Interviews?</h2>
+<p>OOD interviews and algorithm coding interviews both involve writing code, but they focus on different goals. If you’re familiar with algorithm interviews, you’ll need to shift your mindset for OOD. Here’s how they differ:</p>
+<p><strong>Focus on quality, not speed</strong></p>
+<p>Algorithm interviews want the fastest solution, focusing on time and space efficiency. OOD interviews value clean, maintainable software. You’ll use objects and create well-structured code with abstractions and decomposing logic, even if it takes a bit longer, which is fine in OOD interviews. Write clear, organized code with intuitive names so your ideas stand out without extra explanation.</p>
+<p><strong>Design with objects, not steps</strong></p>
+<p>Algorithm interviews often push you to solve problems fast, so you might write all the logic in one function. OOD interviews, on the other hand, focus on objects, what they are, what they do, and how they interact with each other. Instead of listing steps, think about each object’s role and relationships.</p>
+<p><strong>Demonstrate OOP skills, not just answers</strong></p>
+<p>In algorithm interviews, solving the problem matters most. OOD interviews also test your OOP skills. Use ideas like encapsulation, inheritance, and design patterns to build your solution. Demonstrating a strong grasp of SOLID principles shows that you can design clean, maintainable systems. They value your thinking process, not just the result.</p>
+<p><strong>Plan extensible designs, not short-term fixes</strong></p>
+<p>Algorithm interviews keep you racing against the clock, leaving little time to plan for future changes. In OOD interviews, the best solution often requires less coding, and the pacing gives you time to discuss how your solution scales to future requirements. A good design adapts to updates with minimal rework.</p>
+
+<h2>How To Prepare For An OOD Interview?</h2>
+<p>This book helps you prepare with the most up-to-date view on OOD interviews. It covers the basics, a complete walkthrough, and examples of common OOD problems with solutions. You can also try other resources to build your skills.</p>
+<p>Here are a few ways to prepare:</p>
+<p><strong>Learn OOP fundamentals:</strong> Read articles, tutorials, or books on OOP. This strengthens your interview skills and your job performance later. Start with simple ideas like encapsulation, inheritance, polymorphism, and abstraction. Then, explore SOLID principles and design patterns using online guides.</p>
+<p><strong>Practice high-frequency problems:</strong> This book includes examples of typical OOD problems. Some, like Parking Lot, show how to model real-world systems. Others, like Elevator System, test complex logic, or like Linux File Search, check your abstraction skills. Code along with us, then try solving them on your own and review your work.</p>
+<p><strong>Mock interview and practice communication:</strong> OOD interviews value clear communication, not just coding. Our walkthrough chapter offers tips on key topics, but practice explaining your designs out loud. Work with a friend in a mock interview or record yourself when doing OOD and practice explaining your design decisions while you are coding.</p>
+
+<h2>Run The Code</h2>
+<p>All the code included in this book is executable. We encourage you to download the repository, run the code, and experiment with the solutions to deepen your understanding of OOD principles. Instructions for setting up and running the code are provided in the repository’s README file.</p>
+<p><strong>GitHub repo link</strong>: <a href="http://github.com/ByteByteGoHq/ood-interview" rel="noopener noreferrer" target="_blank">github.com/ByteByteGoHq/ood-interview</a></p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

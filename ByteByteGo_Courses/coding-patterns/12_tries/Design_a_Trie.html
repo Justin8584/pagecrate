@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design a Trie</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Design a Trie</h1>
+</div>
+
+<div>Design and implement a <strong>trie</strong> data structure that supports the following operations:
+<code>insert(word: str) -&gt; None</code>: Inserts a word into the trie.
+<code>search(word: str) -&gt; bool</code>: Returns true if a word exists in the trie, and false if not.
+<code>has_prefix(prefix: str) -&gt; bool</code>: Returns true if the trie contains a word with the given prefix, and false if not.
+Example:<code class="hljs language-python">Input: [
+  insert(<span class="hljs-string">'top'</span>),
+  insert(<span class="hljs-string">'bye'</span>),
+  has_prefix(<span class="hljs-string">'to'</span>),
+  search(<span class="hljs-string">'to'</span>),
+  insert(<span class="hljs-string">'to'</span>),
+  search(<span class="hljs-string">'to'</span>)
+]
+Output: [<span class="hljs-literal">True</span>, <span class="hljs-literal">False</span>, <span class="hljs-literal">True</span>]
+</code>Explanation:<code class="hljs language-python">insert(<span class="hljs-string">"top"</span>)    <span class="hljs-comment"># trie has: "top"</span>
+insert(<span class="hljs-string">"bye"</span>)    <span class="hljs-comment"># trie has: "top" and "bye"</span>
+has_prefix(<span class="hljs-string">"to"</span>) <span class="hljs-comment"># prefix "to" exists in the string "top": return True</span>
+search(<span class="hljs-string">"to"</span>)     <span class="hljs-comment"># trie does not contain the word "to": return False</span>
+insert(<span class="hljs-string">"to"</span>)     <span class="hljs-comment"># trie has: "top", "bye", and "to"</span>
+search(<span class="hljs-string">"to"</span>)     <span class="hljs-comment"># trie contains the word "to": return True</span>
+</code>Constraints:
+
+The words and prefixes consist only of lowercase English letters.
+
+
+The length of each word and prefix is at least one character.
+
+</div>
+
+<h2>Intuition</h2>
+<p>Let’s define a <code>TrieNode</code> using the same definition introduced in the introduction. In this implementation, the <code>is_word</code> attribute will be used to indicate whether a <code>TrieNode</code> marks the end of a word.</p>
+<p><strong>Initializing the trie</strong><br/>
+To initialize the Trie, we define the <strong>root <code>TrieNode</code></strong> in the constructor. All words inserted into the trie will branch out from this root node.</p>
+<p><strong>Inserting a word into the trie</strong><br/>
+The insert function builds the trie word by word. What makes a trie useful is that it reduces redundancy by reusing existing nodes when possible. For example, if we insert “byte” when “bye” already exists in the trie, these two words should share the nodes that make up the prefix “by” to save space. This is an important point that will shape our implementation of this function.</p>
+<p>To understand the insertion logic, let's walk through an example. Consider inserting the word "byte" into the trie below.</p>
+<p>We first check if 'b', the first letter of the string, exists as a child of the root node by querying the hash map containing its children. In this case, it does. So, move to node 'b':</p>
+<p>Now consider the second letter, ‘y’. Similarly, node 'y' exists as a child of node 'b', so let's move to node 'y':</p>
+<p>Now consider the next letter, ‘t’. Since node 't' doesn't exist as a child of node 'y', we need to create it and add it to node 'y’s children hash map. Then, we can move to this newly created node 't':</p>
+<p>The last letter is ‘e’, which doesn’t exist as a child of node ‘t’. So, let’s create node ‘e’ and add it to node ‘t’s children:</p>
+<p>Now that we've reached the end of the word, we should set the <code>is_word</code> attribute of node 'e' to true, indicating that it marks the end of a word.</p>
+<p><strong>Searching for a word</strong><br/>
+Searching for a word involves the same strategy as insertion, where we move node by node down the trie. The two main differences are:</p>
+<ol>
+  <li>If a node corresponding to the current character in the word isn't found at any point, we return false because this would indicate the word doesn't exist in the trie.</li>
+  <li>After traversing all characters of the search term, we return true only if the final node's <code>is_word</code> attribute is true.</li>
+</ol>
+<p><strong>Searching for a prefix</strong><br/>
+The logic for finding a prefix is nearly identical to the logic discussed above for the search function. The only difference is after successfully traversing all characters in our search term, we can just return true without checking the final node's <code>is_word</code> attribute, as a prefix doesn’t need to end at the end of a word.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/tries/design-a-trie" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div class="figure-wrap">
+  <img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+</div>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Trie</span>:
+   <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):
+       <span class="hljs-variable language_">self</span>.root = TrieNode()
+    
+   <span class="hljs-keyword">def</span> <span class="hljs-title function_">insert</span>(<span class="hljs-params">self, word: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
+       node = <span class="hljs-variable language_">self</span>.root
+       <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> word:
+           <span class="hljs-comment"># For each character in the word, if it’s not a child of the current node,</span>
+           <span class="hljs-comment"># create a new TrieNode for that character.</span>
+           <span class="hljs-keyword">if</span> c <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> node.children:
+               node.children[c] = TrieNode()
+           node = node.children[c]
+       <span class="hljs-comment"># Mark the last node as the end of a word.</span>
+       node.is_word = <span class="hljs-literal">True</span>
+    
+   <span class="hljs-keyword">def</span> <span class="hljs-title function_">search</span>(<span class="hljs-params">self, word: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
+       node = <span class="hljs-variable language_">self</span>.root
+       <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> word:
+           <span class="hljs-comment"># For each character in the word, if it’s not a child of the current node,</span>
+           <span class="hljs-comment"># the word doesn't exist in the Trie.</span>
+           <span class="hljs-keyword">if</span> c <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> node.children:
+               <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+           node = node.children[c]
+       <span class="hljs-comment"># Return whether the current node is marked as the end of the word.</span>
+       <span class="hljs-keyword">return</span> node.is_word
+    
+   <span class="hljs-keyword">def</span> <span class="hljs-title function_">has_prefix</span>(<span class="hljs-params">self, prefix: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
+       node = <span class="hljs-variable language_">self</span>.root
+       <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> prefix:
+           <span class="hljs-keyword">if</span> c <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> node.children:
+               <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+           node = node.children[c]
+       <span class="hljs-comment"># Once we’ve traversed the nodes corresponding to each character in the</span>
+       <span class="hljs-comment"># prefix, return True.</span>
+       <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong></p>
+<ul>
+  <li>The time complexity of <code>insert</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(k)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> is the length of the word being inserted. This is because we traverse through or insert up to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> nodes into the trie in each iteration.</li>
+  <li>The time complexity of <code>search</code> and <code>has_prefix</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(k)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span><span class="mclose">)</span></span></span></span> because we search through at most <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> characters in the trie.</li>
+</ul>
+<p><strong>Space complexity:</strong></p>
+<ul>
+  <li>The space complexity of <code>insert</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(k)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span><span class="mclose">)</span></span></span></span> because in the worst case, the inserted word doesn’t share any prefix with words already in the trie. In this case, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> new nodes are created.</li>
+  <li>The space complexity of <code>search</code> and <code>has_prefix</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> because no additional space is used to traverse the search term in the trie.</li>
+</ul>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

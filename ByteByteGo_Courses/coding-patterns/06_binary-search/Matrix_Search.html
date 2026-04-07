@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix Search</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Matrix Search</h1>
+</div>
+
+<div>Determine if a target value exists in a matrix. <strong>Each row of the matrix is sorted</strong> in non-decreasing order, and the first value of each row is greater than or equal to the last value of the previous row.Example:<img src="data:image/webp;base64,UklGRtYVAABXRUJQVlA4WAoAAAAwAAAAJQEAAwEASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIagMAAAFnoDSSFDb6JIcDGxUREdgNp7XPowJl9//byM1PNExDdorS5kwTWKVtO/sJ0hMX6UwJENOU8gA++pii9Ahg+mu0gWDIJvb/VppwlhrtPz0b0f8JAE8/FXP4NIru7Qbz5oJ4OQNFMRQR7QNQ3vFhcHp0gPLECCOgSGBw9XJ82pPrewHVUyuB7mnl3wRgvOt7QPVOAl/21PdvntqUJDpplmOgqcCaiFpgvT8SpYB3nggYyJOEJyJyUbwEsCCAlwDQCRgSWDsnxn0YJwwJgCTGfUARItNCAVATkuharFvApzAt0LmtFE3TIENYLHiJdYsN+8CYYr0PmFPopzJoaJdK1ZYk1vuYbpAYWmu/pK1Ok+RCKU8UYpw0JDHQNF7nsFCj09qHEFELDPtaa72V6qcyxKcLlE68BELW7ZdvCmC9j43b0DQN6ByWZ9xAEqCAMcV03W4CiRDoqQjw6QIN7cSnGEKGVmsAhuTvpEHbdqS1FkvTkesFRteTD+iIiCQwur7fBzBQ35/aSETUoiMiahcDI5GAIUrHAOP6nlrAENHTAAxRe7ZAAYASCB0fADoCAC2wUePM9xJQGxjpU6BzzBid/ZL2mWE8kRPMALTGvysXeRIrK5JY1wsRKStKMa/rZb2KVdtYqizKSKqoy3nVSVZGqsommkCTxAHQJLPKgSaJo5I6FoDqYrRazEnlUDYSMAsRD7NaoWnE7tWxsuv5vGSVm93LckSu7N688jKpdq+SsXC1FrOyAruX2SQaXpNzykqg3rlqhWVBAVjsWGaTGRgxq2rveh4p041+NI6xRfFEHPXodZvMStkyifSatXYVy9pVHGPtE2DnI/gH8p0TOut/fm6rn4iD17Z4n3h4KeweE24HHRMXL4R8z4bLIXfZ8FLIfTZ8EHLChp9DiI/nySnyhB3Xy3rFjjrJSnbkQJMwQ+VQlh0rNI3ghqxyw468TCp2WAF2ZCVQcwMFYMGNau96zg5ly4Qdgef+O6fO9Sf4oeyKHZkt+IFHFUPw7wBXb+Q64UZjrWVH4Ln/zqeTFXv8qIvmIjs0XluxA8hKjuQMURypBD8yC35UK35kNuFHtQI/bFkUCTustewIPA/FCRt+DrnPhg9C7rLhpZDv2XA55JgNF0Jwjwm3Efw+Ey6F4ScWXMO2d07OvJ+fAwBWUDggdhAAAJBXAJ0BKiYBBAE+KRKIQqGhIRGZhkAYAoS0t3KoC0KNPMsBXZ+8+rQG9FO2O54DowOpw9ADpbchz8I/0j8Rf2Z8hf5X+HX7KeY/45+gfjT/VP83/fNMr+L/SP5x+M/9s/63+j+E/5n+Jv5b8wF+L/wf+dfj5+6f+25F+sHoC+onxL+3/4D+yf4/+9/tB6pv6B+PXuR9HfYA/iv8P/tP5Nf33/zfP3e0eAewB/Fv55/h/8H+8v+b+kr9I/2f91/t3/S/z/s7/If6p/rf8P+6P+E///4C/xr+V/4f+yf5P/if4v//f7H7kfV3+2fsX/rD9/5rN4a1Y66XyXjeGtWOul8l43hrVjrpfJeN4a1Y66XyXjeGrHu7EDsMeljf7lMOnDO7QCN3iOda8iMglJz0iZXj00XFa5ETgNHB1HSxyfZnA9tJp0Zav4Qo8Q+WobNYaE3NQmifQIDTTiAyuaUVivM3MSf4FGhmw0XTKfGs1q8OE5XOkHKPikdPiW/uTjgoVkiinaIYr1tFvzgA7v/Z+3yz7Pm4bAYJM+3/9AQ5PoCMTk7Amsu1gj9tASzuu4V7XYBTeV33OTtqQwKTFQBg8fGPHZ+Ppz2VlyGiJucfhv1HAXyKVyxZDtt0fHi6E65y85hJQjW8aqEH1wdKRPqmLLhc7XTSRCAaRZ5/CrJYNMid1A3FEVyfHDudVjqaNmFY/SRqdsZhRKaxo4ZvuhFyVpdEOWJrLQHbDY4cLkMxracTOHYRxirgERh0pZ5BFcCLD9wpaM5/PBSMU7UELkHjOD3wn9gfJL1ksd2ChpGCXtN6mUgu3zIDFsOftpXgAgzOsLiOOI4SMnpUVZZhF8WFYHfUuu+GUxDEAvPXl+wAmrufNAXzPfwm+K7KCce+3pcOJRAmxPMYKXkdu9/HGvrJijl18O47IIPt/FOJul9wOanGaMyToAAA/v+kgAAAqPu3tOLKXU7Ts/Zw183sTdBM/TWM1sHGx6n57M2BFn2mymKPCWCzh5qFSMWVQsT3apOtA+1O0Vdc+zqAfJQkBj9Uv5yNN3gml1CLe89YA3gELYxHQJKaSpzLz6379rdRX8OOdVNg3vtHN7+ACNKFEYdWCUjVU4ysnIlTYlG+H8awYwBj7r2wJRaSsAO7igqwThKrwHDMTLtMnGJTD8Vlry7425Ph/Oz5BiQCrCTzNgSHoyulc6g9wEWju5V/8KjwyBSbXXNFUJL9g0dzEE6SXx9yVMMAwjAfalUFJtti2Qp+7Yi29He/iBQ6Rcg/tTtkKDTNUok6Xt9G8A3DhS5FHRlQsc8bUH7fxVFyXaWKB8ODw4H+zatKScyjL413VqbD8mqB8boqiY54T4Ef5NjGcJQ75Fllg2LGRHkhcO8+NvQrEMaihi/tAlWoq9Hx8bJEzYx/UA6ugCZHW0Fesw63ZGMSZpqBBFBj40OVxPfChZl1xVwnAGHmTcS27f/pK9qWmKVcNWR/5p0cU66WPuqNJgQb/emkMQNoziQIpaGnmSi+ywjkiEqU43KP6a6r6PUeQr3h+NlDZPrfUETCWZuuX79OWDA88Xu1dVaEdPzBL7W5H2RiVHtiV7Cudhpd7+eVehOkZatXfdMBnrAipaDm6QdMsxA+49t1257PM5//TJZwE0vnaiAp0/wzCV5CFbv9rsa426aO8qgeZx6eeVkO1yBRWgVIske1vb6iZlZXNfrjKWZ38x9nkXvlYFCcvDqpX0Len/wWF9KjmhNGTiHP97hXzcQCrW1tcP/05iwalKVa4nTwSziEmV71cCTDfphlFVG7Frw7Te4JAm0w+pobfZQEc2Xi2rFHxS/o2kJZcmOuD3YWdHl+Mg+XcYj+xD0obrT46ITJyFR3adzfXSXXwf/wqCXDMO5jAQ+9iwFfamxnV+mg+g2nfnAnOk4EKA7TzPOeNE0SGA2dgAMHjYy6pJzD+LZ0ruMSwnoFq88MtqefAYclaosraIpuzroN7nHfBKMZjB06KogGk2X+/aV1iCUwPXAWkI07H143cw/gqTyz+YV2NmzkSsTJCsaSy/krpnw4e9mYGWHNHlg7tx5AwVd1+ZEsLgV43DjftfWiE1ZTX1U2QDWaui4ddGEyOjxIKSecBleaTfEV+bP+iUfHvonbnlRqi+HEFqhUgnSNj6B/xaDK3rOGrWlJcFbJn6AFf39pqJYP8bf//yd5X3/pb5xcneTotRC3+f27VubfzyXV98i5zg82LJs7uMA1uQH/zkaFpqsN9bA5W6LoXS5FYmrOkYFifV7LEJyJoyeil6Tv/0zfeH28On4EAZFhcuYZ1BniB+GLw+c/FpIc89NuIO60oiDDXK6nBF+sZCAF7Lu+DnR6uLvAE53QqQTAnHbaEs94OMvH2gE9Zw5Bp5yr/knIpWBNhJpVGKKj6PZnJORSx+8ULrHMgsz3PSp9OpaAl8VtGT8x0Ei3ILi1POd6lBBpiymMaIqUD5dmR6ZW7cvTW+5mlmcAehP5YzKatPScjH+45HoJwb/tkaFriwV6OiLjVm61NDvbVXKM0kduTwVLf1N2xjLQDkx9+DoDRkxKjbcwmoShYoq6iJuOz1/yQnguStHJRox5V5oUojO//JOGYU4E9xVEECT1kFO9gJiJUDkj6SsPf9+QUx7s6EEQ7jwDUrOfKUP31td5wkz3clVbMgUhIbid68jxrvalr9OU7pZk6YtEUUUPyb8QKuRTgL/UBLI2WcxXzKjYfFmBhxn3Zj//EWVfgiWfNnh7E/6zeQTUp+hgNUx9TsklZL9epiTSuk4RKOlwAb0hiqk7iO7VIKYf4cbHC7hblQ0Wonu47T2rvP/i3nZL/WER/NlamVWhg5NTLO3QElOZuzvRige53aHR4jj08K+6/ZILzU4ItJ/7UT0M8iie5Rjcrx2j3mQpQ2K1qew4/tjSt8MB//xqsMlzW/pqvIY3tTLOyRjY2vp6jcyUD1llHa3bqPgV3xQViz2yZsRUh5LsNQAQa/WnQfOL3p8/RBb1XTQuzpErhYCiO8DHY7zrN9kJi7X72MOzQcQFRhJl1w0ETN1kjFAZdZBA3PH2/fH0tFHCsHPdxaZLqnfx4zW0H6xc5DZShjEHL7JOlhZPX4dJoqWWCj3BBhJ+KO0SYc4txx0ov2GKmwnUIUvXtuybSKrGnenHf/TJItKHq+Tlihm/t8wwajNoFm8Ufe3GxCwdfa5NHPK8uIHnEj4KNE2a86aQoqPjqAy1tKp76zlm9m1YVvH2fSqQzLgLkGer4Xu/vcV+5dMal79DjTsJfuyLm6GNBSFnNbowf1MMFh9PpvPuL2S7FSxTi/BuKB5dvUApiPxw/1Mma9k2OelccPBkwvJo2mIkZH6P6fYP05U3ZIx+FohtgXphnHvqnCP2930vutmEGKXyMKFahGhEQMTD74oEwxw43qHIJYQKEaMVlcywpCVtkFJLTGDdGPCOcWNnAmQQ75ayDfDTgX9At/JRJd3/05Klw5dZFf4iDaux2o8hR+73VxJXhYsuml5CI6Xe7BYE8X+BtZE6HCdRVGY4UG+yTWbOAO614MZ7fa/zpR4KlvXwrtVmKdFxEe/Nvzv72ub+5uUJBGIc0GPrQqzLgDQAPoFQnugldnfSIBlZaVb4gRshuTXaU2aQ5uoRV7vh7L/FTrlcjqXCZmwaajfrEZoFl1GXJWcXAtgMXbsOXMG30JXHWuBZpcn1vipHehA3y9Iyog5l+MLYt6bkqZjdaycu6YE7/AqWQDtnmd3tHY4ZH7MHpqrJ9xS5lt2nChKIXqGXVpmDRuFdAgu12F7ModUp9/W3mHOCMkN4Yaag8T1gpDKfU92QsCYPa1D5Ypux9yJvXtUE4Y//5rjRaBB8MyNunzmrzdRAPCLKPoBsbYedOKmGO46vFKy2ebBGpbTeH1xkRFBXxasElcjcOgmo6LvzWUWJDwkqyjt6X+lGFV4UoAQAHO9PXP6vROsJrDmhEDFw8L8vzgdzr1n68xS1GR44/pFbdaWWp6kuKwPxTOhL3rT67l3pom2cK4epe8retnLWPWrvvt1wQT6TiUZTMmuz4ZmoQtemGMAcWbn/VHy7izEo8ZX+wuH1ILCSpGDX4DOy2RMri1Gc/zCOeDsN5qh7/fir4mkhWZawVgojSa7wyN9D3Chm+bp+jRU5K0+7fHnDuQzAQMLfl5uekUK/PTurJhslK+Umy8truQ27yterwhL7Y0xvbtm1O1p0/968P0G2ApfQ73IEwqWe22vlitfDG3fIiNqRMkG/XpPS7d8EwQfv9WUJUhTa/btTI4ycKcfwlxqevJprGMNzdlAAXBzU9apwe+A06xnBnBdJ03w2QFxKmtlqMFz1g4j7+7ac49tC12yVM1QJVItdQNByy5GDDuqrpLPk+9nwjkzNgX1v/bvTLFYFOT/NSJureMvEEfcbHt2EYjgRBaDCXB4DWCb83GxukmaG+726jcmEoU6bqHhQ469U+J5rcxlJ1IkGa79UxLbXmfaChUBMvLv+pvgwGBQ/tj1E82fJDf4+udIlyyc+TlqLnYNTNOkfVHiUf5k5TWbTJFCKGGLJt7qV6UDNqMwaueD9rb5xFKD3tNVCFAMkwGf0em2spvMVFD5NYwUVQxWhEPAj/l5J//2gPwBMQoLFZPVuh3CoHRK9Fe58tL+cw8uDuugw473DAKz/VvC+PLYn54jLWIIPKoBWjkix9e7WJpPc3HEumpfi7NNaVxMnbsB8FyzXlENrP+8UVLCl/Nt9/ikV/+xQ+/XqDlts584hy7+K9sl6JZM7hLzf0ogcuD2Tp24ZWN6ATtjwz7xa6rAH/y3a8E9wRNHWwIQXScwDAaR567H1/LQrDlNrrKoJ6SrYt+UC5eC2hcepQPI1uv+mv+dNT2M4jGlLFfBYHJrgi6Meb2qcGbCTj7EJWsxmerpnjiyNYSC9DEK0yz2fs7/afGBQ7savxYDX3i2yeE+Ig/wKqKX05mViMc38QrTRt26+ZQ3wgVCzzFhOUtTPjEYOiQJS6oJX1jBUnIfP+1wt8/GI6fa9JkDGKuxJQSmbiPueLvaGHQvFyZVEKL84h1hoVaazs7prd7zJWerPzSJC6w6yGmsMaPZn078Igr5ekULWWEb4Z8YGyrNsfmYnMB7qV7O6HXnTTGsZ4xDd4IkOfbOWXBv+VFWPut+BhDGM4T5FcJLvKkYjGwGjfNORIejWTJOOE19+NEGgesyrwMSho7F0/IFGt7v72aJ9GDP2gLGvRcdj0uzAHGbYRCrwTqILlzzSSJMP3lraf58M+9+B6BIN9HunjKb1f2fkDn5Uivgh5ydUcmJ5cf5EqAMxN3haliCncr+T1U/0AE+Ir3btASRp1Mw9Ez339HkyS/XlH8cjU5WEY43OBekU512v5ZQpGcEnyWknVJhhiw8uljYcaOz7S30GZ+1i9k/hYJpAjPsACwk3+STy30K7HxM32gqYemUio8s+UDrJp+oMLcnJHQDh1T5l7C9uZ5H4ke56BjeOaAlMMdGESKAcoZ7ZS8tzcFpw8Vq3cIMWLPmuGTzVqBXWhBOsWNwYsJnDyeeMRUiNP9fGvDePgYMbNQICpbr5rq48pRdKc/JJrg3MwbXtt4MyJ1kY1F4WKIxSJdnZzwYA1gBwgCpAgAAA" alt="Image represents a 3x4 matrix of numerical data, with a target value declared as &#x27;target = 21&#x27; above the matrix.  The matrix is indexed by row and column numbers, starting from 0.  Each cell within the matrix contains a single integer value.  The integers are arranged seemingly randomly, ranging from 2 to 33.  One specific cell, located at row index 2 and column index 1, contains the value 21, which is highlighted with a light green background, visually indicating it matches the declared target value.  No other connections or information flow beyond the simple presentation of the numerical data and the target value are depicted." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Output: <span class="hljs-literal">True</span>
+</code></div>
+
+<h2>Intuition</h2>
+<p>A naive solution to this problem is to linearly scan the matrix until we encounter the target value. However, this isn’t taking advantage of the sorted properties of the matrix.</p>
+<p>A key observation is that all values in a given row are greater than or equal to all values in the previous row. This indicates the entire matrix can be considered as a single, continuous, sorted sequence of values:</p>
+<p>If we were able to flatten this matrix into a single, sorted array, we could perform a <strong>binary search</strong> on the array. Creating a separate array and populating it with the matrix’s values still takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m\cdot n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> time, and also takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m\cdot n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> space, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> are the dimensions of the matrix. Is there a way to perform a binary search on the matrix without flattening it?</p>
+<p>Let’s map the indexes of the flattened array to their corresponding cells in the matrix:</p>
+<p>This index mapping would give us a way to access the elements of the matrix in a similar way to how we would access them in the flattened array. To figure out how to do this, let’s find a way to map any cell (<code>r</code>, <code>c</code>) to its corresponding index in the flattened array.</p>
+<p>Let’s start by examining the mapped indexes of each row of the matrix:</p>
+<ul>
+  <li>Row 0 starts at index 0.</li>
+  <li>Row 1 starts at index <code>n</code>.</li>
+  <li>Row 2 starts at index 2<code>n</code>.</li>
+</ul>
+<p>From the above observations, we see a pattern: for any row <code>r</code>, the first cell of the row corresponds to the index <code>r⋅n</code>.</p>
+<p>When we also consider the column value <code>c</code>, we can conclude that for any cell (<code>r</code>, <code>c</code>), the corresponding index in the flattened array is <code>r⋅n + c</code>.</p>
+<p>Now that we understand how the 2D matrix maps to the 1D flattened array, let’s work backward to obtain the row and column indexes from an index in the flattened array. Let <code>i = r⋅n + c</code>. The row and column values are:</p>
+<ul>
+  <li><strong><code>r = i // n</code></strong></li>
+  <li><strong><code>c = i % n</code></strong></li>
+</ul>
+<p>We can see how these are obtained below:</p>
+<p>Now that we have these formulas, let’s use binary search to find the target.</p>
+<p><strong>Binary search</strong><br/>
+To define the <strong>search space</strong>, we need the first and last indexes of the flattened array. The first index is 0, and the last index is <code>m⋅n - 1</code>. So, we set the left and right pointers to 0 and <code>m⋅n - 1</code> respectively.</p>
+<p>To figure out how to <strong>narrow the search space</strong>, let’s explore an example matrix that contains the target of 21.</p>
+<p>We can calculate mid using the formula: <code>mid = (left + right) // 2</code>. Then, determine the corresponding row and column values. Here, the value at the midpoint (10) is less than the target, which means the target is to the right of the midpoint. So, let’s narrow the search space toward the right:</p>
+<p>The new midpoint value is still less than the target, so let’s narrow the search space towards the right:</p>
+<p>The midpoint value is now larger than the target, which means the target is to the left of the midpoint. So, let’s move the search space to the left:</p>
+<p>Now, the midpoint is equal to the target, so we return true to conclude the search.</p>
+<p>Note that our <strong>exit condition</strong> should be <code>while left ≤ right</code> in order to also examine the above search space when <code>left == right</code>.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/binary-search/matrix-search" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">matrix_search</span>(<span class="hljs-params">matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]], target: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
+    m, n = <span class="hljs-built_in">len</span>(matrix), <span class="hljs-built_in">len</span>(matrix[<span class="hljs-number">0</span>])
+    left, right = <span class="hljs-number">0</span>, m * n - <span class="hljs-number">1</span>
+    <span class="hljs-comment"># Perform binary search to find the target.</span>
+    <span class="hljs-keyword">while</span> left &lt;= right:
+        mid = (left + right) // <span class="hljs-number">2</span>
+        r, c = mid // n, mid % n
+        <span class="hljs-keyword">if</span> matrix[r][c] == target:
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>
+        <span class="hljs-keyword">elif</span> matrix[r][c] &gt; target:
+            right = mid - <span class="hljs-number">1</span>
+        <span class="hljs-keyword">else</span>:
+            left = mid + <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>matrix_search</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(\log(m\cdot n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span> because it performs a binary search over a search space of size <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>⋅</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m\cdot n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4445em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

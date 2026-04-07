@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insert and Search Words with Wildcards</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Insert and Search Words with Wildcards</h1>
+</div>
+
+<div>Design and implement a data structure that supports the following operations:
+<code>insert(word: str) -&gt; None</code>: Inserts a word into the data structure.
+<code>search(word: str) -&gt; bool</code>: Returns true if a word exists in the data structure and false if not. The word may contain <strong>wildcards</strong> (<code>'.'</code>) that can represent any letter.
+Example:<code class="hljs language-python">Input: [
+  insert(<span class="hljs-string">'band'</span>),
+  insert(<span class="hljs-string">'rat'</span>),
+  search(<span class="hljs-string">'ra.'</span>),
+  search(<span class="hljs-string">'b..'</span>),
+  insert(<span class="hljs-string">'ran'</span>),
+  search(<span class="hljs-string">'.an'</span>)
+]
+Output: [<span class="hljs-literal">True</span>, <span class="hljs-literal">False</span>, <span class="hljs-literal">True</span>]
+</code>Explanation:<code class="hljs language-python">insert(<span class="hljs-string">"band"</span>) <span class="hljs-comment"># data structure has: "band"</span>
+insert(<span class="hljs-string">"rat"</span>)   <span class="hljs-comment"># data structure has: "band" and "rat"</span>
+search(<span class="hljs-string">"ra."</span>)   <span class="hljs-comment"># "ra." matches "rat": return True</span>
+search(<span class="hljs-string">"b.."</span>)   <span class="hljs-comment"># no three-letter word starting with ‘b' in the</span>
+               <span class="hljs-comment"># data structure: return False</span>
+insert(<span class="hljs-string">"ran"</span>)  <span class="hljs-comment"># data structure has: "band", "rat", and "ran"</span>
+search(<span class="hljs-string">".an"</span>)  <span class="hljs-comment"># ".an" matches "ran": return True</span>
+</code>Constraints:
+Words will only contain lowercase English letters and <code>'.'</code> characters.
+</div>
+
+<h2>Intuition</h2>
+<p>The requirements of this data structure closely resemble those of a <strong>trie</strong>, as it needs to facilitate the insertion and search of words. What makes this problem unique is the requirement to support wildcards ('.') in searches. Let’s learn how we would need to modify our trie functions to support wildcards.</p>
+<p><strong>Inserting a word into the trie</strong><br/>
+The requirements for insertion in this problem match the requirements in a traditional trie. So, let’s use the same implementation of insert as in the <em>Design a Trie</em> problem.</p>
+<p><strong>Searching with wildcards</strong><br/>
+What does it mean to encounter a wildcard? Consider the following trie:</p>
+<p>If we perform a search for "ra.", we know we can traverse down nodes 'r' and 'a' until we reach the wildcard character. Since the last letter is a wildcard, it could represent any letter. So, as long as there exists a node branching out from 'a' that represents the end of a word (i.e., has <code>is_word == True</code>), the word "ra." exists in the trie. In this case, both nodes 't' and 'n' meet the requirements of this wildcard:</p>
+<p>Now, let’s say we perform a search for “.an”. Since the first character is a wildcard, we need to cover all branches starting from every node representing the first character in the trie. This means starting a search from each child node of the root. We can do this by recursively calling the search function on these nodes, passing in the substring “an” because this substring contains the remaining characters to be searched for.</p>
+<p>Notice the nodes forming the string "ban" will not satisfy the search term because node 'n' does not mark the end of a word.</p>
+<p>So, at any point in the search, we need to handle two scenarios:</p>
+<ol>
+  <li>When we encounter a letter, we proceed to the child of the current node that corresponds with this letter in the trie.</li>
+  <li>When we encounter a wildcard, we explore all child nodes, as the '.' may match any character. We can perform a recursive call for each child node to search for the remainder of the word.</li>
+</ol>
+<p>This strategy for handling wildcards allows us to search every possible branch for a word that matches the search term. As soon as we find one branch that represents a word matching the search term, we return true.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/tries/insert-and-search-words-with-wildcards" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<p>In this implementation, we use a helper function (<code>search_helper</code>) for searching because we need to pass in two extra parameters at each recursive call:</p>
+<ol>
+  <li>An index that defines the start of the remaining substring that needs to be searched. We pass in an index instead because passing in the substring itself would necessitate creating that substring, which would take linear time for each recursive call.</li>
+  <li>The <code>TrieNode</code> we’re starting the search from. This ensures we don’t restart each recursive call from the root node.</li>
+</ol>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">InsertAndSearchWordsWithWildcards</span>:
+   <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):
+       <span class="hljs-variable language_">self</span>.root = TrieNode()
+    
+   <span class="hljs-keyword">def</span> <span class="hljs-title function_">insert</span>(<span class="hljs-params">self, word: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-literal">None</span>:
+       node = <span class="hljs-variable language_">self</span>.root
+       <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> word:
+           <span class="hljs-keyword">if</span> c <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> node.children:
+               node.children[c] = TrieNode()
+           node = node.children[c]
+       node.is_word = <span class="hljs-literal">True</span>
+    
+   <span class="hljs-keyword">def</span> <span class="hljs-title function_">search</span>(<span class="hljs-params">self, word: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
+       <span class="hljs-comment"># Start searching from the root of the trie.</span>
+       <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.search_helper(<span class="hljs-number">0</span>, word, <span class="hljs-variable language_">self</span>.root)
+    
+   <span class="hljs-keyword">def</span> <span class="hljs-title function_">search_helper</span>(<span class="hljs-params">self, word_index: <span class="hljs-built_in">int</span>, word: <span class="hljs-built_in">str</span>, node: TrieNode</span>) -&gt; <span class="hljs-built_in">bool</span>:
+       <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(word_index, <span class="hljs-built_in">len</span>(word)):
+           c = word[i]
+           <span class="hljs-comment"># If a wildcard character is encountered, recursively search for the rest</span>
+           <span class="hljs-comment"># of the word from each child node.</span>
+           <span class="hljs-keyword">if</span> c == <span class="hljs-string">'.'</span>:
+               <span class="hljs-keyword">for</span> child <span class="hljs-keyword">in</span> node.children.values():
+                   <span class="hljs-comment"># If a match is found, return true.</span>
+                   <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.search_helper(i + <span class="hljs-number">1</span>, word, child):
+                       <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>
+               <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+           <span class="hljs-keyword">elif</span> c <span class="hljs-keyword">in</span> node.children:
+               node = node.children[c]
+           <span class="hljs-keyword">else</span>:
+               <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+       <span class="hljs-comment"># After processing the last character, return true if we've reached the end</span>
+       <span class="hljs-comment"># of a word.</span>
+       <span class="hljs-keyword">return</span> node.is_word
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong></p>
+<ul>
+  <li>The time complexity of <code>insert</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(k)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> denotes the length of the word being inserted. This is because we traverse through or insert up to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> nodes into the trie in each iteration.</li>
+  <li>The time complexity of <code>search</code> is:
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(k)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span><span class="mclose">)</span></span></span></span> when word contains no wildcards because we search through at most <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> characters in the trie.</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>26</mn><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(26k)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">26</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span><span class="mclose">)</span></span></span></span> in the worst case, when word contains only wildcards. For each wildcard, we potentially need to explore up to 26 different characters (one for each lowercase English letter). With <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> wildcards, approximately <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>26</mn><mi>k</mi></mrow><annotation encoding="application/x-tex">26k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord">26</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> recursive calls are made.</li>
+</ul></li>
+</ul>
+<p><strong>Space complexity:</strong></p>
+<ul>
+  <li>The space complexity of <code>insert</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(k)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span><span class="mclose">)</span></span></span></span> because in the worst case, the inserted word doesn’t share a prefix with words already in the trie. In this case, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> new nodes are created.</li>
+  <li>The space complexity of <code>search</code> is:
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> when word contains no wildcards.</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>k</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(k)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span><span class="mclose">)</span></span></span></span> in the worst case when word contains only wildcards due to the space taken up by the recursive call stack, which can grow up to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord mathnormal" style="margin-right: 0.03148em;">k</span></span></span></span> in size.</li>
+</ul></li>
+</ul>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

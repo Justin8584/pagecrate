@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.11 - Quick Reference Cheat Sheet for MSD Interview</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <span class="chapter-number">11</span>
+  <h1>Quick Reference Cheat Sheet for MSD Interview</h1>
+</div>
+
+<p>This appendix provides a helpful reference list of topics to consider during your MSD interviews. They're organized by domain, making them easier to navigate.</p>
+
+<h2>Network</h2>
+<div class="table-wrap"><table><thead><tr><th>Category</th><th>Key considerations</th></tr></thead><tbody><tr><td>Core protocols</td><td>•  Communication protocols : REST, GraphQL, protocol buffers, or gRPC.  •  Real-time updates : HTTP polling, SSE, WebSockets.  •  Request management : idempotency keys, priority queuing, rate limiting, request throttling.</td></tr><tr><td>Data flow patterns</td><td>•  Pagination : offset vs. cursor-based.  •  Offline capabilities : offline-first design, optimistic UI updates, conflict resolution.  •  Network resilience : connectivity handling, exponential backoff.</td></tr><tr><td>Security</td><td>•  Authentication and authorization : token lifecycle, biometric auth, recovery flows.  •  Security infrastructure : encryption in transit and at rest, certificate pinning, compliance requirements.</td></tr></tbody></table></div>
+
+<h2>Data management</h2>
+<div class="table-wrap"><table><thead><tr><th>Category</th><th>Key considerations</th></tr></thead><tbody><tr><td>Architecture</td><td>•  Core data flow : patterns for data flow, layer responsibilities, error handling, error propagation.</td></tr><tr><td>Storage and caching</td><td>•  Storage options : key-value, relational/non-relational DB, custom/binary stores, secure storage.  •  Caching : in-memory vs. disk trade-offs.  •  Eviction policies : TTL, size-based eviction, priority-based eviction.  •  Privacy : PII handling, GDPR compliance, data retention policies.  •  Synchronization : sync strategies, conflict resolution, delta sync.</td></tr><tr><td>Data performance</td><td>•  Pre-fetching : predictive fetching, resource usage trade-offs, prioritize critical paths.  •  Background processing : task efficiency, battery impact, OS background execution limits.</td></tr><tr><td>UI & Interactions</td><td>•  UI states : loading, empty, error, content.  •  Input handling : validation on client and server side, sanitization, feedback for errors.  •  Search : local vs. server-side search, indexing, typo tolerance.</td></tr></tbody></table></div>
+
+<h2>Feature development</h2>
+<div class="table-wrap"><table><thead><tr><th>Category</th><th>Key considerations</th></tr></thead><tbody><tr><td>Version management</td><td>•  Force upgrading : soft vs. hard upgrades, when to require updates, graceful prompts, version compatibility policies. •  Safe rollout : phased rollouts, feature flags, rollback procedures. •  CI/CD : automate build, test and deployments, code quality and security checks, ensure reproducible builds.</td></tr><tr><td>Dynamic configuration</td><td>•  Remote config : feature control without app updates, default values for offline scenarios. •  A/B testing : experiments with clear metrics, user segmentation. •  Analytics : performance and business metrics, crash monitoring, logging.</td></tr><tr><td>Code architecture</td><td>•  Modularization : separation of concerns, clear interfaces, balance granularity with practical maintenance. •  Dependency injection : testability, object lifecycle management, minimize global state and singletons. •  Third-party libraries : security and maintenance evaluation, size impact.</td></tr><tr><td>User experience</td><td>•  Localization : text expansion/contraction, cultural and regional differences. •  Accessibility : screen readers, contrast, touch targets, test with accessibility tools. •  Crash reporting : automated collection, issue prioritization by impact and frequency, ensure right PII handling.</td></tr></tbody></table></div>
+
+<h2>Performance</h2>
+<div class="table-wrap"><table><thead><tr><th>Category</th><th>Key considerations</th></tr></thead><tbody><tr><td>User experience</td><td>•  Pre-fetching : predictive fetching, resource usage trade-offs, prioritize critical paths. •  App startup : optimize initialization, defer non-critical tasks, measure cold/warm start times. •  Stability : prevent crashes, implement error boundaries.</td></tr><tr><td>Resource management</td><td>•  Battery & CPU : minimize background processing, batch operations. •  Network efficiency : compress payloads, minimize requests, adapt quality on connection type. •  App size : optimize assets, use app bundles, remove unused code.</td></tr><tr><td>Technical optimizations</td><td>•  Caching strategy : cache appropriate responses, invalidation policies, multi-level caching. •  Lazy loading : on-demand components and data loading, defer heavy processing until needed, prioritize visible content first. •  Concurrency : proper threading models, avoid blocking main thread, manage thread contention and race conditions. •  Hardware acceleration : GPU usage for animations and rendering, specific hardware optimizations.</td></tr><tr><td>Monitoring</td><td>•  Observability : performance metrics, proactive alerting, traces for complex operations. •  Business metrics : connect performance to business outcomes, track user engagement, user funnels, identify bottlenecks affecting revenue.</td></tr></tbody></table></div>
+
+<h2>Team & Organization</h2>
+<div class="table-wrap"><table><thead><tr><th>Category</th><th>Key considerations</th></tr></thead><tbody><tr><td>Technical infrastructure</td><td>•  Design system : consistent visual language, reusable components. •  Development efficiency : optimized builds, coding standards, effective code review processes.</td></tr><tr><td>Process & quality</td><td>•  Code quality : static analysis, automated testing, technical debt. •  Risk management : early identification, contingency plans.</td></tr><tr><td>Team & culture</td><td>•  Developer experience : efficient workflows, documentation. •  Team growth : onboarding, knowledge sharing, continuous learning.</td></tr><tr><td>Company context</td><td>•  Available resources : infra constraints, team size and expertise, budget, in-house development vs. 3rd party investments. •  Business priorities : objectives alignment, target markets, monetization strategies, short-term needs vs. long-term platform health. •  Outage handling : escalation procedures, recovery playbooks, appropriate redundancies. •  Tech stack : integration with existing systems, platform consistency, future ecosystem evolution, standardization vs. specialized tools.</td></tr></tbody></table></div>
+<div><strong>📌 Remember:</strong> This list isn't meant to be a checkbox exercise where you cover everything. Strategic selection is key! Focus on the considerations most relevant to your specific design challenge, and be ready to explain why those topics are important. Your ability to make thoughtful trade-offs based on the system's unique requirements demonstrates stronger design thinking than attempting to cover every possible topic.</div>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

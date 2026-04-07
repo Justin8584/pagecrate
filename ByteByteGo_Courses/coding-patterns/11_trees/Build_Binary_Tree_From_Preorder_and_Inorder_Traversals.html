@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Binary Tree From Preorder and Inorder Traversals</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Build Binary Tree From Preorder and Inorder Traversals</h1>
+</div>
+
+<div>Construct a binary tree using arrays of values obtained after a <strong>preorder</strong> traversal and an <strong>inorder</strong> traversal of the tree.Example:<img src="data:image/webp;base64,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" alt="Image represents a binary tree data structure.  The tree is rooted at node 5, which branches into two child nodes: 9 on the left and 3 on the right.  Node 9 further branches into a single child node, 2. Node 3 branches into two child nodes: 4 on the left and 7 on the right.  Each node contains a single integer value. The connections between nodes represent parent-child relationships, indicating a hierarchical structure where each node (except the root) has exactly one parent node, and each node can have zero, one, or two child nodes.  There is no information flow explicitly depicted; the diagram solely illustrates the structural organization of the data within the tree." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: preorder = [<span class="hljs-number">5</span>, <span class="hljs-number">9</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">7</span>], inorder = [<span class="hljs-number">2</span>, <span class="hljs-number">9</span>, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">7</span>]
+</code>Constraints:
+The tree consists of unique values.
+</div>
+
+<h2>Intuition</h2>
+<p>The first question that might come to mind is why both the preorder and inorder arrays are needed to solve this problem. Can’t we just use one of them? The reason is that each individual traversal order could represent multiple possible trees. For example, below are some trees that correspond to the following inorder traversal:</p>
+<p>If one traversal array isn’t enough, it might be possible to build the tree using an additional traversal array as a reference point, to help identify how each node should be placed.</p>
+<p><strong>The root node</strong><br/>
+Whatever our approach, we initially need a way to access the root node since the root node is necessary to construct the rest of the tree.</p>
+<p>To identify where the root node is, let’s first remind ourselves how nodes are processed during each traversal algorithm.</p>
+<div class="table-wrap"><table><thead><tr><th>Preorder traversal</th><th>Inorder traversal</th></tr></thead><tbody><tr><td>1. Process the current node</td><td>1. Process the left subtree</td></tr><tr><td>2. Process the left subtree</td><td>2. Process the current node</td></tr><tr><td>3. Process the right subtree</td><td>3. Process the right subtree</td></tr></tbody></table></div>
+<p>Notice that during preorder traversal, the current node is processed before its subtrees. From this, we can infer that preorder traversal processes the root node first, meaning <strong>the first value in the preorder array is the value of the root node.</strong></p>
+<p>With this established, let’s find a method to build the rest of the tree.</p>
+<p><strong>Building the tree</strong><br/>
+Consider the preorder and inorder traversal arrays below and the corresponding binary tree:</p>
+<p>As mentioned above, we know the first value of the preorder array, 5, is the value of the root node.</p>
+<p>Now the question is, what node should be placed next? The preorder array alone isn’t enough to determine this. So, we should consult the inorder array.</p>
+<p>Inorder traversal first visits a node’s left subtree before processing the node itself, so we can deduce that all values in the inorder array to the left of 5 are part of its left subtree. Similarly, all values to the right of 5 in the inorder array belong to its right subtree:</p>
+<p>Now what? With the root node placed, we have two subtrees to build: node 5’s left and right subtrees.</p>
+<p>If we build the tree starting with the already-created root node, followed by the left subtree and then the right subtree, we’re effectively <strong>building the tree using preorder traversal</strong>. This is useful because we happen to have an array of values from a preorder traversal, which means we know the exact order in which the nodes should be created.</p>
+<blockquote>
+As we’re building the tree using preorder traversal, the next node to be created at any point will be the next value in the preorder array. This means we can iterate through the preorder array to place each new node.
+</blockquote>
+<p>Based on this, we know the next node to be placed will have a value of 9. But how do we know if node 9 is a left child or a right child of 5?</p>
+<p>This is where the inorder array comes in, as it helps us determine the structure of the tree. Consider the left subtree:</p>
+<ul>
+  <li>When we want to build the left subtree of a node, we look at the part of the inorder array that corresponds to the left subtree. In our example, this is the subarray [2, 9].</li>
+  <li>If this subarray is not empty, we proceed to build the left subtree, starting with node 9.</li>
+  <li>If this subarray is empty, it means there is no left subtree, so the current node’s left child is null.</li>
+</ul>
+<p>The same logic applies to the right subtree: we only build it if its corresponding inorder subarray isn’t empty.</p>
+<p>Now, let’s devise a strategy for our algorithm. To utilize the two traversal arrays, we can assign a pointer to each:</p>
+<ul>
+  <li>A <strong><code>preorder_index</code></strong> points to the value of the current subtree’s root node. Once this node is created, increment <code>preorder_index</code> so it points to the value of the next node to be created.</li>
+  <li>An <strong><code>inorder_index</code></strong> is used to determine the position of the same value in the inorder array. We can find the index of this value by searching through the inorder array.</li>
+</ul>
+<p>At each recursive call, once these indexes are obtained, we:</p>
+<ol>
+  <li>Create the current node using the value pointed at by <code>preorder_index</code>.</li>
+  <li>Increment <code>preorder_index</code> so it points to the value of the next node to be created.</li>
+  <li>Make a recursive call to build the current node’s left and right subtrees:
+
+Pass in the subarray <code>inorder[0, inorder_index - 1]</code> to build the left subtree.
+Pass in the subarray <code>inorder[inorder_index + 1, n - 1]</code> to build the right subtree.</li>
+</ol>
+<p><strong>Optimization - left and right pointers</strong><br/>
+One inefficiency of the above approach is that we extract entire subarrays out of the inorder array whenever we make a recursive call, which takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> time each time we do this, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the length of each input array. A more efficient approach is to <strong>define the range of each inorder subarray using left and right pointers</strong>. Specifically:</p>
+<ul>
+  <li>The left subtree contains the values in the range <strong><code>[left, inorder_index - 1]</code></strong>.</li>
+  <li>The right subtree contains the values in the range <strong><code>[inorder_index + 1, right]</code></strong>.</li>
+</ul>
+<p>This allows us to define subarrays by just moving pointers, as opposed to creating completely new subarrays.</p>
+<p><strong>Optimization - hash map</strong><br/>
+At each node, it’s necessary to set <code>inorder_index</code> to the position of the same value pointed at by <code>preorder_index</code>. Performing a linear search for this value would take <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> time for each node. Instead, we can use a <strong>hash map</strong> to store the inorder array values and their indexes, allowing us to retrieve any value's index from the inorder array in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/trees/build-binary-tree-from-preorder-and-inorder-traversals" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> TreeNode
+<span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+    
+preorder_index = <span class="hljs-number">0</span>
+inorder_indexes_map = {}
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">build_binary_tree</span>(<span class="hljs-params">preorder: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>], inorder: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]</span>) -&gt; TreeNode:
+    <span class="hljs-keyword">global</span> inorder_indexes_map
+    <span class="hljs-comment"># Populate the hash map with the inorder values and their indexes.</span>
+    <span class="hljs-keyword">for</span> i, val <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(inorder):
+        inorder_indexes_map[val] = i
+    <span class="hljs-comment"># Build the tree and return its root node.</span>
+    <span class="hljs-keyword">return</span> build_subtree(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(inorder) - <span class="hljs-number">1</span>, preorder, inorder)
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">build_subtree</span>(<span class="hljs-params">left, right, preorder, inorder</span>):
+    <span class="hljs-keyword">global</span> preorder_index, inorder_indexes_map
+    <span class="hljs-comment"># Base case: if no elements are in this range, return None.</span>
+    <span class="hljs-keyword">if</span> left &gt; right:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+    val = preorder[preorder_index]
+    <span class="hljs-comment"># Set 'inorder_index' to the index of the same value pointed at by</span>
+    <span class="hljs-comment"># 'preorder_index'.</span>
+    inorder_index = inorder_indexes_map[val]
+    node = TreeNode(val)
+    <span class="hljs-comment"># Advance 'preorder_index' so it points to the value of the next node to be</span>
+    <span class="hljs-comment"># created.</span>
+    preorder_index += <span class="hljs-number">1</span>
+    <span class="hljs-comment"># Build the left and right subtrees and connect them to the current node.</span>
+    node.left = build_subtree(left, inorder_index - <span class="hljs-number">1</span>, preorder, inorder)
+    node.right = build_subtree(inorder_index + <span class="hljs-number">1</span>, right, preorder, inorder)
+    <span class="hljs-keyword">return</span> node
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>build_binary_tree</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, as it makes one call to the <code>build_subtree</code> function, which recursively traverses each element in the <code>preorder</code> and <code>inorder</code> arrays once, resulting in an <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> runtime.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> due to the space taken up by the recursive call stack, which can grow as large as the height of the binary tree. The largest possible height of a binary tree is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>. The hash map <code>inorder_indexes_map</code> also takes up <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> space.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

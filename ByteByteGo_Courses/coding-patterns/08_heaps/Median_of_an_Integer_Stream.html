@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Median of an Integer Stream</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Median of an Integer Stream</h1>
+</div>
+
+<div>Design a data structure that supports adding integers from a data stream and retrieving the <strong>median</strong> of all elements received at any point.
+<code>add(num: int) -&gt; None</code>: adds an integer to the data structure.
+<code>get_median() -&gt; float</code>: returns the median of all integers so far.
+Example:<code class="hljs language-python">Input: [add(<span class="hljs-number">3</span>), add(<span class="hljs-number">6</span>), get_median(), add(<span class="hljs-number">1</span>), get_median()]
+Output: [<span class="hljs-number">4.5</span>, <span class="hljs-number">3.0</span>]
+</code>Explanation:<code class="hljs language-python">add(<span class="hljs-number">3</span>)        <span class="hljs-comment"># data structure contains [3] when sorted</span>
+add(<span class="hljs-number">6</span>)        <span class="hljs-comment"># data structure contains [3, 6] when sorted</span>
+get_median()  <span class="hljs-comment"># median is (3 + 6) / 2 = 4.5</span>
+add(<span class="hljs-number">1</span>)        <span class="hljs-comment"># data structure contains [1, 3, 6] when sorted</span>
+get_median()  <span class="hljs-comment"># median is 3.0</span>
+</code>Constraints:
+At least one value will have been added before <code>get_median</code> is called.
+</div>
+
+<h2>Intuition</h2>
+<p>The median is always found in the middle of a sorted list of values. The challenge with this problem is that it’s unclear how to keep all the values sorted as new values arrive, since the values don’t necessarily arrive in sorted order.</p>
+<p>A useful point to recognize is that we don’t necessarily care if all the values are sorted. What really matters is that the median values are in their sorted positions. But is it possible to position these values in the middle without maintaining a fully sorted list of values? If it is, we’d need to find a way to differentiate the median values from the rest.</p>
+<p>Consider the elements below, which contain an even number of values arranged in sorted order. The two values used to calculate the median are highlighted in the middle:</p>
+<p>When a list contains two median values, we can make the following observations:</p>
+<ul>
+  <li>The first median is the largest value in the left half of the sorted integers.</li>
+  <li>The second median is the smallest value in the right half of the sorted integers.</li>
+</ul>
+<p>If we had a way to split the data into two halves, with one half containing the smaller values and the other half containing the larger values, we would just need an efficient method to identify the largest value in the smaller half, and the smallest value in the larger half. This is where <strong>heaps</strong> come in.</p>
+<p>We can use a combination of a min-heap and a max-heap:</p>
+<ul>
+  <li>A <strong>max-heap</strong> manages the left half, where the top value represents the first median value.</li>
+  <li>A <strong>min-heap</strong> manages the right half, where the top value represents the second median value.</li>
+</ul>
+<p>If the total number of elements is <strong>odd</strong>, there’s only one median. In this case, we just need to use one of the heaps to store it. Let's designate the max-heap to store this median:</p>
+<p><strong>Populating the heaps</strong><br/>
+Before identifying how we populate each heap, it’s useful to understand the behavior they must follow. Here are a couple of observations we can make:</p>
+<ul>
+  <li>All values in the left half must be less than or equal to any value in the right half.</li>
+  <li>The two halves should contain an equal number of values, except when the total number of values is odd, in which case the left half has one more value, as specified earlier.</li>
+</ul>
+<p>These observations help us define <strong>two rules for managing the heaps</strong>:</p>
+<ol>
+  <li>The maximum value of the max-heap (left half) must be less than or equal to the minimum value of the min-heap (right half), ensuring all values in the left half are less than or equal to those in the right half.</li>
+  <li>The heaps should be of equal size, but the max-heap can have one more element than the min-heap.</li>
+</ol>
+<p>Let's figure out how to maintain these rules in an example in which we try to add number 3 to the heaps. Note, the heaps before adding this number meet the above rules.</p>
+<p>Since 3 is less than the maximum value of <code>left_half</code> (4), it belongs in the <code>left_half</code> heap. So, let’s add 3 to this heap:</p>
+<p>After adding 3, we notice rule 2 has been violated, since the size of the <code>left_half</code> heap is more than one element larger than the <code>right_half</code> heap. We can fix this by moving the max value of <code>left_half</code> to <code>right_half</code>:</p>
+<p>So, to ensure the sizes of the heaps don’t violate rule 2, we need to <em>rebalance</em> the heaps after adding a value:</p>
+<ul>
+  <li>If the <code>left_half</code> heap's size exceeds the <code>right_half</code> heap’s size by more than one, rebalance the heaps by transferring <code>left_half</code>‘s top value to <code>right_half</code>:</li>
+</ul>
+<ul>
+  <li>If the <code>right_half</code> heap’s size exceeds the <code>left_half</code> heap’s size, rebalance the heaps by transferring its top value to the <code>left_half</code>:</li>
+</ul>
+<p><strong>Returning the median</strong><br/>
+With the median values at the top of the heaps, returning the median boils down to two cases:</p>
+<ul>
+  <li>If the total number of elements is even, both median values can be found at the top of each heap. So, we return their sum divided by 2.</li>
+  <li>If the total number of elements is odd, the median will be at the top of the <code>left_half</code> heap.</li>
+</ul>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/heaps/median-of-an-integer-stream" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<p>Note that in Python, heaps are min-heaps by default. To mimic the functionality of a max-heap, we can insert numbers as negatives in the <code>left_half</code> heap. This way, the largest original value becomes the smallest when negated, positioning it at the top of the heap. When we retrieve a value from this heap, we multiply it by -1 to get its original value.</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">import</span> heapq
+    
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MedianOfAnIntegerStream</span>:
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-comment"># Max-heap for the values belonging to the left half.</span>
+        <span class="hljs-variable language_">self</span>.left_half = []
+        <span class="hljs-comment"># Min-heap for the values belonging to the right half.</span>
+        <span class="hljs-variable language_">self</span>.right_half = []
+        
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">self, num: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-literal">None</span>:
+        <span class="hljs-comment"># If 'num' is less than or equal to the max of 'left_half', it belongs to the</span>
+        <span class="hljs-comment"># left half.</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.left_half <span class="hljs-keyword">or</span> num &lt;= -<span class="hljs-variable language_">self</span>.left_half[<span class="hljs-number">0</span>]:
+            heapq.heappush(<span class="hljs-variable language_">self</span>.left_half, -num)
+            <span class="hljs-comment"># Rebalance the heaps if the size of the 'left_half' exceeds the size of</span>
+            <span class="hljs-comment"># the 'right_half' by more than one.</span>
+            <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>.left_half) &gt; <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>.right_half) + <span class="hljs-number">1</span>:
+                heapq.heappush(<span class="hljs-variable language_">self</span>.right_half, -heapq.heappop(<span class="hljs-variable language_">self</span>.left_half))
+        <span class="hljs-comment"># Otherwise, it belongs to the right half.</span>
+        <span class="hljs-keyword">else</span>:
+            heapq.heappush(<span class="hljs-variable language_">self</span>.right_half, num)
+            <span class="hljs-comment"># Rebalance the heaps If 'right_half' is larger than 'left_half'.</span>
+            <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>.left_half) &lt; <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>.right_half):
+                heapq.heappush(<span class="hljs-variable language_">self</span>.left_half, -heapq.heappop(<span class="hljs-variable language_">self</span>.right_half))
+        
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_median</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">float</span>:
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>.left_half) == <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>.right_half):
+            <span class="hljs-keyword">return</span> (-<span class="hljs-variable language_">self</span>.left_half[<span class="hljs-number">0</span>] + <span class="hljs-variable language_">self</span>.right_half[<span class="hljs-number">0</span>]) / <span class="hljs-number">2.0</span>
+        <span class="hljs-keyword">return</span> -<span class="hljs-variable language_">self</span>.left_half[<span class="hljs-number">0</span>]
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong></p>
+<ul>
+  <li>The time complexity of <code>add</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(\log(n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the number of values added to the data structure. This is because we first push a number to one of the heaps, which takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(\log(n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span> time. Then, if rebalancing is required, we also pop from one heap and push to the other, where both operations also take <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(\log(n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span> time.</li>
+  <li>The time complexity of <code>get_median</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> because accessing the top element of a heap takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time.</li>
+</ul>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because the two heaps together store <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> elements.</p>
+<p><em>Note: this explanation refers to the two middle values as "median values" to keep things simple. However, it’s important to understand that these two values aren’t technically “medians,” as there's only ever one median. These are just the two values used to calculate the median.</em></p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

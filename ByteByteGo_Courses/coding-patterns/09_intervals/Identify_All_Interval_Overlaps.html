@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Identify All Interval Overlaps</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Identify All Interval Overlaps</h1>
+</div>
+
+<div>Return an array of <strong>all overlaps</strong> between two arrays of intervals; <code>intervals1</code> and <code>intervals2</code>. Each individual interval array is sorted by start value, and contains no overlapping intervals within itself.Example:<img src="data:image/webp;base64,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" alt="Image represents a visualization of interval intersection.  A horizontal number line spans from 1 to 10, marked with integer values. Above the number line, two sets of intervals are shown, labeled &#x27;intervals1:&#x27; and &#x27;intervals2:&#x27;.  &#x27;intervals1:&#x27; contains two gray line segments; the first extends from approximately 1.5 to 4.5, and the second from approximately 5.5 to 6.5. &#x27;intervals2:&#x27; shows three gray line segments; the first from approximately 2 to 7, the second from approximately 8 to 9.5, and the third from approximately 9 to 9.5. Below the number line, labeled &#x27;intersections:&#x27;, are three orange line segments representing the intersections of the intervals above. The first orange segment spans from approximately 2 to 4.5, corresponding to the overlap between the first segment of &#x27;intervals1&#x27; and the first segment of &#x27;intervals2&#x27;. The second orange segment extends from approximately 5.5 to 6.5, showing the overlap between the second segment of &#x27;intervals1&#x27; and the first segment of &#x27;intervals2&#x27;. The third orange segment is a short line at approximately 9, representing the intersection of the second segment of &#x27;intervals2&#x27; and the third segment of &#x27;intervals2&#x27;.  Dashed vertical lines connect the endpoints of the intervals to the number line for clarity." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: intervals1 = [[<span class="hljs-number">1</span>, <span class="hljs-number">4</span>], [<span class="hljs-number">5</span>, <span class="hljs-number">6</span>], [<span class="hljs-number">9</span>, <span class="hljs-number">10</span>]],
+       intervals2 = [[<span class="hljs-number">2</span>, <span class="hljs-number">7</span>], [<span class="hljs-number">8</span>, <span class="hljs-number">9</span>]]
+Output: [[<span class="hljs-number">2</span>, <span class="hljs-number">4</span>], [<span class="hljs-number">5</span>, <span class="hljs-number">6</span>], [<span class="hljs-number">9</span>, <span class="hljs-number">9</span>]]
+</code>Constraints:
+
+For every index <code>i</code> in <code>intervals1</code>, <code>intervals1[i].start &lt; intervals1[i].end</code>.
+
+
+For every index <code>j</code> in <code>intervals2</code>, <code>intervals2[j].start &lt; intervals2[j].end</code>.
+
+</div>
+
+<h2>Intuition</h2>
+<p>We’re given two arrays of intervals, each containing non-overlapping intervals. This implies an overlap can only occur between an interval from the first array and an interval from the second array.</p>
+<p>Let’s start by learning how to identify an overlap between two overlapping intervals.</p>
+<p><strong>Identifying the overlap between two overlapping intervals</strong><br/>
+We know from the <em>Merge Overlapping Intervals</em> problem that two intervals, A and B, <strong>overlap when <code>A.end ≥ B.start</code>, assuming we know A starts before B</strong>. Let’s have a look at a couple of examples which each contain two overlapping intervals that match this condition:</p>
+<p>To extract the overlap between these two overlapping intervals, we’ll need to identify when it starts and ends.</p>
+<ul>
+  <li>The overlap starts at the furthest start point, which is always <code>B.start</code>.</li>
+  <li>The overlap ends at the earliest end point (<code>min(A.end, B.end)</code>).</li>
+</ul>
+<p>Therefore, when two intervals overlap, their overlap is defined by the range <strong>[<code>B.start</code>, <code>min(A.end, B.end)</code>]</strong>. Remember that in all these cases, interval A always starts first.</p>
+<p><strong>Identifying all overlaps</strong><br/>
+Now, let’s return to the two arrays of intervals. Consider this example:</p>
+<p>Let’s start by considering the first interval from each array:</p>
+<p>To check if these intervals overlap, we’ll need to identify which interval between <code>intervals1[i]</code> and <code>intervals2[j]</code> starts first, so we can assign that interval as interval A and the other as interval B. The code snippet for this is provided below:</p>
+<pre><code class="hljs language-python"><span class="hljs-comment"># Set A to the interval that starts first and B to the other interval.</span>
+<span class="hljs-keyword">if</span> intervals1[i].start &lt;= intervals2[j].start:
+    A, B = intervals1[i], intervals2[j]
+<span class="hljs-keyword">else</span>:
+    A, B = intervals2[j], intervals1[i]
+</code></pre>
+<p>In this example, <code>intervals1[i]</code> starts first:</p>
+<p>A and B overlap when <code>A.end ≥ B.start</code>, which is true here. Since they overlap, let’s record their overlap: [<code>B.start</code>, <code>min(A.end, B.end)</code>]:</p>
+<p>Now that we’ve identified the overlap between those two intervals, let’s move on to the next pair by advancing the pointer at one of the interval arrays. Since <code>intervals1[i]</code> ends before <code>intervals2[j]</code>, we know that <code>intervals1[i]</code> won’t overlap with any more intervals from the <code>intervals2</code> array, so let’s increment the <code>intervals1</code> pointer (<code>i</code>) to move to the next interval in this array:</p>
+<p>Note, we use <code>intervals1[i]</code> and <code>intervals2[j]</code> instead of A and B since we don’t know which interval array A or B belongs to.</p>
+<p>We’ve now identified a process that allows us to identify and record all overlaps while traversing the arrays of intervals. For the pair of intervals being considered at <code>i</code> and <code>j</code>:</p>
+<ol>
+  <li>Set A as the interval that starts first, and B as the other interval.</li>
+  <li>Check if <code>A.end ≥ B.start</code> to see if these intervals overlap. If they do, record the overlap as [<code>B.start</code>, <code>min(A.end, B.end)</code>].</li>
+  <li>Whichever interval ends first, advance its corresponding pointer to move to the next interval.</li>
+</ol>
+<p>Continue to apply these steps until either <code>i</code> or <code>j</code> have passed the end of their array. Once this happens, we know there won’t be any more overlapping intervals.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/intervals/identify-all-interval-overlaps" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+<span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> Interval
+   
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">identify_all_interval_overlaps</span>(<span class="hljs-params">intervals1: <span class="hljs-type">List</span>[Interval], intervals2: <span class="hljs-type">List</span>[Interval]</span>) -&gt; <span class="hljs-type">List</span>[Interval]:
+   overlaps = []
+   i = j = <span class="hljs-number">0</span>
+   <span class="hljs-keyword">while</span> i &lt; <span class="hljs-built_in">len</span>(intervals1) <span class="hljs-keyword">and</span> j &lt; <span class="hljs-built_in">len</span>(intervals2):
+       <span class="hljs-comment"># Set A to the interval that starts first and B to the other interval.</span>
+       <span class="hljs-keyword">if</span> intervals1[i].start &lt;= intervals2[j].start:
+           A, B = intervals1[i], intervals2[j]
+       <span class="hljs-keyword">else</span>:
+           A, B = intervals2[j], intervals1[i]
+       <span class="hljs-comment"># If there's an overlap, add the overlap.</span>
+       <span class="hljs-keyword">if</span> A.end &gt;= B.start:
+           overlaps.append(Interval(B.start, <span class="hljs-built_in">min</span>(A.end, B.end)))
+       <span class="hljs-comment"># Advance the pointer associated with the interval that ends first.</span>
+       <span class="hljs-keyword">if</span> intervals1[i].end &lt; intervals2[j].end:
+           i += <span class="hljs-number">1</span>
+       <span class="hljs-keyword">else</span>:
+           j += <span class="hljs-number">1</span>
+   <span class="hljs-keyword">return</span> overlaps
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>identify_all_interval_overlaps</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n+m)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span> where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> are the lengths of <code>intervals1</code> and <code>intervals2</code>, respectively. This is because we traverse each interval in both arrays exactly once.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>. Note that the overlaps array is not considered because space complexity is only concerned with extra space used and not space taken up by the output.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

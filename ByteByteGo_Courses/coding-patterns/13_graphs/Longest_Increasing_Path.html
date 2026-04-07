@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Longest Increasing Path</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Longest Increasing Path</h1>
+</div>
+
+<div>Find the <strong>longest strictly increasing path</strong> in a matrix of positive integers. A path is a sequence of cells where each one is 4-directionally adjacent (up, down, left, or right) to the previous one.Example:<img src="data:image/webp;base64,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" alt="Image represents a 3x3 grid, visually similar to a Sudoku grid, with numerical values (1, 3, 4, 5, 7, 8, 9, 2, 4) placed within its cells.  The grid is labeled with row and column indices (0, 1, 2) along its top and left side, respectively.  A path is highlighted, visually represented by a peach-colored fill encompassing specific cells (containing 1, 3, 4, 5, 8), and orange arrows indicate the direction of movement along this path. The path starts at cell (0,0) with the value 1, moves down to cell (1,0) with the value 3, then right to cell (1,1) with the value 4, then up to cell (0,1) with the value 5, and finally right to cell (0,2) with the value 8. The remaining cells (containing 7, 9, 2, 4) are not part of the highlighted path." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Output: <span class="hljs-number">5</span>
+</code></div>
+
+<h2>Intuition</h2>
+<p>In this problem, we’re tasked with finding the longest strictly increasing path. Note, “strictly” means the path cannot include any two cells of equal value.</p>
+<p>From any cell, we can move to a neighboring cell if that neighbor has a larger value than the current cell. We can map this relationship between cells as nodes in a graph, with edges representing moves from one cell to a higher-value neighboring cell:</p>
+<p>Upon closer inspection, we notice this is a <strong>directed acyclic graph</strong> (DAG). Let’s break down what this means:</p>
+<ol>
+  <li>The graph is directed because we can go from a smaller cell to a larger one, but not the other way around.</li>
+  <li>The graph is acyclic because it’s not possible to return to a smaller, previous value in the path because the path only extends to larger cells.</li>
+</ol>
+<p>This highlights that finding the longest increasing path in a matrix is effectively the same as <strong>finding the longest path in a DAG</strong>.</p>
+<p>With this in mind, let’s figure out how to traverse the matrix.</p>
+<p><strong>Traversing the matrix</strong><br/>
+One strategy is to find the length of the longest path that starts at each cell and return the maximum of these lengths. To do this, we need a way to explore all paths which extend from each cell, and return the longest one. Many traversal algorithms allow us to do this. In this explanation, we use DFS since it has a slightly simpler implementation for finding the longest path.</p>
+<p>Let’s see how this works over an example. Start by performing DFS at the first cell, (0, 0):</p>
+<p>To determine the longest path starting from this cell, we need to explore its higher-value neighboring cells. By making a DFS call to each of these larger neighbors, we can find the lengths of the paths that start from them:</p>
+<p>The largest path starting at cell (0, 0) will be equal to whichever of these DFS calls returns a larger path, plus 1 to include cell (0, 0) itself.</p>
+<p>Note that since this matrix resembles a DAG, <strong>we don’t need to mark cells as visited</strong>, since it’s not possible to cycle back to previously visited cells.</p>
+<p>The pseudocode for finding the length of the longest path starting at a given cell is provided below:</p>
+<pre><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">dfs</span>(<span class="hljs-params">cell</span>):
+    max_path = <span class="hljs-number">1</span>
+    <span class="hljs-keyword">for</span> each neighbor of the current cell:
+        <span class="hljs-keyword">if</span> value of neighbor &gt; value of cell:
+            max_path = <span class="hljs-built_in">max</span>(max_path, dfs(neighbor) + <span class="hljs-number">1</span>)
+    <span class="hljs-keyword">return</span> max_path
+</code></pre>
+<p>To get the final result, we just need to call DFS for every cell in the matrix, ensuring we find the lengths of the longest paths starting from each cell. The maximum of these lengths is equal to the length of the longest increasing path.</p>
+<p>An important thing to notice is that it’s possible for DFS to be called on the same cell multiple times. We can see this below, where we call DFS on cell (2, 1) on three different occasions:</p>
+<p>After we first calculate the longest path starting at a certain cell, we don’t need to calculate it again for that cell. This suggests we should use <strong>memoization</strong>: by storing the DFS result of each cell, we can just return the saved result whenever a DFS call is made to that cell again.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/graphs/longest-increasing-path" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">longest_increasing_path</span>(<span class="hljs-params">matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>) -&gt; <span class="hljs-built_in">int</span>:
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> matrix:
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
+    res = <span class="hljs-number">0</span>
+    m, n = <span class="hljs-built_in">len</span>(matrix), <span class="hljs-built_in">len</span>(matrix[<span class="hljs-number">0</span>])
+    memo = [[<span class="hljs-number">0</span>] * n <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m)]
+    <span class="hljs-comment"># Find the longest increasing path starting at each cell. The maximum of these is</span>
+    <span class="hljs-comment"># equal to the overall longest increasing path.</span>
+    <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m):
+        <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+            res = <span class="hljs-built_in">max</span>(res, dfs(r, c, matrix, memo))
+    <span class="hljs-keyword">return</span> res
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">dfs</span>(<span class="hljs-params">r: <span class="hljs-built_in">int</span>, c: <span class="hljs-built_in">int</span>, matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]], memo: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>):
+    <span class="hljs-keyword">if</span> memo[r][c] != <span class="hljs-number">0</span>:
+        <span class="hljs-keyword">return</span> memo[r][c]
+    max_path = <span class="hljs-number">1</span>
+    dirs = [(-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>), (<span class="hljs-number">1</span>, <span class="hljs-number">0</span>), (<span class="hljs-number">0</span>, -<span class="hljs-number">1</span>), (<span class="hljs-number">0</span>, <span class="hljs-number">1</span>)]
+    <span class="hljs-comment"># The longest path starting at the current cell is equal to the longest path of</span>
+    <span class="hljs-comment"># its larger neighboring cells, plus 1.</span>
+    <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> dirs:
+        next_r, next_c = r + d[<span class="hljs-number">0</span>], c + d[<span class="hljs-number">1</span>]
+        <span class="hljs-keyword">if</span> is_within_bounds(next_r, next_c, matrix) <span class="hljs-keyword">and</span> matrix[next_r][next_c] &gt; matrix[r][c]:
+            max_path = <span class="hljs-built_in">max</span>(max_path, <span class="hljs-number">1</span> + dfs(next_r, next_c, matrix, memo))
+    memo[r][c] = max_path
+    <span class="hljs-keyword">return</span> max_path
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">is_within_bounds</span>(<span class="hljs-params">r: <span class="hljs-built_in">int</span>, c: <span class="hljs-built_in">int</span>, matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>) -&gt; <span class="hljs-built_in">bool</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> &lt;= r &lt; <span class="hljs-built_in">len</span>(matrix) <span class="hljs-keyword">and</span> <span class="hljs-number">0</span> &lt;= c &lt; <span class="hljs-built_in">len</span>(matrix[<span class="hljs-number">0</span>])
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>longest_increasing_path</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m\cdot n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> denotes the number of rows, and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the number of columns. This is because each cell of the matrix is visited at most twice: once in the <code>longest_increasing_path</code> function, and during DFS where each cell is visited at most once due to memoization.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m\cdot n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> primarily due to the recursive call stack during DFS, and the memoization table, both of which can grow to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>⋅</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m\cdot n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4445em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> in size.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

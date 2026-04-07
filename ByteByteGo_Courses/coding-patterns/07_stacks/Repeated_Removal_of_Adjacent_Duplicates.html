@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repeated Removal of Adjacent Duplicates</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Repeated Removal of Adjacent Duplicates</h1>
+</div>
+
+<div>Given a string, continually perform the following operation: <strong>remove a pair of adjacent duplicates</strong> from the string. Continue performing this operation until the string no longer contains pairs of adjacent duplicates. Return the final string.Example 1:<img src="data:image/webp;base64,UklGRioHAABXRUJQVlA4WAoAAAAwAAAAWAIAEwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIbwIAAAE/oJCNJDi4BM8dwZjcRURoDfxBjrPtceP8CYdSO0fwEQgIttqsPWeR2QowQrYCBP7f+eXQ4kdnX4qI/jNs2zYMvdVI8on8eWTtWcv4H53Dj+Et76KYOC8RZ5KL6UxxEcmSLnokOT1zLopzi+eHKhfTmeIikqW4iybb7PC57qLRiogAgKUogI6TAVAWAIEzAjAcBSxFAdgG7z5XZQCUBUCgeACp/Xl9qPEAehGRk0geKUcjeaR4HGWizEY8DAWj046SguSRchTJY0u91srjKBNlNuJhqGcQj/Z6V60cjLc393Vk73OirKFlTUoi60iBlTmx6yXQmFpDy3rD3rW7dzlsm53MgeU52bZQ4lDe5kAJIp42NyAq2xa6HcisfSOifNj5hymThulL6bFCee5lAqenjSIOIiJvqoYpNyBKee5lAse9TFp6vF/NBdwpoQI0p0DVgjvF1lwA7PNTPfsFDu6UsGuqZ7+Wb0gNK6dh2B++HY/TcGllGp/vxbHy3NznwK49yjUzdCy13LoclpEdfGAGH9rWzNCxg1p2nftyfech3VjCdU/4eiswWUcW7HVPyz1r2RBZwnXf5nWbd7OOLNjrntMVp+a82+bdOJibJ4kD/ShnSUYc93Sy0hwsSzvGnMQpr+z9LMmI455OVkbxzGhV9n5wEjEi4hE1UhySJo4HIsh1BDkgahImC6ImU1WskyZe2fvxQAQlpwhuWBHR+pRdSUbSXkQkI/gNk4w0MG4+ige6TPGKZCg+I1mhkpF8uNv95qN4oMsUD5yWQut9N+XXFatB2DjhY9izke8lTpryvHU9hj0bYWOkPYet63EiAFZQOCDEAgAAkBgAnQEqWQIUAD4pEIZCIaELRlJQDAFCWVu/Hx7ABmmuu/XdABTAdUb/AaID8QPQA/gHtmfoB5oGsAfpB6Kv8A6x7+Q5on/O+yX+yfgx1A3aQ9W+zePe4NjjPwBiu3+55WXwAadU/9qiqzptS5y36s/ifuRACmA8fdKNPdTZxqjYG1wkLl5W53Xka25aX+ruIaFacPgzi4Wr3IytG75fJ3DWEZJfq2+w8y+qRRmC4fxhrZniV+6ZnDn7Q3FS4Vzgzi4fzN1szxK/dMzQAAD+/4YV4lq8/ukNQk9R1cVTMfdknrtc4FZGWTei3qLxzS4Jk3LySA49pVBMqhNJyZnxn6RVshorgX/xFWyGitrLz/dcKWpZiRs3VofNzf/GU6T9oBhOiyFDq3ChR2dilUQSmzAxtoncJMTZKIUYhem9BFEYFWHMvjv4ttfXo8pwTGha000Ivn2W3Nb97UXuwHKuiE2VPKWCQ8jIB48G6R69s1YlfHgL8PfyOt/1cLM+8wVbHEPLjqQAXoISzAmLT0s+PQgnc3rcionCE4ltDHBWcBBVgUYAOi7yY52Tl8kOrcQ1js7PUb1QjTTujysZacW6pvNoLbIv6LwTeIey9tf/o98ysZkDweNUVVGS3SAUeSJODegzCwIAUdGTC1ppoRfPstua8dd9Re7Acq6IaxU5ULu71MIApq1jzCAeDrWPDtteA5PQ5j0FxredLVOnFQMe4QybxsM+ZWFRS5xfATAHZGV1eHQEBH0RO9VCt+kVbIaK4F/8RVshora6WJ/fgfMIJMxDjZRlH9BLcAIB3fJ+mTTRVy7z+WLw/jkJZOoeNN8fOdbdv05qXz6WimeZux3llQTwN2ujHXtm2SKzVbu/VPAGxll2x38y1mNEv4LLAhw9tYOdOdJOtSSRLpd0AzfLdnxWLGav5+wjMRO1gAAAAAAAAAAA" alt="Image represents a sequence of data transformations or operations.  The sequence begins with two &#x27;a&#x27;s connected by a red horizontal line, followed by a &#x27;c&#x27;. This is then followed by an &#x27;a&#x27; and two &#x27;b&#x27;s connected by a red horizontal line, followed by another &#x27;a&#x27;. A grey arrow indicates a transformation from this first segment to a second segment. The second segment starts with a &#x27;c&#x27;, followed by two &#x27;a&#x27;s connected by a red horizontal line, and finally another &#x27;c&#x27;. A grey arrow indicates the flow from the first segment to the second, suggesting a transformation or mapping from the input (the first segment) to the output (the second segment). The red lines visually highlight groups of elements undergoing a specific operation or transformation, while the grey arrows represent the overall transformation process between the input and output.  The letters &#x27;a&#x27;, &#x27;b&#x27;, and &#x27;c&#x27; likely represent data elements or variables." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: s = <span class="hljs-string">'aacabba'</span>
+Output: <span class="hljs-string">'c'</span>
+</code>Example 2:<img src="data:image/webp;base64,UklGRhQFAABXRUJQVlA4WAoAAAAwAAAAVwEADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBILwEAAAE/oJCNJDi4BM8dwZjcRURoDfwBjmvbcZsHkJJaL8FLIOCpzaSenttZbAUQ5Ns/bOd/JkzqiP5PAGo9Rb3dwIOOGxgaFXfNoSm0sQrXHJoqRJIrlZHkUcWTDIXeepkjSVODq8EpqJwMPI2Gm8GzKYOdlS2B3NYAgKPKo85jbgu99aLH2FUCNFq50YpdIeysxriqgtvuldx2z4eJyG33udhbL5vt02/jDz1KXCYp8nu5lWSSf9IpzGbpBxiB52IWf9tTNgANFHMD5AbARJI6IIrkbz2E4xEYa+AIOB02AB/EqQVSsZ2VxA6IdTBIOrlFVOpwYqm3HqIVPGuAHHLIKikMzCqRA1OpnRWdOHCogmdodDzZJhVPLsdCbz3kiYdTFeCgbqBtUHpjFWDwX52iygBWUDgg7gEAADAMAJ0BKlgBEAA+KRSHQyGhCXUCOAwBQlAEIMLJeB1d/6B7APtm0gH8A/lf9m/qvYA3gD0AP0l9Ij9Y/gZ/bz0UWYAtQTMG6oDLa+0wMfKqe8Uy2RbcAmmIvHvzQl3E91ZIaJ5dss0TyQAA/vypD/11GxYy2TJh5wRUvQ19v2ZpAVgP8Rqf4P1CP8lgcIeWd7jA+5zEdrY8bYmgTj1hcl9Wf/tIfBrjeNXPOT+DfzRW44Zj8TmB8hs//+kVdUL1pncOf/dq/z+Ux4lt8j//pFXUQdaZ2pnxOASN3mlnford8spk4VNZ/qt+T20du+e2hks129mF7klLi9RPsu43upsYYeneHDEObGVmeohvQP3g3TTNZgj5wf1hnSzj5V857iaYJjJNZlMeZYwFPNANAPCYslB/+RLl9FfxCNsGhiTN/gtzVxL8d7uuf4P1jfyrcnLnvlW7mVB8192X12ItTp02TR4jQ9HZb2FD9NQXP919fCp8TU4ty/A1IR1ILMC6SxB1B9si25j2L0XBz0V6aJ84rvqaaqBLSGg8TWB86QwjUcf5wfA2N/N79fKB4MhnGP3t2AJfCWdS3nAj1iKC9vAxdUev6ud572ayQ1TeVZE84GoehiPzKmQ5mU7efJIb407VId/+9f4t9MAAAAAA" alt="Image represents a simple data flow diagram illustrating a data transformation or processing step.  The diagram shows two instances of the variable &#x27;a&#x27; connected by a thick red horizontal line, suggesting a direct, possibly in-place, modification or operation on &#x27;a&#x27;. This is followed by a grey arrow pointing to another instance of &#x27;a&#x27;, indicating that the modified &#x27;a&#x27; (from the red line connection) is then passed on or transformed into a new, potentially different, &#x27;a&#x27;. The absence of labels on the connections or the &#x27;a&#x27; variables themselves prevents a more precise description of the specific operation or transformation involved, but the visual structure clearly shows a sequential process where data (&#x27;a&#x27;) undergoes a transformation and is then passed along." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: s = <span class="hljs-string">'aaa'</span>
+Output: <span class="hljs-string">'a'</span>
+</code></div>
+
+<h2>Intuition</h2>
+<p>One challenge in solving this problem is how we handle characters which aren’t currently adjacent duplicates but will be in the future.</p>
+<p>A solution we can try is to iteratively <strong>build the string character by character</strong> and immediately remove each pair of adjacent duplicates that get formed as we’re building the string.</p>
+<p>It’s also possible an adjacent duplicate may be formed after another adjacent duplicate gets removed. For example, with the string “abba”, removing “bb” will result in “aa”. Building the string character by character ensures the formation of “aa” gets noticed and removed. To better understand how this works, let’s dive into an example.</p>
+<p>Consider the following string:</p>
+<p>At the second ‘a’, we notice that adding it would result in an adjacent duplicate forming (i.e., “aa”). So, let’s remove this duplicate before adding any new characters. We’ll do this for all adjacent duplicates we come across as we build the string:</p>
+<p>Once the smoke clears, the resulting string we were building ends up just being “c”, which is the expected output.</p>
+<p>Now that we know how this strategy works, we just need a data structure that'll allow us to:</p>
+<ol>
+  <li>Add letters to one end of it.</li>
+  <li>Remove letters from the same end.</li>
+</ol>
+<p>The <strong>stack</strong> data structure is a strong option because it allows for both operations.</p>
+<p>As we push characters onto the stack, the top of the stack will represent the previous/most recently added character. Given this, to mimic the process of building the “new string” as shown in the example, we:</p>
+<ul>
+  <li>Push the current character onto the stack if it’s different from the character at the top (i.e., not a duplicate character.)</li>
+  <li>Pop off the character at the top of the stack if it's the same as the current character (i.e., a duplicate.)</li>
+</ul>
+<p>Once all characters have been processed, the last thing to do is return the content of the stack as a string, since the final state of the stack will contain all characters that weren’t removed.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/stacks/repeated-removal-of-adjacent-duplicates" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">repeated_removal_of_adjacent_duplicates</span>(<span class="hljs-params">s: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
+    stack = []
+    <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> s:
+        <span class="hljs-comment"># If the current character is the same as the top character on the stack,</span>
+        <span class="hljs-comment"># a pair of adjacent duplicates has been formed. So, pop the top character</span>
+        <span class="hljs-comment"># from the stack.</span>
+        <span class="hljs-keyword">if</span> stack <span class="hljs-keyword">and</span> c == stack[-<span class="hljs-number">1</span>]:
+            stack.pop()
+        <span class="hljs-comment"># Otherwise, push the current character onto the stack.</span>
+        <span class="hljs-keyword">else</span>:
+            stack.append(c)
+    <span class="hljs-comment"># Return the remaining characters as a string.</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>.join(stack)
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of the <code>repeated_removal_of_adjacent_duplicates</code> function is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the length of the string. This is because we traverse the entire string, and we perform a join operation of up to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> characters in the stack. The stack <code>push</code> and <code>pop</code> operations contribute <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because the stack can store at most <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> characters.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

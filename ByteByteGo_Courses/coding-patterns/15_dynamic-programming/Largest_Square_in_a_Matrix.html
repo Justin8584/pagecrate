@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Largest Square in a Matrix</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Largest Square in a Matrix</h1>
+</div>
+
+<div class="figure-wrap">
+  <img src="data:image/webp;base64,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" alt="Image represents a 5x5 matrix, visually depicted as a grid of cells, each containing a binary digit (either &#x27;0&#x27; or &#x27;1&#x27;).  The matrix is enclosed within a bold black border.  The cells are arranged in five rows and five columns. A rectangular region encompassing the bottom three rows and the first three columns is highlighted with a light peach or orange fill.  No arrows or other explicit connections between cells are shown; the information flow is implicitly represented by the spatial arrangement of the binary digits within the matrix.  The numerical values within each cell are simply data points, with no further labels, URLs, or parameters associated with them. The overall structure suggests a representation of data, possibly used as input or output for a coding pattern algorithm, where the highlighted region might indicate a specific area of interest or a subset of the data." style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+  <span class="figure-caption">Determine thearea of the largest squareof 1&#x27;s in a binary matrix.</span>
+</div>
+
+<h2>Intuition</h2>
+<p>The brute force solution to this problem involves examining every possible submatrix within the given matrix to determine if it forms a square of 1s. This can be done by treating each cell as a potential top-left corner of a square, and checking all possible squares that extend from that cell. For each of these squares, we'll need to verify that all cells within the square are 1's. Repeating this process for each cell allows us to find the largest square. This process is quite inefficient, so let's explore alternatives.</p>
+<p>One important thing to understand is that squares contain smaller squares inside them. This indicates that subproblems might exist in this problem. Let's see if we can find what the subproblems are and how we can use them. Consider the following 6x6 matrix containing a 4×4 square of 1s:</p>
+<p>Let's say we're at cell (4, 4). We know just by looking at the matrix that a square of length 4 with all 1s ends at this cell, but what information would we need algorithmically to determine that this 4x4 exists? A key observation here is that there are three 3×3 squares around this cell:</p>
+<ul>
+  <li>one that ends directly to the left of the current cell (4, 3).</li>
+  <li>one that ends at the top-left diagonal of the current cell (3, 3).</li>
+  <li>one that ends directly above the current cell (3, 4).</li>
+</ul>
+<p>This more clearly highlights the existence of subproblems: the length of a square that ends at the current cell depends on the lengths of the squares that end at its left, top, and top-left neighboring cells.</p>
+<p>Let's consider a slightly different scenario, where this time, the input matrix contains one less 1, meaning there's no longer a 4×4 square of 1s:</p>
+<p>Let's see if our strategy of checking the three neighboring squares around the current cell (4, 4) changes at all here. Keep in mind that this time, the square that ends directly to the left of the current cell only has a length of 2. This means the square that ends at the current cell can, at most, have a length of 3, with 1 unit from the current cell and 2 units from the smallest neighboring square:</p>
+<p>This indicates that the length of the current square is restricted by the smallest of its three neighboring squares. We can express this as a recursive formula where <code>matrix[i][j]</code> represents the value of the current cell, (<code>i</code>, <code>j</code>):</p>
+<blockquote>
+<code>if matrix[i][j] == 1: max_square(i, j) = 1 + min(max_square(i - 1, j), max_square(i - 1, j - 1), max_square(i, j - 1))</code>
+</blockquote>
+<p>We now have all the information we need. Given this problem has an <strong>optimal substructure</strong>, we can translate the above recurrence relation directly into a DP formula.</p>
+<blockquote>
+<code>if matrix[i][j] == 1: dp[i][j] = 1 + min(dp[i - 1][j], dp[i - 1][j - 1], dp[i][j - 1])</code>
+</blockquote>
+<p>Now, let's think about what the base cases should be.</p>
+<p><strong>Base cases</strong><br/>
+We know <code>dp[0][0]</code> should be 1 if <code>matrix[0][0]</code> is 1 since the top-left cell can only have a square of length 1.</p>
+<p>What other base cases are there? Consider row 0 and column 0 of the matrix. These are special because the length of a square ending at any of these cells is at most 1.</p>
+<p>So, for the base cases, we can set all cells in row 0 and column 0 to 1 in our DP table, provided those cells in the original matrix are also 1:</p>
+<p><strong>Populating the DP table</strong><br/>
+We populate the DP table starting from the smallest subproblems (excluding the base cases). Specifically, with row 0 and column 0 populated, we begin by populating cell (1, 1) and work our way down to the last cell (<code>m - 1</code>, <code>n - 1</code>) row by row, where <code>m</code> and <code>n</code> are the dimensions of the matrix:</p>
+<p>The largest value in the DP table represents the length of the largest square in our matrix. Therefore, we just need to track the maximum DP value (<code>max_len</code>) as we populate the table. Once done, we just return <code>max_len</code>^2, which represents the area of the largest square.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/dynamic-programming/largest-square-in-a-matrix" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<p>In this implementation, it's possible to merge the base case handling with the code which populates the DP table. However, in an interview setting, code is often easier to understand when the base cases are defined separately, which is why they are implemented separately here.</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">largest_square_in_a_matrix</span>(<span class="hljs-params">matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>) -&gt; <span class="hljs-built_in">int</span>:
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> matrix:
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
+    m, n = <span class="hljs-built_in">len</span>(matrix), <span class="hljs-built_in">len</span>(matrix[<span class="hljs-number">0</span>])
+    dp = [[<span class="hljs-number">0</span>] * n <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m)]
+    max_len = <span class="hljs-number">0</span>
+    <span class="hljs-comment"># Base case: If a cell in row 0 is 1, the largest square ending there has a</span>
+    <span class="hljs-comment"># length of 1.</span>
+    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+        <span class="hljs-keyword">if</span> matrix[<span class="hljs-number">0</span>][j] == <span class="hljs-number">1</span>:
+            dp[<span class="hljs-number">0</span>][j] = <span class="hljs-number">1</span>
+            max_len = <span class="hljs-number">1</span>
+    <span class="hljs-comment"># Base case: If a cell in column 0 is 1, the largest square ending there has</span>
+    <span class="hljs-comment"># a length of 1.</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m):
+        <span class="hljs-keyword">if</span> matrix[i][<span class="hljs-number">0</span>] == <span class="hljs-number">1</span>:
+            dp[i][<span class="hljs-number">0</span>] = <span class="hljs-number">1</span>
+            max_len = <span class="hljs-number">1</span>
+    <span class="hljs-comment"># Populate the rest of the DP table.</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, m):
+        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, n):
+            <span class="hljs-keyword">if</span> matrix[i][j] == <span class="hljs-number">1</span>:
+                <span class="hljs-comment"># The length of the largest square ending here is determined by</span>
+                <span class="hljs-comment"># the smallest square ending at the neighboring cells (left,</span>
+                <span class="hljs-comment"># top-left, top), plus 1 to include this cell.</span>
+                dp[i][j] = <span class="hljs-number">1</span> + <span class="hljs-built_in">min</span>(dp[i - <span class="hljs-number">1</span>][j], dp[i - <span class="hljs-number">1</span>][j - <span class="hljs-number">1</span>], dp[i][j - <span class="hljs-number">1</span>])
+            max_len = <span class="hljs-built_in">max</span>(max_len, dp[i][j])
+    <span class="hljs-keyword">return</span> max_len ** <span class="hljs-number">2</span>
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>largest_square_in_a_matrix</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m\cdot n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because each cell of the DP table is populated once.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m\cdot n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> since we're maintaining a 2D DP table that has <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>⋅</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m\cdot n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4445em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> elements.</p>
+
+<h2>Optimization</h2>
+<p>We can optimize our solution by realizing that, for each cell in the DP table, we only need to access the cell directly above it, the cell to its left, and the top-left diagonal cell.</p>
+<ul>
+  <li>To get the cell above it or the top-left diagonal cell, we only need access to the previous row.</li>
+  <li>To get the cell to its left, we just need to look at the cell to the left of the current cell in the same row we're populating.</li>
+</ul>
+<p>Therefore, we only need to maintain two rows:</p>
+<ul>
+  <li><code>prev_row</code>: the previous row.</li>
+  <li><code>curr_row</code>: the current row being populated.</li>
+</ul>
+<p>This effectively reduces the space complexity to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span>. Below is the optimized code:</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">largest_square_in_a_matrix_optimized</span>(<span class="hljs-params">matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>) -&gt; <span class="hljs-built_in">int</span>:
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> matrix:
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
+    m, n = <span class="hljs-built_in">len</span>(matrix), <span class="hljs-built_in">len</span>(matrix[<span class="hljs-number">0</span>])
+    prev_row = [<span class="hljs-number">0</span>] * n
+    max_len = <span class="hljs-number">0</span>
+    <span class="hljs-comment"># Iterate through the matrix.</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(m):
+        curr_row = [<span class="hljs-number">0</span>] * n
+        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+            <span class="hljs-comment"># Base cases: if we're in row 0 or column 0, the largest square ending</span>
+            <span class="hljs-comment"># here has a length of 1. This can be set by using the value in the</span>
+            <span class="hljs-comment"># input matrix.</span>
+            <span class="hljs-keyword">if</span> i == <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> j == <span class="hljs-number">0</span>:
+                curr_row[j] = matrix[i][j]
+            <span class="hljs-keyword">else</span>:
+                <span class="hljs-keyword">if</span> matrix[i][j] == <span class="hljs-number">1</span>:
+                      <span class="hljs-comment"># curr_row[j] = 1 + min(left, top-left, top)</span>
+                    curr_row[j] = <span class="hljs-number">1</span> + <span class="hljs-built_in">min</span>(curr_row[j - <span class="hljs-number">1</span>], prev_row[j - <span class="hljs-number">1</span>], prev_row[j])
+            max_len = <span class="hljs-built_in">max</span>(max_len, curr_row[j])
+        <span class="hljs-comment"># Update 'prev_row' with 'curr_row' values for the next iteration.</span>
+        prev_row, curr_row = curr_row, [<span class="hljs-number">0</span>] * n
+    <span class="hljs-keyword">return</span> max_len ** <span class="hljs-number">2</span>
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

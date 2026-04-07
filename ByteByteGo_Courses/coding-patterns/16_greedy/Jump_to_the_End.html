@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jump to the End</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Jump to the End</h1>
+</div>
+
+<div>You are given an integer array in which you're originally positioned at index 0. Each number in the array represents the <strong>maximum jump distance</strong> from the current index. Determine if it's possible to reach the end of the array.Example 1:<img src="data:image/webp;base64,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" alt="Image represents a sequence of numbers, [3, 2, 0, 2, 5], depicted within square brackets.  A green curved arrow originates from the number 3 at the beginning of the sequence and points to the number 2 near the middle.  Another smaller green curved arrow originates from the same initial 2 and points to the number 5 at the end of the sequence. These arrows suggest a connection or flow of information, possibly indicating a relationship or operation between the numbers 3 and 2, and separately between the number 2 and 5. The arrangement implies a linear data structure, possibly an array or list, with the arrows highlighting specific elements and their interactions within the context of a coding pattern, likely illustrating a selection or traversal process." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: nums = [<span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">5</span>]
+Output: <span class="hljs-literal">True</span>
+</code>Example 2:<img src="data:image/webp;base64,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" alt="Image represents two diagrams illustrating different scenarios of data flow or program execution. Each diagram shows a sequence of numbers, [2, 1, 0, 3], enclosed in square brackets.  In both diagrams, a grey curved arrow points from the &#x27;0&#x27; to the text &#x27;dead end,&#x27; indicating a termination point or a path that doesn&#x27;t continue further.  The key difference lies in the red arrows. In the first diagram, a single red curved arrow points from the &#x27;2&#x27; to the &#x27;0&#x27;, suggesting a direct transition or flow from &#x27;2&#x27; to &#x27;0&#x27;. In the second diagram, two red curved arrows originate from the &#x27;2&#x27;, one pointing to the &#x27;1&#x27; and the other to the &#x27;0&#x27;, illustrating a branching or conditional flow where &#x27;2&#x27; can lead to either &#x27;1&#x27; or &#x27;0&#x27; before potentially reaching the &#x27;dead end&#x27;.  The diagrams likely depict different control flows or execution paths within a program, possibly highlighting the concept of a single path versus multiple paths, or a decision point in the algorithm." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: nums = [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">3</span>]
+Output: <span class="hljs-literal">False</span>
+</code>Constraints:
+There is at least one element in <code>nums</code>.
+All integers in <code>nums</code> are non-negative integers.
+</div>
+
+<h2>Intuition</h2>
+<p>From any index <code>i</code> in the array, we can jump up to <code>nums[i]</code> positions to the right. This means the furthest index we can reach from any given index <code>i</code>, is <strong><code>i + nums[i]</code></strong>:</p>
+<p>If the array consisted entirely of positive numbers, jumping from index 0 to the last index would be straightforward, as there would always be a way to progress forward toward the last index. The challenge arises when we encounter a 0 in the array, as a 0 is effectively a dead end, since landing on it disallows any further movement.</p>
+<p>Consider the example below:</p>
+<p>Let’s think about this problem backward. Our destination is the last index, index 4, but let’s say we’ve already made it there. How did we reach this index? In this example, it’s possible to make it to index 4 from index 3:</p>
+<p>This means that if we find a way to reach index 3, we know for sure we can make it to index 4. The key observation here is that <strong>if we can reach the last index from any earlier index, this earlier index becomes our new destination</strong>.</p>
+<p>With this in mind, let’s go through this example in full, starting with the last index as our initial destination:</p>
+<p>To find earlier indexes that can reach the destination, let’s move backward through the array, starting at index 3. As we do this for each index, we check if we can reach the current destination from this index. If we can, this index becomes the new destination. We do this by checking if it's possible to jump to the destination from this index:</p>
+<blockquote>
+<code>if i + nums[i] ≥ destination</code>, we can jump to destination from index <code>i</code>.
+</blockquote>
+<p>With the destination at index 3, let’s continue moving backward through the array.</p>
+<p>Now, we’re at index 2. Below, we see we cannot reach the destination from index 2, so the destination is not updated.</p>
+<p>Continue with this logic for the remaining numbers in the array:</p>
+<p>Finally, we see that once we’ve finished iterating through each index, the destination is set to index 0. This means we've successfully found a way to jump to the end from index 0.</p>
+<p>Therefore, we <strong>return true when <code>destination == 0</code></strong>. Otherwise, we cannot reach the destination from index 0, so we return false.</p>
+<p>An interesting aspect of this approach is that as soon as we find an index <code>i</code> from where we can reach the destination, we update the destination to that index and assume that this is the correct decision:</p>
+<p>The thing is, there can sometimes be multiple indexes which can reach the destination. So, how do we know that choosing the first valid index we encounter from the right is the best choice?</p>
+<p>The key to understanding why is realizing that <strong>all the other indexes which can reach the destination can also reach this first valid index</strong>:</p>
+<p>Therefore, by choosing the first valid index, we effectively simplify our problem without missing any potential solutions.</p>
+<p>This is indicative of a <strong>greedy solution</strong>; since the greedy choice property is satisfied, we make the best immediate choice at each step as we move backward through the array (local optimums), hoping it leads to the overall solution (global optimum).</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/greedy/jump-to-the-end" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">jump_to_the_end</span>(<span class="hljs-params">nums: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]</span>) -&gt; <span class="hljs-built_in">bool</span>:
+    <span class="hljs-comment"># Set the initial destination to the last index in the array.</span>
+    destination = <span class="hljs-built_in">len</span>(nums) - <span class="hljs-number">1</span>
+    <span class="hljs-comment"># Traverse the array in reverse to see if the destination can be reached by</span>
+    <span class="hljs-comment"># earlier indexes.</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(nums) - <span class="hljs-number">1</span>, -<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>):
+        <span class="hljs-comment"># If we can reach the destination from the current index, set this index as</span>
+        <span class="hljs-comment"># the new destination.</span>
+        <span class="hljs-keyword">if</span> i + nums[i] &gt;= destination:
+            destination = i
+    <span class="hljs-comment"># If the destination is index 0, we can jump to the end from index 0.</span>
+    <span class="hljs-keyword">return</span> destination == <span class="hljs-number">0</span>
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>jump_to_the_end</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the length of the array. This is because we iterate through each element of <code>nums</code> in reverse order.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

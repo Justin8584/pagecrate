@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merge Overlapping Intervals</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Merge Overlapping Intervals</h1>
+</div>
+
+<div><strong>Merge</strong> an array of intervals so there are no overlapping intervals, and return the resultant merged intervals.Example:<img src="data:image/webp;base64,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" alt="Image represents a Gantt chart illustrating task scheduling.  A horizontal time axis is numbered from 1 to 8, representing time units. Three dark-grey horizontal bars represent different tasks. The topmost bar spans from 2.5 to 3.5. The middle bar extends from 1.5 to 4.5. The third bar runs from 6.5 to 7.5. A longer, bright-orange bar sits at the bottom, starting at 1 and ending at 5, indicating a longer-duration task. Another shorter orange bar starts at 6 and ends at 8, representing another task.  The grey bars represent shorter tasks that are potentially concurrent with the longer orange tasks, with some overlap and some separation in time.  The dotted vertical lines at points 1, 5, and 8 on the time axis may indicate milestones or significant points in the schedule." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: intervals = [[<span class="hljs-number">3</span>, <span class="hljs-number">4</span>], [<span class="hljs-number">7</span>, <span class="hljs-number">8</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">5</span>], [<span class="hljs-number">6</span>, <span class="hljs-number">7</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">4</span>]]
+Output: [[<span class="hljs-number">1</span>, <span class="hljs-number">5</span>], [<span class="hljs-number">6</span>, <span class="hljs-number">8</span>]]
+</code>Constraints:
+
+The input contains at least one interval.
+
+
+For every index <code>i</code> in the array, <code>intervals[i].start ≤ intervals[i].end</code>.
+
+</div>
+
+<h2>Intuition</h2>
+<p>There are two main challenges to this problem:</p>
+<ol>
+  <li>Identifying which intervals overlap each other.</li>
+  <li>Merging those intervals.</li>
+</ol>
+<p>Let's start by tackling the first challenge. Consider two intervals, A and B, where interval <strong>A starts before B</strong>. Below, we visualize the case when these two intervals don't overlap:</p>
+<p>The dashed line above shows that interval A ends before interval B starts, which eliminates the possibility of B overlapping A. This indicates that <strong>intervals A and B will never overlap when <code>A.end &lt; B.start</code></strong>.</p>
+<p>Now, consider a couple of cases where these two intervals do overlap:</p>
+<p>In these cases, we see that B starts before (or when) A ends (<code>A.end ≥ B.start</code>). In other words, some portion of B overlaps A since interval A hasn't ended before interval B starts. Therefore, <strong>intervals A and B overlap when <code>A.end ≥ B.start</code></strong>.</p>
+<p>We have now established the two cases that cover all overlapping and non-overlapping scenarios for two intervals, given interval A starts before interval B:</p>
+<ul>
+  <li>If <code>A.end &lt; B.start</code>, the intervals don't overlap.</li>
+  <li>If <code>A.end ≥ B.start</code>, the intervals overlap.</li>
+</ul>
+<p>To apply these conditions to any two intervals in the input, it's useful to have a way to identify which interval starts first. One idea is to <strong>sort the intervals by their start value</strong>, which will make it clear which one of each two adjacent intervals starts first.</p>
+<p><strong>Merging intervals</strong><br/>
+With the above logic in mind, let's tackle an example. Consider the following intervals:</p>
+<p>The first step is to sort these intervals by start value:</p>
+<p>To aid the explanation, let's represent the intervals visually:</p>
+<p>Let's add/merge each interval into a new array called merged, starting with the first one, which we can add to the merged array straight away as it's the first interval:</p>
+<p>After the first interval is added, we start the process of merging. Let's define A as the last interval in the merged array and B as the current interval in the input. This makes sense since the interval in the merged array (A) starts before or at the same time as B.</p>
+<p>We notice B starts before A ends, indicating an overlap. So, let's merge them:</p>
+<p>When merging A and B, we use the leftmost start value and the rightmost end value between them. Since A will always start before or at the same time as B, we always use <code>A.start</code> as the start point. This means we just need to <strong>identify the end point</strong>, which is the <strong>largest value between the end points of A and B</strong>:</p>
+<p>We can apply the same logic to the next interval:</p>
+<p>When we reach the fourth interval, we notice B starts after A ends, indicating there is no overlap.</p>
+<p>So, we just add it as a new interval to the merged array:</p>
+<p>The next interval, B, overlaps the last interval in the merged array, A, since B starts when A ends (<code>A.end == B.start</code>).</p>
+<p>So, let's merge A with B:</p>
+<p>After processing the last interval, we've successfully merged all intervals.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/intervals/merge-overlapping-intervals" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+<span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> Interval
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">merge_overlapping_intervals</span>(<span class="hljs-params">intervals: <span class="hljs-type">List</span>[Interval]</span>) -&gt; <span class="hljs-type">List</span>[Interval]:
+    intervals.sort(key=<span class="hljs-keyword">lambda</span> x: x.start)
+    merged = [intervals[<span class="hljs-number">0</span>]]
+    <span class="hljs-keyword">for</span> B <span class="hljs-keyword">in</span> intervals[<span class="hljs-number">1</span>:]:
+        A = merged[-<span class="hljs-number">1</span>]
+        <span class="hljs-comment"># If A and B don't overlap, add B to the merged list.</span>
+        <span class="hljs-keyword">if</span> A.end &lt; B.start:
+            merged.append(B)
+        <span class="hljs-comment"># If they do overlap, merge A with B.</span>
+        <span class="hljs-keyword">else</span>:
+            merged[-<span class="hljs-number">1</span>] = Interval(A.start, <span class="hljs-built_in">max</span>(A.end, B.end))
+    <span class="hljs-keyword">return</span> merged
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of merge_overlapping_intervals is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>l</mi><mi>o</mi><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(nlog(n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right: 0.01968em;">l</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right: 0.03588em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the number of intervals. This is due to the sorting algorithm. The process of merging overlapping intervals itself takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> time because we iterate over every interval.</p>
+<p><strong>Space complexity:</strong> The space complexity depends on the space used by the sorting algorithm. In Python, the built-in sorting algorithm, Tim sort, uses <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> space. Note that the merged array is not considered in the space complexity calculation because we're only concerned with extra space used, not space taken up by the output.</p>
+
+<h2>Interview Tip</h2>
+<p><em>Tip: Visualize intervals to uncover logic and edge cases.</em><br/>
+Managing intervals and handling edge cases is much easier when visualizing example inputs. Drawing examples also helps your interviewer follow along with your reasoning and understand your thought process.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

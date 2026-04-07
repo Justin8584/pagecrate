@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LRU Cache</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>LRU Cache</h1>
+</div>
+
+<div>Design and implement a data structure for the Least Recently Used (LRU) cache that supports the following operations:
+<code>LRUCache(capacity: int)</code>: Initialize an LRU cache with the specified capacity.
+<code>get(key: int) -&gt; int</code>: Return the value associated with a key. Return -1 if the key doesn't exist.
+<code>put(key: int, value: int) -&gt; None</code>: Add a key and its value to the cache. If adding the key would result in the cache exceeding its size capacity, <strong>evict the least recently used element</strong>. If the key already exists in the cache, update its value.
+Example:<code class="hljs language-python">Input: [
+  put(<span class="hljs-number">1</span>, <span class="hljs-number">100</span>),
+  put(<span class="hljs-number">2</span>, <span class="hljs-number">250</span>),
+  get(<span class="hljs-number">2</span>),
+  put(<span class="hljs-number">4</span>, <span class="hljs-number">300</span>),
+  put(<span class="hljs-number">3</span>, <span class="hljs-number">200</span>),
+  get(<span class="hljs-number">4</span>),
+  get(<span class="hljs-number">1</span>),
+],
+  capacity = <span class="hljs-number">3</span>
+Output: [<span class="hljs-number">250</span>, <span class="hljs-number">300</span>, -<span class="hljs-number">1</span>]
+</code>Explanation:<code class="hljs language-python">put(<span class="hljs-number">1</span>, <span class="hljs-number">100</span>)  <span class="hljs-comment"># cache is[1: 100]</span>
+put(<span class="hljs-number">2</span>, <span class="hljs-number">250</span>)  <span class="hljs-comment"># cache is[1: 100, 2: 250]</span>
+get(<span class="hljs-number">2</span>)       <span class="hljs-comment"># return 250</span>
+put(<span class="hljs-number">4</span>, <span class="hljs-number">300</span>)  <span class="hljs-comment"># cache is[1: 100, 2: 250, 4: 300]t</span>
+put(<span class="hljs-number">3</span>, <span class="hljs-number">200</span>)  <span class="hljs-comment"># cache is[2: 250, 4: 300, 3: 200]</span>
+get(<span class="hljs-number">4</span>)       <span class="hljs-comment"># return 300</span>
+get(<span class="hljs-number">1</span>)       <span class="hljs-comment"># key 1 was evicted when adding key 3 due to the capacity</span>
+             <span class="hljs-comment"># limit: return -1</span>
+</code>Constraints:
+
+All keys and values are positive integers.
+
+
+The cache capacity is positive.
+
+</div>
+
+<h2>Intuition</h2>
+<p>When presented with a design problem, the first steps usually involve understanding the problem and deciding which data structures to use. Let's start by understanding how an LRU cache works at a high level.</p>
+<p>Consider the LRU cache described below. It currently holds 3 elements and has reached full capacity. Assume that in this representation, the key-value pairs are ordered from the least recently used (left) to the most recently used (right):</p>
+<p>Let's try putting a new key-value pair into the cache:</p>
+<p>This new pair would effectively be the most recent in the cache, so we know it should be added at the most-recently-used end of the cache. Since the cache is currently at maximum capacity, we need to make room for the new pair by first evicting the least recently used pair:</p>
+<p>From this high-level overview, we can summarize operations we need to implement the <code>put</code> function:</p>
+<ol>
+  <li>Remove a key-value pair from the least recently used end of the cache.</li>
+  <li>Add a key-value pair to the most recently used end of the cache.</li>
+</ol>
+<p>Now, let's try retrieving a value from this example cache. If we perform <code>get(2)</code>, we expect it to return 250. Accessing this pair would effectively make it the most recently used pair. So, we should move it to the most recently used end of the cache:</p>
+<p>From this example, we identified two key operations for the <code>get</code> function:</p>
+<ol>
+  <li>Move a key-value pair to the most recent end of the cache.</li>
+  <li>Access a value using its key.</li>
+</ol>
+<p>We’ve now narrowed the design down to the four main operations listed above. These will help us identify which data structures we can employ to design the LRU cache.</p>
+<p><strong>Choosing data structures</strong><br/>
+<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder accentunder="true"><mtext>Operations 1 and 2</mtext><mo stretchy="true">‾</mo></munder></mrow><annotation encoding="application/x-tex">\underline{\text{Operations 1 and 2}}</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1.0889em; vertical-align: -0.3944em;"></span><span class="mord underline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.6944em;"><span style="top: -2.6456em;"><span class="pstrut" style="height: 3em;"></span><span class="underline-line" style="border-bottom-width: 0.04em;"></span></span><span style="top: -3em;"><span class="pstrut" style="height: 3em;"></span><span class="mord"><span class="mord text"><span class="mord">Operations 1 and 2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.3944em;"><span></span></span></span></span></span></span></span></span></p>
+<p>The first two operations involve adding and removing key-value pairs. Specifically, we need the ability to remove a key-value pair from one end of a data structure (representing the least recently used end) and add a key-value pair to the other.</p>
+<p>Which data structure allows us to efficiently add or remove an element from it? A suitable data structure for these operations is a linked list, particularly because we can add and remove a node in constant time if we have a reference to that node. But should we use a singly or doubly linked list?</p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder accentunder="true"><mtext>Singly vs. doubly linked list</mtext><mo stretchy="true">‾</mo></munder></mrow><annotation encoding="application/x-tex">\underline{\text{Singly vs. doubly linked list}}</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1.0889em; vertical-align: -0.3944em;"></span><span class="mord underline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.6944em;"><span style="top: -2.6456em;"><span class="pstrut" style="height: 3em;"></span><span class="underline-line" style="border-bottom-width: 0.04em;"></span></span><span style="top: -3em;"><span class="pstrut" style="height: 3em;"></span><span class="mord"><span class="mord text"><span class="mord">Singly vs. doubly linked list</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.3944em;"><span></span></span></span></span></span></span></span></span></p>
+<p>Adding or removing a node from the head of a linked list takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time, whether it’s a singly or doubly linked list. However, removing the tail node from a singly linked list takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> time, even with a reference to the tail, because we need to traverse the list to access the node before the tail. In contrast, a doubly linked list allows <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> removal of the tail because each node has a reference to its previous node, enabling direct access without traversal. So, let’s choose the <strong>doubly linked list</strong>.</p>
+<p>An important feature we need is the ability to access both ends of the doubly linked list when adding or removing nodes. With this in mind, let's establish some definitions:</p>
+<ul>
+  <li>The tail of the linked list signifies the most frequently used node.</li>
+  <li>The head of the linked list signifies the least recently used node.</li>
+</ul>
+<p>To reference the ends of the linked list, we can establish head and tail nodes, where head points to the least recently used node, and tail points to the most recently used node:</p>
+<p><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder accentunder="true"><mtext>Operations 3 and 4</mtext><mo stretchy="true">‾</mo></munder></mrow><annotation encoding="application/x-tex">\underline{\text{Operations 3 and 4}}</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1.0889em; vertical-align: -0.3944em;"></span><span class="mord underline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.6944em;"><span style="top: -2.6456em;"><span class="pstrut" style="height: 3em;"></span><span class="underline-line" style="border-bottom-width: 0.04em;"></span></span><span style="top: -3em;"><span class="pstrut" style="height: 3em;"></span><span class="mord"><span class="mord text"><span class="mord">Operations 3 and 4</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.3944em;"><span></span></span></span></span></span></span></span></span></p>
+<p>Operation 3 indicates that we’ll need to be able to move a node to the most recently-used end of the cache, and that this node doesn’t necessarily need to be at the head or tail of the linked list. If this node was somewhere in the middle, we’d need to traverse the linked list to find it. Is there a way we could access this node in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time? Since this node is associated with a key, we could use a <strong>hash map</strong> to store key-node pairs. This allows us to access a node by its key in constant time. The diagram below illustrates how the hash map's values are references to nodes in the linked list:</p>
+<p>Using a hash map also addresses operation 4 regarding efficient access to values from their keys.</p>
+<p>Now we’ve decided on using a doubly linked list and a hash map to represent the LRU cache, let’s examine how the <code>put</code> and <code>get</code> functions would be implemented.</p>
+<p><strong>put(key: int, val: int) -&gt; None:</strong><br/>
+Below is the flow for adding a new key-value pair to the cache. This involves correctly updating the linked list and the hash map, while ensuring the cache does not exceed its capacity:</p>
+<p>To better understand how to add a new node to a doubly linked list that’s at maximum capacity, check out the following example:</p>
+<p>As you can see, we’ll need a function to remove a node (<code>remove_node</code>), as well as a function to add a node to the tail of the linked list (<code>add_to_tail</code>). We discuss these functions in more detail in the implementation section.</p>
+<p><strong>get(key: int) -&gt; int:</strong><br/>
+Below is the process for retrieving a key's value from the cache:</p>
+<p>Now let’s take a look at an example of how the doubly linked list is updated during a <code>get</code> function call:</p>
+<p>Now that we understand how the doubly linked list and hash map are used to design the LRU cache, let's dive into its implementation details, including the details of the helper methods <code>remove_node</code> and <code>add_to_tail</code>.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/linked-lists/lru-cache" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<p>We can use the custom class below to represent a node in a doubly linked list:</p>
+<div class="figure-wrap">
+  <img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+</div>
+<p>The example below illustrates how to add a node to the tail of the linked list. Let's refer to the node before the tail as <code>prev_node</code>.</p>
+<p>The new node should appear after <code>prev_node</code> and before the tail node. Let’s set the new node’s <code>prev</code> and <code>next</code> pointers to reflect this:</p>
+<p>Now connect prev_node and tail to the new node:</p>
+<p>Below is the implementation of this function:</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">add_to_tail</span>(<span class="hljs-params">self, node: DoublyLinkedListNode</span>) -&gt; <span class="hljs-literal">None</span>:
+    prev_node = <span class="hljs-variable language_">self</span>.tail.prev
+    node.prev = prev_node
+    node.<span class="hljs-built_in">next</span> = <span class="hljs-variable language_">self</span>.tail
+    prev_node.<span class="hljs-built_in">next</span> = node
+    <span class="hljs-variable language_">self</span>.tail.prev = node
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+<p>The example below illustrates how to remove a node from the doubly linked list:</p>
+<p>To remove a node, we make its two adjacent nodes point at each other, effectively excluding the node to be removed from the linked list:</p>
+<p>Below is the implementation of this function:</p>
+<div class="figure-wrap">
+  <img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+</div>
+<p>With the help of the above two functions, we can complete the full implementation of the LRU cache.</p>
+<p><strong>LRU Cache</strong></p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">DoublyLinkedListNode</span>:
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, key: <span class="hljs-built_in">int</span>, val: <span class="hljs-built_in">int</span></span>):
+        <span class="hljs-variable language_">self</span>.key = key
+        <span class="hljs-variable language_">self</span>.val = val
+        <span class="hljs-variable language_">self</span>.<span class="hljs-built_in">next</span> = <span class="hljs-variable language_">self</span>.prev = <span class="hljs-literal">None</span>
+    
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">LRUCache</span>:
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, capacity: <span class="hljs-built_in">int</span></span>):
+        <span class="hljs-variable language_">self</span>.capacity = capacity
+        <span class="hljs-comment"># A hash map that maps keys to nodes.</span>
+        <span class="hljs-variable language_">self</span>.hashmap = {}
+        <span class="hljs-comment"># Initialize the head and tail dummy nodes and connect them to </span>
+        <span class="hljs-comment"># each other to establish a basic two-node doubly linked list.</span>
+        <span class="hljs-variable language_">self</span>.head = DoublyLinkedListNode(-<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>)
+        <span class="hljs-variable language_">self</span>.tail = DoublyLinkedListNode(-<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>)
+        <span class="hljs-variable language_">self</span>.head.<span class="hljs-built_in">next</span> = <span class="hljs-variable language_">self</span>.tail
+        <span class="hljs-variable language_">self</span>.tail.prev = <span class="hljs-variable language_">self</span>.head
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get</span>(<span class="hljs-params">self, key: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">int</span>:
+        <span class="hljs-keyword">if</span> key <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.hashmap:
+            <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>
+        <span class="hljs-comment"># To make this key the most recently used, remove its node and</span>
+        <span class="hljs-comment"># re-add it to the tail of the linked list.</span>
+        <span class="hljs-variable language_">self</span>.remove_node(<span class="hljs-variable language_">self</span>.hashmap[key])
+        <span class="hljs-variable language_">self</span>.add_to_tail(<span class="hljs-variable language_">self</span>.hashmap[key])
+        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.hashmap[key].val
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">put</span>(<span class="hljs-params">self, key: <span class="hljs-built_in">int</span>, value: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-literal">None</span>:
+        <span class="hljs-comment"># If a node with this key already exists, remove it from the</span>
+        <span class="hljs-comment"># linked list.</span>
+        <span class="hljs-keyword">if</span> key <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.hashmap:
+            <span class="hljs-variable language_">self</span>.remove_node(<span class="hljs-variable language_">self</span>.hashmap[key])
+        node = DoublyLinkedListNode(key, value)
+        <span class="hljs-variable language_">self</span>.hashmap[key] = node
+        <span class="hljs-comment"># Remove the least recently used node from the cache if adding</span>
+        <span class="hljs-comment"># this new node will result in an overflow.</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>.hashmap) &gt; <span class="hljs-variable language_">self</span>.capacity:
+            <span class="hljs-keyword">del</span> <span class="hljs-variable language_">self</span>.hashmap[<span class="hljs-variable language_">self</span>.head.<span class="hljs-built_in">next</span>.key]
+            <span class="hljs-variable language_">self</span>.remove_node(<span class="hljs-variable language_">self</span>.head.<span class="hljs-built_in">next</span>)
+        <span class="hljs-variable language_">self</span>.add_to_tail(node)
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">add_to_tail</span>(<span class="hljs-params">self, node: DoublyLinkedListNode</span>) -&gt; <span class="hljs-literal">None</span>:
+        prev_node = <span class="hljs-variable language_">self</span>.tail.prev
+        node.prev = prev_node
+        node.<span class="hljs-built_in">next</span> = <span class="hljs-variable language_">self</span>.tail
+        prev_node.<span class="hljs-built_in">next</span> = node
+        <span class="hljs-variable language_">self</span>.tail.prev = node
+    
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">remove_node</span>(<span class="hljs-params">self, node: DoublyLinkedListNode</span>) -&gt; <span class="hljs-literal">None</span>:
+        node.prev.<span class="hljs-built_in">next</span> = node.<span class="hljs-built_in">next</span>
+        node.<span class="hljs-built_in">next</span>.prev = node.prev
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity for the helper functions <code>remove_node</code> and <code>add_tail_node</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> because they perform constant-time operations on a doubly linked list. The <code>put</code> and <code>get</code> functions utilize these helper functions, while also performing constant-time hash map operations. Consequently, they also have an <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span> time complexity.</p>
+<p><strong>Space complexity:</strong> The overall space complexity of this solution is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> is the capacity of the cache. This is because both the doubly linked list and hash map can each occupy <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> space.</p>
+
+<h2>Interview Tip</h2>
+<p><em>Tip: Explore how combining data structures can help achieve certain functionality.</em><br/>
+It’s possible to encounter situations where no single data structure provides the functionality required for your solution. In such cases, try to work out if this functionality can be achieved using a combination of data structures. For instance, in this problem we combined a doubly-linked list and a hash map to achieve the functionality required for the LRU cache.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

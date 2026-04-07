@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Longest Uniform Substring After Replacements</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Longest Uniform Substring After Replacements</h1>
+</div>
+
+<div>A <strong>uniform</strong> substring is one in which all characters are identical. Given a string, determine the <code>length</code> of the longest uniform substring that can be formed by <strong>replacing up to <code>k</code> characters</strong>.Example:<img src="data:image/webp;base64,UklGRsogAABXRUJQVlA4WAoAAAAwAAAAQAMAQgAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIYQwAAAmwA22bIknOX3cnZmZpYi3RWj0Cr7IsMVryzpsOmcxSZYnhyJ021xIzmJVpiaYtocXMzFCRP1X2n1Xd1UsRERIlyY7bBiQS6qC5u3gPx8PTD8DNLQ4/0OH3SnHD4EZwhKQMQpluCUn0sq0WjqcyYbuNMU7H/cbczZUrAF73jb6GiGhMupE56tdC7Y7/4pyb5tnXBZXAVyO+0VWuqvx8Zwa7eSb1KPvov6sAY3HTKF7KBsHxee1+meY2TVoOXo08xwaTbs9pdMz8P+O1RhiC93zUCQ5DBzy0IYAMQ6BDhaiNURhkQByEAJHx+0btWrKRD2DgPedGYARYbbkj11wqcaKqqoKxBw4CPGJPsZicMIfgwyRjziZ5KfwScRJQgyjIEatQQ0tSSI2QOmHkuBVhVf00LrKN3DEcDBwLFdRQty03zdp7WkO1A3BLbesYazqYZfZ1HetWuvXQIhqxlkdk+D2GMKtrYKsZhpHfx7n1hIajTcud7Lhg4kZ8kigSP6mEqjAQvoXW+xbAjxSpGFdCUOO8FVGIeN0GDaKqn5RCKIWwCCOi0oWV+hHgpJ/gItvo2K4tdE1VddAKN2pjU3XoDHwdHxvnOoCmYuEJiioIiIiMAcYgA2GoqorQ0bEjV5VbRG4CshJLoaGUHJP9IcY0clGEb7ZSFQaiq6BuuyqOur1QjKkwvlAagZ/wCohcP+LNROiYfkF0T7WmERHJ0080YOMcQ328Ti5zbRg6T7O+ZH7CNzoXCIXjoAJhkqYJXXoAh8FB8VlUETONxM2mV0EViDh1KwKxUIXDwlhcwp87ZOaLooibo19uJwNNAO+h3kG/kDBxpl1gWrhj+0to+cIJ2PjBYKjeIE1aWDjHIqy2oIlywOgMOYD0kQeZ8qegjymewoiLGAf7Xja33UTBDkgQt9AP3ZGY5vLQVagVAMd2UTxUusYIPAUVh+g8HS7ZJsfSDinmYVwkN9OZrSKQUIfPNrnHML1y8Aqn3FUU4Y0KxJ2Z40xyZzHZOIpMkqpH9500qOQNAHxYIYtO8QFlzcIO1rXThI6ApHScSfcqOoZxyDs7ZReZKDYQ7fTbvRuoPYDD6cER/lBl6pOHph0GXJ4Jq27kIQagjmx+JoZq6w5cFNeQKCmTb6d+Adlw/TjE4sIQ9KHHNjq2t07TUmEn32ih62LsUn4Cg0Xvi0N6h2cxNJMxrJQvIGCxnimDGkXBmd9OYoxCLOtxiJq1UUy5HEfn37VyKrTaTFuM3juXooO7+B8LxSmLj3wHJIg0BbWURKHCRSngVXJ2q06LR7GzyMeYfsW6Gdm3UBulYOURnhIOvRfbUHnLCbJFacdiG0g1b7aPqtiuHANz8CMiWpaUGE1oPYOIURT73ogP3bgSEjj0jgPdmMFInswgKlNnjWyZ7o+Xo9ZXlYQZniZDSTLM4BgEWl/leXXb930/UNIObQOJ5Jq0oGHpECxfpofIAZMXEJQht3dgCDO9WpMhL67QDoybvSuRKEyDpJgI8IXQdoI4ouBS6xCRm6Y26je+aiOpQ6BcIrovU6KWt9ERPFVU0mRYYDitnggCrhkyh6xIB6S/K0+WIiPtn6XLdE6aLoUy9PyZkXkZUcucVomcG8y8yZ37EeLErcCkk/OJDQ/wMfjYNSkoEBNKPQJR4eaYfvka0X3ZQ7xoo6Pzw6xNUjxEkozI4Wkqp+7sUCpNegCfXLl0sLyYVoHYEEiebUNxQPq5kBbKaJrRFCLhKq5qGhd8Aik5ceCs49BkELqIXyCpongFkSpfwql9L0dcLopcCiVFSCFCyPQhlrhMGoM4RhZlIG00GSnBSEqUQEpM/AEig4jaiEVzjvBbQraLyyWP4i9s3qRjGEWs4xhHVFAUY7gjouzKe0S/HLIFBtvA2+hqw08sZInLqIVkCXPTIGuNSD/8mAW1JTQg1sF7H4Z6yfTnir9iRIQ1EkYq53/FftzRzoLawjDGzNBBrFnKEMYdFkwnp4ZuWCPNewuXRzPrWLkq7UjPg9oCOrUYwHJpIzV0I9to9kMwj8emucosqC2JuIbFwv6IaqNZhB5TdPPq9jGLdTItxa9LOh5x6fLqAB6XLz3CoFyteethl08edu9DKO+9H3Zy+WH7rsRUZkBtiZYnXBLvHMQ3Lj1hzxWPCZNscJoFtSVZH3tYVX7sfjkz09GDx9T5WVBbkJ9iPbDnHvvwxQ/DXH3aSU6p+tNN+nruszVqy7E8cbkL7VMa3BiOz9+lJLG76XHke2uv/MpXNWrL8UHKHQf0hr3wHLb4UX+xwX/KwWZzU02jrWsAeMUn4U5BbUne85BFL/Vovf3KpKlR/RR8+A0L9BEPOMhSH+r68k/Bh9+4RLdu732QpT7U9dNwxxuvDiWg7LFPJ8/t0/jpsexLeyO04EIYhpAidIZIGdAhATUPyw3Bs2rIjpCaquEpvR3DJHhtFyoU1Gy5pRZCpOYNNGWb2QP2tDo7v7g4PzszRXp+TkCtqZ0bIz0rR828gYT19ilgRkGzNtjB7lmErW4Ho8C0iMK1NdQtVTttEjuG1IKblK+t00GK3PEGO2qtoGYoXp/UwxayACpaVGsg82poAZm2MgV7MnWRsxXaffqe6dVqBauzhNSY2sqY2pk5tXNJrYA98Vy12DRNB1DbdHkcaceR9pa1jk0XAL53xVAbiE3TdaZzUpLvIwDwBnNqhuINNSnedWlH2L6BjC9Ne8NY53pleXsytPgz2G7Wm83G0gtXsF2vEag9te2UqV2sBLVS9uRpjhF8gxMRM3Op0iyNkEY7pNT/di5QP/FUM6QtQONoklYFu9q5EB70KrL6iVJjrdQ5H7x3dv8oDVRP97/scwL2ZOYjK9isN9vNZrO2KwDr9Xa72Zxuzamti1CzA6pQK2FPtMUpe1GozQMRqRjaY8cySj+ASA19BGc8pl7IsL74c3CBqplSs+YW5Rhi3kC0cJ7bWd6eLE1eUDIEqowve4QaDa3TsCcTKy4HNFk8q7e/JZoVV8JHOoAXfR7u+KKtG1o3EzZN2SjDnC7L25OpU5lbPM7RuBsaU7N2wyLUtiXtid/HRkJni9cjUluLwGr71DqZm71+AV70BfxrtgY68SFMbVGEO7/LudhTiVLER+xHpTLUitmTEmfjgTNLix/6lpDaV8txokwH9EKqlkPRPAYv2aL5wZCJHDWMn/OxJyVYVgLofqFW0p540BSDYBQmaqJh/19j9IOQWpan8JpWAVMeAZ7zRbyey261fQN1hQiWHMPL29M+ykLYW/bEp0M8CJY9Y8izCAy04chpPMU4wWsxXzMyRBxn7C33A+af8qGsGFKriOTuDVRN5IgZi8jy9mQ4R5PDRgmge4daQXtig1Essc4haUyvAavx2iWWGCOxMlGtqU3a1YXQxb5hu7M3LkdRe5q+k6Syp6gVsKfMjq/AhMXujhPct1WC3FaUzG3+fgA/fIMiniE1+7JTrkReS8oH+BnVqdiTaRFZBrZIGdD9Q62UPfERAHfI2UrX1uIp/jHUhn8NfpU4ErcU5DZbhvgIrWdYjYJXL/gSwIkH53vAlYY9Nbv4GKUGeMdCP1bMeANhpsXsanF7spRpnRIUKIUIs2+MfIXtDJ2lTDeW5rOaBTWzuzVq5vYkYbTD0NfRYomt7QgOQ99DSqUxounhe5SuRNxwH9fUrThWq3pHhHboWzNiQnBJzQ5oB9D2JLkzayBsURIj5RzN7bq0PVnKxHZ6WBIr+oipW11cXCSgE6aWgJpT22jU7O2JwWANSwk4hkMnQxobIx+hvO9XJ4YiJ8wbWqTj5mOzgHj+l+DONzAxBDG7jBkhR1qj2J08Xw93fs0baMJ7T9mfjtvTZGWi1Bu2dWO0Z8oBrlN6AgewnTC100SNMTOklnIIJTXzBpIZRVVTVR5CVRkYsETaNJUL4CpvU68E74ibIxsyHJgSVqaHxSDzvC/BHa8nMUgLUs+QmpTDEihvo6RfgQaa6huhydQsw54mKpOw9dPT9enpemvq6xwpTJ8aJe3ZnZJauQYK9hYjQ6xGtQw3BavF9Zer9NQyzMpJbt5AU994shB1DjJtSyDdT9TM7WkmO10vpjp5bl+iupCPfy9Eqa37h3tSnT63d70n1aVc/rbEpf7ra67MIZ/jHbCYy58Os9RXl47f/fsAv/4dXGU6fnqIhb7aVP7wy0NbfvkHuOp0/OyXB7b+DOAq1Pn9fx/QO77P69WnD7/5wz/8+yC+84cfftPoUwAAVlA4IHISAADQSgCdASpBA0MAPikUiEMhoSESOjz4GAKEsjdwthIA+TOeE8AfoB/AEb2oH88/gH7DeDZMHl38p/V7+k/s18w1N/jn8y/LH9c/9n+V9wDSbfLfxT+xf039wv71////F8uv4L+SP9Y///2J/KX9R9wD9D/6x/P/8h/yf7P/////9DX+O/mfuU/UX+2ewD+V/xv/Hf2z91P3/+07+H/yz+X/f/9gP01/znuAfzz+D/7D8zflB/mfsI/sB7An8z/sP33fKP/N/8t/dP3q+gn9cf+1/kP+B///oH/nv87/237S//X5AP3/9xH+AeqP/AP3l91/rH/NvwR8E/5b+Q/7c9oF3I9Wf270Cv0++ffkd+YfE45If6Zjtv8pxgfUDzMv8h5MHg7UAP45/Uv957Gn67/yvuw9kf5f/b/+H7gf8n/pX+1/u3sq+qv9XvYQ/WYhnLb9AQvyoXIcLG1OW33/L75S2CXm5HOZzlnyyJwNdBjUtAbUkgxbf7Cm6pAQvxzL8I75RcSQR+1lc51C5DhY2oeP6pbz5azXWeaqxaNiENZ7lKqxdov1Qa7nwO6iGxOCiFKdAleQ45SmCjxrraOHf6Y0FVfb8lCASMqI8CjugY9XoCF+VC5DhXtQwyfG6ytecfy7CK7Ez920WbkcUV2bl2N599rS+fB6I5mPcoppkCoXFAuQPnstfRuCz+LO36NGU7nKHCxtTlt+gIX5SYZCCojDEW8YDCaNASmq5KowX23y/j182U/4VJvaa31NYwYs1e4cbU3ax3yoMQR5bfoCF+VC5DhXrZsrICF+VC4sRujAAP7/pIAABH7lv33VvYVefbYoFjl0QLsoardw11HT6/lkTega0kGdJ0Lzxz4lhSL20O5ALwYSL5sAjoLHNlJQQvI9sjfvgAKtItR5MTF9ZFYlJFEwV7KC2EpM21/zNH07AGlC2XES5+1TJsnaxOcQZH47rwq78KQcaXBjdDN1lSSQexyUOgNEL8AbN4vOhuMSxYS4Nm7jsnaFMbGKvLpzb7kwqCKuvuT5R1tqt5sOGbV9HNyj923fENHgUe7ls4xUJpycgNCDdzcTctT/irbMXxYLyFs1oNWUfVAg6LHISFiFACSrsLOoithtftG15WI5THNTcZdsH0UJo2oXfos7sCaNIPKo2oPqrcSf1QOtCeTysUV8g0J8pVILudEbljS7F3eHQElU/wbe0ySCn4Xq/6PiWXXAQidpOQqNvIq9ax9Wv2qCfM9f5IWKf//3zG4cHssg1mTF4yLvSZuSxpEd/SqfOtY+ubSyh8FDYFMPqS4wNPr0jSfSbUtJ0yJgeN954xbwzaY6npuNOV6NoeXp6J10E5737a60s72vbKtrk/DBSMXLZ32CudRlBOH/dyBmrtrWwtBdLejiXl62YhvUQhWO4SaZFuUhBvB6jVWUL1E9grqW7nSIGVwF7W9Yr0zU9vsZouIn6PcM1hDYrw9R9EU/ifOkjYpboME2Ef0MOwBXY7FaCDYhefTcqhB0VXYoimm8ndJB/eocINU2jDcx8+j/w/2NzwRJ88gsM9afIW0gvbQ7hOLnMnP4ZcGqnUa7K9ACmnnvrm7ED/BwuptMrJ//JqVup3B7uI7jRTAHuSLV/uF049YBkgq1bjIALF+oxtQK41QPAyVlhxvwAHWUPS6Km5yUMLlno6ohdEZhMWc2T6zixZLtzXDSteTfAPd1M3Xv4ibENNJ07eBOTCvuyaD+wHok8q8/AoVTHOGOPf/rgaSBkgBDbDU7TjcczF1A/qElf2CtIF1eIBZIYHfk39gesQIlOiL0ulpJ3e46NKCOZQTYsXAkF1KXCXvGGp0vDMhc9oMAp+ilMNPxr9svNuSPEOHFng/evvcnterac1p5Bq8ZXtAafaQPrBZCWe53f0Hxb9Esjdr1+GHwkNnhdHspy9d06GJhTPNmQgpFKYafjX7b5JzPpOTk+z9fWaj4MeJHDzvq8YLEWmAKKswqZ+cebA8LIUPJi0MH2OFU87VJk7YDQJ86R4pEpHlvIflMKyH/r5Ne3Ruq/yJ3fUU3nO2/iBEiERToYhuPRbZWEFv/1H6pX8l23Qkw9u5Njh4NljvUtkaBVzzH10ZcOICHumE4/TPmAEZkXOlRBDPSULPgAg24HXahEPwHqYPmvHxFoiozGDCnhRjO69qhFQK0wieGu9eEsg70Ukv1hMqUZMUtiCR2yFVobDQTGWl2JezLQRRmQ69m3IGFMDkWI2sUD0dkqLME631hrY7R3Q49EUXXAARWeREUJvodf16o5Te/lfXNCZF3i4T12DFbNXKLet75TjBrYHpxImX4gb5MbqJIIE68mjVlnojlpdZh4+CW438hzfSy0MlkBrR2KmOmTH9ywWb6dNvNJaYk0846Ljx+Y+TiVMcwpQyJDTmF09DjVe8AN60lS3rK+7GmnnrwFldTM6x7Ldbmfug8/t9/urIcflCGTJSj7SPXehtP+KJ0IU6K1WbUVDHxVQhnl6OqaEPt5AVMQiKnnTQ0jjvGOqWIbTfcfELfyIQqkuW65SI1/UcoQyZKUaRoeTozNU2PSdfOGK0N0+843raoPP+yYe0hDQSCjT5hmEeFSMbrWgd8hHOtwE9FMFi/rvNwum++blmJzv1o3xKPEsxigl9nrzxkNZgniRX5ZygY4jxXzcq/cjbtnH/PxeyV0GDkkSVSPb4wVuRAvuE1c2nJq+clO1ofhsaIonV+gzCbbeDFSH/suwzp39MN/gaADZN3PH/PwhD+9Gqu4MnhHCSVwSugtA74fxiI7zBwezIOsbUj1P2UJyQobyfG5Fam2BIWmFI1c2i3iGsnIqx+sJzGtLufiA0afqRdYM9xpbUZUc8Q0pOhMYA8vpjJZ/GNk/zxkrUQF5en8XV/NpX+mMdeZ7HqXrSlelIGkJ7WRuWzXKXQlDSiH3q6D53Z0n9lAwOej7U1vouHvmC/QxkXnTCy8DMVK4kJDqydw6vw9U//7Bof/81b4yCsFgDAdyEb31hmRH6ETO2s8noVOisZW+705kCFKyntUUM+nrHKfV9Qi0bxE+2c8ktLs7f5gqQFR0DTYTGuXn8HX0BBLFrOfZYXCkAx8lP8jnavHoqtXSjvk1s2ahUJLdp2Y2xacBkL3NnJnSiDf+iYijI7o1l8hWRLIWFxBMIa6Qexu6Eg5/ojsV6qeat0BfLiJ9Hl9iLO2lBsIVUfePP9PXSNNggeBGp1Jp3SUhYqtcA4GgoLOPpiCcWTXUd64/sbCyGcJ859JvI4B4brJ07bqhRHMMYil+d9Ukij79JU2pk1wdoEokDaq31wT7AWJt4hiDGloqTuuRGIRL/MberqE0w8+al0b4ViH514ifD18RBbz/qAWdyAW/NxA2XTbPvEdAb4ZkgheWhaW3eTGHu+Ta5O5GE84ml/sRVF+sMyf9FK0RYaR6tc0R6BfxB3NwLqBvknqorrb8kp9ihVpclh3IaHa9jst9nx/c98Iry3fUopfbRLRdP+Gmsl/x62LxorThq+0oR7uQIQwmUdh66EJwRTj1EKPa9XlCr5qzNdY50q0Sq1UFYgfuyb5EYZAE/TYBFFvF6ORoO8709DtKPuYGdqTBf3VhoCR8iKziQlFfUZGUhU/Iqj0NmnxhdHJrrX2e+YRQQJsXZthBRYMPuMIM2tORiaDxj2SSFHYmKi0aEY1NAqua24Wpgp8pz5ncljBgTSxpUJYGbTN4Pq8AxMQ1ZGcWla1GQGT2lOI762a3dKyKYWAqfICPfbs+ME5Bs8hGyrPblj+Bt3r9AHUC1+2KgZQyAIdasloSeZcBXfTxKBWr8Yc6H4MSiZr8uYyIAmydfnPf+oqvcOmof4VnqiFyTSPTLZhP/SHL9rVb8pLWzwwoul5MUcerhmAepjByJIER7M0/jBv3HG7cSK1fJ4zmcAJhKO7ECkrz1ugL/iK8aLnMZNKupQcWcbTbzbCbaACiXfXTASHjMbDrIvgTH86rMtSqaKxor7J+roL7Xjw96NkfMlO94kc95lA9diyojCEdb1/O1Iu6EpJrYlfmPFq1U4lR8bSC7ugk6Gfb2DSp2XWxeJF/+HIt2xuZfBn3c70C0D53xdDfyeFLRih8IsWqfGr7sRPaVBQvcxDZiWiswfOCv626n5v7LcCWupSkgpMOm/pQAMeUDidInCZ+zDlhE2w22kCBM5mFeS4gc4+baquQ1vmAOgjOWkyvT/0m9GzWDzKZb6jJhxAcG55hKe+95RmkZZamOlE4zy//DkFNqmaQwmUeaAXe5QJpBw8/oeokEU91POFmcJWJ0N874RrBbE5W1qo5CRixjbuaAchIOk2waabv3toakF/Kh23zibcwMQVro2nBb6Pwp5GtSjUh2AgrnY2i8Sv6JPNTaVx8O/T2ftkb5d7jqvdi9H6LDjzVF9r5aX2DNQmg0vAAAAeApWbOuVqzIk+X5rfobXvd79xZhBjNBKlunPR12mfmJm5wHVWQ2T+DcJNIl9zCJHYLGEO1q+Q0KcDDrnlgln+FWXDw58yFJ8P2KHItyj9Tv4zTNxZUxn3VSGnRN9eG+BRMJmWcW6bZbI502NZe9//t9MhvkL9vgH7USi9MMabHnTGjPmpIRMzfVKP+ZCNh5FfFonOPOrHuZOwxl8I1z3yQv3PrsrKjo1X32XPXHhzQGrUg/0OBc6KuajX/nL7gzgiKAwDnVFM20xUO+WA49Nno2Tig3f8/Jzj5BoqSZNYPBbvSBJrT7eLUAMeS6F8Nnrh6zLLOsLOaEWdvi8bgFTUC0H5fsgXlR16UP3wt9SZDSBpCGpZWQHxixm+KHkHZRHS8eup8Jgpt57kaIQvne0PGcZP1DjGEoi83b0cl3yFEqyErZ2XyOItFu7U2fd0GiHnmjYO6er3oqJMsGrvZAgIf2OTYYx/uRI5sAfxFHOyso3tLjGzA1gPqtGVH205FCsKAXe54S3xOjGGOFlfPjSvKVGZrftyrxkN4ZH0QNaY4jdMbioE5gD8F0LP46YYFoQSBX3rvaI7vwQgUdKBvg10CMviycA5pNwab/InLtRWLLTtoYyKNl4UrUVUk6mXrk4PMA2nKpJG3fQ/8nCHn0y3DM5BxdVTbor1NPK2vOgs/+ytKwzcGNAB8/5iWd5Tk2hUlp9+r9/UcwyhJJXf3boRLf8kRGR6748TrWZFxznagRwYkORTUGv9UnqZa5hdnlqMzQNO0xBMcIhkbhU9CxxNdVInRkBFhHW8BSVv95jxw7I31ysV8rKyOfZwHp8HVCZU4VafzZTGs9mS/t1V29MnBI2b8Foo1SfrCYBiuMtsABV6g3RRd/+GikYIa5wZ1YzeNxRR/WoDHkFcU1Ag2gbH+7a16DQ/xyqyidRqS54xqX5IyoNoVuWINNN3722cNQ+w6Hr23BeFYKLpdSpIZJfvntCRm2XPZKivflxDvJqjo8s/OsOiUn0OGncO2rkf7h52heBRimQEAAAFIMt5S4nfABEUjzeYjPH1DeLoNexUcLaxuZ+xNJN5EdQ7e3u7a6epvxIXuZMYn4FSUPU1DJsUuITqZLDPpUa37aPnRb6ByevVVibSHFhlGbmC09PfzVR7VFrIITHksGoylGHQlLC1ZurrHn2h9IbaKQHAgqNvoHcN0XTgAdaRZMYCBxulPDbdYe7RX7ZLpHKQkrHFJScpO9/u2I8LZkwIZh7S4eP+OofmOEDH5ge72ATWKsxNKpx4jLxjQNIRFFbIVLWHGSF7SiBJ2qetjX3UOL1FHpfhaVrIk6vJSaFrNpokmPJaSrKoCJNIvd3RO9vPUBsIwVr1SP1sfEuMzp9bD2nzQ8i1Us/Dg7f2GXRnQBTnP8BEDLfJOR/SjGT3NcSUezJ5T5SqTLFUQwXviIvT335zMVwPD9xb4V7g1xX+bOYWk6nBlt4YaiQPCjH5VvYGM9qI3r1RMNbLy6rBITDSjNFeEZFg3QmA+1tBFtK5UdVzQleHf2O3cmx3K8nJUJQTtq68wfNievIdsQFTZWZ9U87x0pwldxu+RIrlbAt9LmsNmbaVWdlJolOF3F5Xclq5mIgIwA6JCBnV/j1iHu30ECkFzBVnrK9bCZPKpDTOF6MY5+Tp4jLu8jywyrEJwQ4Xp9YBBR38WgBxEZ7vYsPU2t18LljFhrWS4ePOKOJrzxMnCNfih9SbqY+tjKES94fVZcR4oXMJBC5wAAAAAAHdH6KFuacmLlqTysZSYn3Zakri+iLMJILY2aDKkJQu0y1NbfbAIYGlNpPFIlJI5AAAAQZTJB0ZVqIgCGr0S+nJueRO94UStcsFiFfFejDJbZ2KcDSfY/gAAA=" alt="The image represents a visual illustration of finding the longest uniform substring within a given string.  The input string &#x27;a b c d c c c a&#x27; is shown on the left.  Two &#x27;c&#x27; characters within this string are highlighted with orange diagonal lines, indicating they are part of a uniform substring. A rightward-pointing arrow separates the input string from the output. The output, displayed in a light-blue rectangular box, shows the identified longest uniform substring &#x27;c c c c c&#x27;. Above the output box, the text &#x27;Longest uniform substring&#x27; is written in light-blue, clearly labeling the purpose of the diagram. The diagram visually demonstrates the process of identifying and extracting the longest consecutive sequence of identical characters from a given input string." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: s = <span class="hljs-string">'aabcdcca'</span>, k = <span class="hljs-number">2</span>
+Output: <span class="hljs-number">5</span>
+</code>Explanation: if we can only replace 2 characters, the longest uniform substring we can achieve is "ccccc", obtained by replacing 'b' and 'd' with 'c'.</div>
+
+<h2>Intuition</h2>
+<p><strong>Determining if a substring is uniform</strong><br/>
+Before we try finding the longest uniform substring, let’s first determine the most efficient way to make a string uniform with the fewest character replacements. Consider the example below:</p>
+<p>Which characters should we replace to ensure the minimum number of replacements are performed to make the string uniform? There are three main choices: make the string all ‘a’s, or all ‘b’s, or all ‘c’s. The most efficient choice, requiring the fewest replacements, is to make all characters ‘a’, which involves just three replacements:</p>
+<p>The key observation is that the minimum number of replacements needed to achieve uniformity is obtained by <strong>replacing all characters except the most frequent one</strong>.</p>
+<p>This suggests that if we know the highest frequency of a character in a substring, we can determine if our value of k is sufficient to make that substring uniform. The number of characters that need to be replaced (num_chars_to_replace) can be found by subtracting this highest frequency from the total number of characters in the substring:</p>
+<p>Once we’ve calculated num_chars_to_replace for a given substring, we can assess if the substring can be made uniform:</p>
+<ul>
+  <li>If <code>num_chars_to_replace ≤ k</code>, the substring can be made uniform.</li>
+  <li>If <code>num_chars_to_replace &gt; k</code>, the substring cannot be made uniform.</li>
+</ul>
+<p>To calculate num_chars_to_replace, we need to know the value of <code>highest_freq</code>. This requires tracking the frequency of each character, which can be efficiently managed using a <strong>hash map</strong> (<code>freqs</code>). This hash map allows us to update <code>highest_freq</code> whenever we encounter a character with a higher frequency. Below is an illustration of how <code>freqs</code> is updated:</p>
+<p>Now that we have the tools to determine if a substring can be made uniform, the next step is to figure out how to identify the longest uniform substring. Let’s explore a technique that lets us do this.</p>
+<p><strong>Dynamic sliding window</strong><br/>
+We know sliding windows can be useful for solving problems involving substrings. This problem requires that we find the longest substring that satisfies a specific condition:</p>
+<blockquote>
+num_chars_to_replace <= k
+</blockquote>
+<p>So, a dynamic sliding window might be appropriate, as discussed in the chapter introduction.</p>
+<p>We can use the above condition to determine how to expand or shrink the window:</p>
+<ul>
+  <li>If the condition is met (i.e., the window is valid), we <strong>expand</strong> the window to find a longer window that still meets this condition.</li>
+  <li>If the condition is violated (i.e., the window is invalid), we <strong>shrink</strong> the window until it meets the condition again.</li>
+</ul>
+<p>Let’s see how this works over the example below:</p>
+<p>Start by defining the left and right boundaries of the window at index 0. Continue expanding the window for as long as it satisfies our condition (<code>nums_char_to_replace &lt;= k</code>):</p>
+<p>Once the window expands to the fifth character (‘d’), it will contain 3 characters that must be replaced to make the window uniform. Since we can only replace up to k = 2 characters, the window is invalid. So, we shrink the window:</p>
+<p>Notice that after shrinking the window, the value of <code>highest_freq</code> is still 2, which is no longer correct. Recall that our current method for updating <code>highest_freq</code> only increases it when encountering a character with a higher frequency, meaning <code>highest_freq</code> can only remain the same or increase, but it can never decrease.</p>
+<p>One way to work around this is to develop a new method for updating <code>highest_freq</code> that accurately decreases it when the highest frequency in a window decreases. However, our goal is to find the longest substring that meets the condition, so shrinking the window might not even be necessary. The crucial point here is that <strong>when we find a valid window of a certain length, no shorter window will provide a longer uniform substring</strong>.</p>
+<blockquote>
+This means we can just slide the window instead of shrinking it whenever we encounter an invalid window, effectively maintaining the length of the current window.
+</blockquote>
+<p>With this observation, we should correct our previous logic:</p>
+<ul>
+  <li>If the window satisfies the condition: expand.</li>
+  <li><strong>If the window doesn’t satisfy the condition: slide</strong>.</li>
+</ul>
+<p>Let’s correct the action taken in the first invalid window above by sliding instead of shrinking. Then, we can continue processing the rest of the string.</p>
+<p>The above window is the final window because we cannot expand or slide it any further. The longest valid window encountered during this process is a window of length 5.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/sliding-window/longest-uniform-substring-after-replacements" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">longest_uniform_substring_after_replacements</span>(<span class="hljs-params">s: <span class="hljs-built_in">str</span>, k: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">int</span>:
+    freqs = {}
+    highest_freq = max_len = <span class="hljs-number">0</span>
+    left = right = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">while</span> right &lt; <span class="hljs-built_in">len</span>(s):
+        <span class="hljs-comment"># Update the frequency of the character at the right pointer and the highest</span>
+        <span class="hljs-comment"># frequency for the current window.</span>
+        freqs[s[right]] = freqs.get(s[right], <span class="hljs-number">0</span>) + <span class="hljs-number">1</span>
+        highest_freq = <span class="hljs-built_in">max</span>(highest_freq, freqs[s[right]])
+        <span class="hljs-comment"># Calculate replacements needed for the current window.</span>
+        num_chars_to_replace = (right - left + <span class="hljs-number">1</span>) - highest_freq
+        <span class="hljs-comment"># Slide the window if the number of replacements needed exceeds 'k'.</span>
+        <span class="hljs-comment"># The right pointer always gets advanced, so we just need to advance 'left'.</span>
+        <span class="hljs-keyword">if</span> num_chars_to_replace &gt; k:
+            <span class="hljs-comment"># Remove the character at the left pointer from the hash map before</span>
+            <span class="hljs-comment"># advancing the left pointer.</span>
+            freqs[s[left]] -= <span class="hljs-number">1</span>
+            left += <span class="hljs-number">1</span>
+        <span class="hljs-comment"># Since the length of the current window increases or stays the same, assign</span>
+        <span class="hljs-comment"># the length of the current window to 'max_len'.</span>
+        max_len = right - left + <span class="hljs-number">1</span>
+        <span class="hljs-comment"># Expand the window.</span>
+        right += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> max_len
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>longest_uniform_substring_after_replacements</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> is the length of the input string. This is because we traverse the string linearly with two pointers.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> is the number of unique characters in the string stored in the hash map <code>freqs</code>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

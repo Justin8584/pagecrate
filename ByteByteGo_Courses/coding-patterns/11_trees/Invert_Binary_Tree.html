@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invert Binary Tree</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Invert Binary Tree</h1>
+</div>
+
+<div class="figure-wrap">
+  <img src="data:image/webp;base64,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" alt="Image represents a transformation of a binary tree.  The left side shows a tree with a root node labeled &#x27;5&#x27;. This root node has two children: a left child labeled &#x27;1&#x27; and a right child labeled &#x27;8&#x27;. The node labeled &#x27;1&#x27; has two children: a left child labeled &#x27;7&#x27; and a right child labeled &#x27;6&#x27;. The node labeled &#x27;8&#x27; has a single child labeled &#x27;4&#x27;. A thick arrow points to the right, indicating a transformation. The right side shows the transformed tree, also with a root node labeled &#x27;5&#x27;.  Its left child is now &#x27;8&#x27;, and its right child is &#x27;1&#x27;. The node labeled &#x27;8&#x27; has a single child labeled &#x27;4&#x27;, and the node labeled &#x27;1&#x27; has children labeled &#x27;6&#x27; and &#x27;7&#x27;.  The transformation essentially swaps the left and right subtrees of the root node, while maintaining the structure and values of the subtrees themselves." style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+  <span class="figure-caption">Inverta binary tree and return its root. When a binary tree is inverted, it becomes the mirror image of itself.</span>
+</div>
+<p><strong>Intuition - Recursive</strong></p>
+<p>To invert a binary tree is to essentially "flip" the tree along a vertical axis, as visualized below:</p>
+<p>To understand how we invert a binary tree algorithmically, let’s focus on how the positions of nodes change after the inversion. For example, pay attention to nodes 8 and 9 in the above tree. After the tree is inverted, we see that they’ve swapped places relative to their parent node:</p>
+<p>The key observation is that this swap of the left and right child happens to each node in the binary tree during inversion.</p>
+<p>It’s also important to note that when a left child node moves to the right, all nodes under it move as well, and the same happens when a right child moves to the left. In other words, we swap the left subtree and the right subtree of each node. This indicates we’re not just swapping the left and right node values, but the nodes themselves.</p>
+<p>Therefore, to invert a binary tree, we <strong>swap the left and right children of every node</strong>. Now, let’s explore a tree traversal algorithm that allows us to do this.</p>
+<p><strong>Depth-first search</strong><br/>
+Our strategy is to visit every node in the binary tree and swap its left and right children. There’s no particular order in which we need to visit the nodes. This means we can employ any tree traversal algorithm, as long as every node is visited.</p>
+<p>Let’s tackle this problem recursively using DFS. After swapping the left and right children of the root node, we recursively call our invert function on the left and right children to invert their subtrees as well.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/trees/invert-binary-tree" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation - Recursive</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> TreeNode
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">invert_binary_tree_recursive</span>(<span class="hljs-params">root: TreeNode</span>) -&gt; TreeNode:
+    <span class="hljs-comment"># Base case: If the node is null, there's nothing to invert.</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> root:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+    <span class="hljs-comment"># Swap the left and right subtrees of the current node.</span>
+    root.left, root.right = root.right, root.left
+    <span class="hljs-comment"># Recursively invert the left and right subtrees.</span>
+    invert_binary_tree_recursive(root.left)
+    invert_binary_tree_recursive(root.right)
+    <span class="hljs-keyword">return</span> root
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>invert_binary_tree_recursive</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the number of nodes in the tree. This is because the algorithm traverses each node of the binary tree exactly once.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> due to the space taken up by the recursive call stack, which can grow as large as the height of the binary tree. The largest possible height of a binary tree is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>.</p>
+
+<h2>Intuition - Iterative</h2>
+<p>As a starting point, we can try developing an iterative DFS solution by using the recursive DFS solution as a reference. In the recursive solution, each time a call is made to the left or right child, it’s added to a recursive call stack.</p>
+<p>Ultimately, the recursive call stack is a <strong>stack</strong>, which means we can use a stack to mimic the recursive approach. Let's try using a stack on the following tree. Start by adding the root node to the stack:</p>
+<p>The top of the stack contains the root node, node 5. Let’s pop it off so we can swap its left and right subtrees:</p>
+<p>After the swap, let’s add node 5’s left and right children to the stack so their subtrees can be inverted in future iterations:</p>
+<p>The node at the top of the stack is now node 1, which we should pop off to swap its left and right subtrees and add its children to the stack:</p>
+<p>We repeat the above process of iteratively swapping left and right subtrees until the stack is empty, indicating that all nodes have been processed.</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> TreeNode
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">invert_binary_tree_iterative</span>(<span class="hljs-params">root: TreeNode</span>) -&gt; TreeNode:
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> root:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>
+    stack = [root]
+    <span class="hljs-keyword">while</span> stack:
+        node = stack.pop()
+        <span class="hljs-comment"># Swap the left and right subtrees of the current node.</span>
+        node.left, node.right = node.right, node.left
+        <span class="hljs-comment"># Push the left and right subtrees onto the stack.</span>
+        <span class="hljs-keyword">if</span> node.left:
+            stack.append(node.left)
+        <span class="hljs-keyword">if</span> node.right:
+            stack.append(node.right)
+    <span class="hljs-keyword">return</span> root
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>invert_binary_tree_iterative</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because it processes each node in the binary tree exactly once.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> due to the space taken up by the stack, which can grow as large as the height of the binary tree. The largest possible height of a binary tree is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>.</p>
+
+<h2>Interview Tip</h2>
+<p><em>Tip: Use a stack to convert a recursive solution to an iterative one.</em><br/>
+A common follow-up an interviewer may ask is to solve a problem iteratively rather than recursively. This approach is particularly useful when the tree’s height can be large, and we want to avoid potential stack overflow errors. For example, this could happen in Python, where the maximum recursion depth is set to 1000 by default. It's useful to understand that a stack can often be used to transform recursive solutions into iterative ones.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

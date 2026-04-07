@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lowest Common Ancestor</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Lowest Common Ancestor</h1>
+</div>
+
+<div>Return the lowest common ancestor (LCA) of two nodes, <code>p</code> and <code>q</code>, in a binary tree. The LCA is defined as the <strong>lowest node that has both <code>p</code> and <code>q</code> as descendants</strong>. A node can be considered an ancestor of itself.Example:<img src="data:image/webp;base64,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" alt="Image represents a binary tree structure where nodes are represented by circles containing numerical labels (1 through 9). Node 1 is the root node, branching into nodes 2 and 3. Node 2 further branches into nodes 4 and 5. Node 3 branches into nodes 6 and 7. Node 6 further branches into nodes 8 and 9.  Node 3 is highlighted in orange and labeled &#x27;LCA&#x27; (Least Common Ancestor) in orange text above it, indicating its significance in the context of finding the LCA within the tree.  Additionally, node 8 is labeled with a &#x27;p&#x27; in cyan, and node 7 is labeled with a &#x27;q&#x27; in cyan, suggesting these nodes (&#x27;p&#x27; and &#x27;q&#x27;) are the target nodes for which the LCA (node 3) is being identified.  The lines connecting the nodes represent parent-child relationships within the tree hierarchy." style="display: block; max-width: 100%; height: auto; margin: 0 auto">Constraints:
+
+The tree contains at least two nodes.
+
+
+All node values are unique.
+
+
+<code>p</code> and <code>q</code> represent different nodes in the tree.
+
+</div>
+
+<h2>Intuition</h2>
+<p>One strategy to solve this problem is to traverse each node in the tree and evaluate whether the current node at any point is the LCA of p and q. To make this evaluation, it’s crucial to know the conditions a node needs to meet to be the LCA.</p>
+<p>Let’s start by discussing where p or q would need to be for the current node to be at least an ancestor of both.</p>
+<p><strong>Identifying when the current node is an ancestor of p and q</strong><br/>
+Consider the following binary tree. Let's explore where p and q would need to be for node 3 to be an ancestor.</p>
+<p>Node 3 is only an ancestor of p and q when both nodes are in node 3’s subtree. If they were anywhere else, they would not be descendants of node 3.</p>
+<p>Now, let’s examine the conditions in which a node is the <em>lowest</em> common ancestor of p and q.</p>
+<p><strong>Identifying when the current node is the LCA of p and q</strong><br/>
+Let’s identify where in the subtree p and q should be to qualify node 3 as the <em>lowest</em> ancestor of them both.</p>
+<p>As we can see above, there are three possible cases where node 3 is the LCA. This is because in each case, there isn’t a node lower than node 3 that contains both p and q as descendants, making node 3 the LCA.</p>
+<p>Note that if both p and q were in just one of node 3’s subtrees (e.g., the left subtree), node 3 would not be the LCA because there would be a node lower in the left subtree that’s an ancestor of both p and q:</p>
+<p>What can we derive from these observations? In the three cases where the current node is the LCA, <strong>p and q were found in exactly two of the following three locations</strong>:</p>
+<ul>
+  <li>The current node itself.</li>
+  <li>The current node’s left subtree.</li>
+  <li>The current node’s right subtree.</li>
+</ul>
+<p>This indicates that by traversing the tree and checking if p and q are present in two of these locations for each node, we can effectively identify the LCA.</p>
+<p><strong>Depth-first search</strong><br/>
+Recursive DFS is well-suited for traversal in this problem, as it enables us to recursively check each node’s left and right subtrees to determine if they contain p or q.</p>
+<p>In the implementation, we can assess the existence of p and q in the three locations previously mentioned, by attaining the following three boolean variables at each node:</p>
+<ul>
+  <li><code>node_is_p_or_q = (node == p or node == q)</code></li>
+  <li><code>left_contains_p_or_q = dfs(node.left)</code></li>
+  <li><code>right_contains_p_or_q = dfs(node.right)</code></li>
+</ul>
+<p>Again, two of these variables need to be true for the current node to be the LCA.</p>
+<p>Return statement<br/>
+Whenever we make a recursive DFS call, such as <code>dfs(node.left)</code>, we expect that call to return true if the subtree rooting from <code>node.left</code> contains p or q. This means the return statement of our DFS function should return true if either p or q exists anywhere in the current subtree.</p>
+<p>To do this, we <strong>return true if any of the above three variables are true</strong>, as this would indicate either p or q is somewhere in the current subtree.</p>
+<p>The diagram below shows how the boolean values returned from each node's left and right subtrees help to identify the LCA:</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/trees/lowest-common-ancestor" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<p>Note, this implementation uses a global variable because it leads to a more readable solution. However, it's important to confirm with your interviewer that global variables are acceptable. If not, you may need to adjust the solution to avoid using them, such as passing the variable as an argument, or finding an alternative approach.</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> TreeNode
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">lowest_common_ancestor</span>(<span class="hljs-params">root: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; TreeNode:
+    dfs(root, p, q)
+    <span class="hljs-keyword">return</span> lca
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">dfs</span>(<span class="hljs-params">node: TreeNode, p: TreeNode, q: TreeNode</span>) -&gt; <span class="hljs-built_in">bool</span>:
+    <span class="hljs-keyword">global</span> lca
+    <span class="hljs-comment"># Base case: a null node is neither p nor q.</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> node:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+    node_is_p_or_q = node == p <span class="hljs-keyword">or</span> node == q
+    <span class="hljs-comment"># Recursively determine if the left and right subtrees contain 'p' or 'q'.</span>
+    left_contains_p_or_q = dfs(node.left, p, q)
+    right_contains_p_or_q = dfs(node.right, p, q)
+    <span class="hljs-comment"># If two of the above three variables are true, the current node is the LCA.</span>
+    <span class="hljs-keyword">if</span> node_is_p_or_q + left_contains_p_or_q + right_contains_p_or_q == <span class="hljs-number">2</span>:
+        lca = node
+    <span class="hljs-comment"># Return true if the current subtree contains 'p' or 'q'.</span>
+    <span class="hljs-keyword">return</span> node_is_p_or_q <span class="hljs-keyword">or</span> left_contains_p_or_q <span class="hljs-keyword">or</span> right_contains_p_or_q
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>lowest_common_ancestor</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the number of nodes in the tree. This is because the algorithm traverses each node of the tree once.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> due to the space taken up by the recursive call stack, which can grow as large as the height of the binary tree. The largest possible height of a binary tree is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

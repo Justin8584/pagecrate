@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.06 - Pagination library</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <span class="chapter-number">06</span>
+  <h1>Pagination library</h1>
+</div>
+
+<p>Efficiently managing large datasets is a cornerstone of mobile app performance. Pagination ensures that users experience seamless interactions, even with extensive content. While earlier chapters addressed pagination within specific applications, we now shift our focus to a broader challenge: crafting a reusable pagination library.</p>
+<p>A well-designed pagination library offers substantial benefits as organizations grow. It promotes consistency across applications, reduces code duplication, and consolidates performance optimizations in one place. Building such a library requires careful attention to API design and implementation, striking a balance between flexibility and practicality.</p>
+<div><strong>💡 Pro tip!</strong>Designing a library differs fundamentally from designing an app. Apps serve end users through interfaces and screens, whereas libraries serve developers through code. Our design must prioritize how developers integrate and interact with the library, solving their challenges while enhancing their workflow.When creating a library, our focus shifts from user-facing experiences to developer-centric APIs. The "user experience" transforms into the ease with which developers adopt our solution, integrate it into their projects, and address their pagination needs.</div>
+<p>Like all system design challenges, the specific requirements will shape our technical decisions. Before diving into implementation details, we need to understand clearly what our library should accomplish and how other developers will use it. Let's begin by defining these requirements and exploring the key decisions that will influence our design.</p>
+
+<h2>Step 1: Understand the problem and establish design scope</h2>
+<p>Before considering design decisions, it is crucial to first understand what we're building and why. Let's walk through how this conversation typically unfolds in an interview setting.</p>
+<div><strong>📝 Note:</strong> This chapter assumes familiarity with pagination techniques such
+as offset-based and cursor-based pagination. For a detailed refresher, refer
+to the Pagination section in Chapter 10: Mobile System Design Building Blocks.</div>
+<p><strong>Candidate</strong>: To begin, I'd like to confirm the core requirements for the pagination library. I'm thinking we'll need a flexible solution that supports common pagination patterns such as offset and cursor-based approaches, while allowing pagination from both local and remote data sources. Does this align with your vision?<br/>
+<strong>Interviewer:</strong> Yes, that captures the library's intended flexibility and scope. And it should be able to handle any type of application data.</p>
+<p><strong>Candidate:</strong> Understood. Should the library include user interface components for rendering paginated data, or should it focus exclusively on the pagination logic and data management?<br/>
+<strong>Interviewer:</strong> Let's keep our scope focused on the business logic, excluding UI components for now.</p>
+<p><strong>Candidate:</strong> Makes sense. To optimize performance, I think we should implement a caching system that stores previously fetched pages. We could use in-memory caching by default for quick access to recent pages, and optionally allow disk-based caching for persisting data between app sessions. What do you think?<br/>
+<strong>Interviewer:</strong> Yes, that sounds perfect!</p>
+<p><strong>Candidate:</strong> I'd also propose adding a prefetching capability that anticipates user navigation patterns. For example, when a user views page 5, the library can automatically load pages 6 and 7 in the background, ensuring a seamless browsing experience as they continue scrolling. This would significantly reduce perceived loading times. Should we also support fast-scrolling scenarios where users jump quickly through large datasets?<br/>
+<strong>Interviewer:</strong> Let's include prefetching, but exclude fast scrolling, as we're not handling UI components.</p>
+<p><strong>Candidate:</strong> Noted. Lastly, will this library be open-sourced? This consideration could impact our API design, documentation standards, and versioning strategy.<br/>
+<strong>Interviewer:</strong> Yes, we're planning to open-source it.</p>
+
+<h3>Requirements</h3>
+<p>From these considerations, we're designing a pagination library with the following <strong>functional requirements</strong>:</p>
+<ul>
+  <li>The library supports various application data types and multiple pagination techniques.</li>
+  <li>Users can paginate through different local and remote data sources.</li>
+  <li>The library provides business logic functionality. It doesn't provide UI support.</li>
+  <li>The library provides in-memory caching and configurable disk caching.</li>
+  <li>Users can prefetch specific pages.</li>
+</ul>
+<p>As for <strong>non-functional requirements</strong>, we need to build a system that ensures:</p>
+<ul>
+  <li>Performance: The library must deliver efficient pagination with optimized resource usage and minimal overhead, operating safely in a multi-threaded environment.</li>
+  <li>Reliability: The library should address network failures and interruptions gracefully, ensuring consistent behavior regardless of device type or OS version.</li>
+  <li>Usability: We need to offer an intuitive API with comprehensive documentation and clear learning resources that help developers implement pagination effectively.</li>
+</ul>
+<p>Features that are <strong>out of scope</strong> for this exercise:</p>
+<ul>
+  <li>Pagination support in the UI.</li>
+  <li>Support for fast scrolling.</li>
+</ul>
+<p>Now that we've established our requirements, we can begin designing the pagination library's API. This foundation will shape how developers interact with our library.</p>
+
+<h2>Step 2: API design</h2>
+<p>Having established our pagination library's requirements, we now shift our focus to designing its <strong>public API</strong>. This interface must be intuitive, adaptable, and robust enough to meet the varied demands of mobile developers.</p>
+<div><strong>📌 Remember!</strong>Think of a library's <strong>API</strong> as its public face—it's everything
+developers can directly interact with, including its functions, classes,
+methods, and properties. Just like a well-designed user interface makes an app
+intuitive for its users, a well-crafted API surface makes a library
+approachable for developers.A good <strong>public API</strong> helps developers use the
+library effectively without needing to know how it works internally. To
+achieve this, it requires three key qualities: clear documentation that helps
+developers understand how to use each component, stability so developers can
+rely on consistent behavior, and an intuitive design that follows platform
+conventions and patterns.</div>
+<p>Central to this design is the Paginator interface, which acts as the cornerstone for users interacting with the library.</p>
+<div><strong>💡 Pro tip!</strong>When designing a library's API, focus first on defining its core elements: the key interfaces, classes, and data models that developers will interact with most frequently. These form the foundation of your API surface and will shape how developers use your library.</div>
+
+<h2>Paginator</h2>
+<p>Mobile apps frequently handle varied datasets such as social media feeds, chat histories, or product catalogs. To support any data type, we define <strong>Paginator&lt;T&gt;</strong> using generics. This decision offers immediate benefits:</p>
+<ul>
+  <li>Flexibility: A single Paginator can handle any data type, reducing repetitive code and satisfying the requirement for multiple data types.</li>
+  <li>Isolation: Independent instances coexist without conflict, each managing an independent cache and pagination flow.</li>
+  <li>Optimization: Memory usage stays lean, as each instance tracks only its relevant data.</li>
+  <li>Reliability: Generics enforce type safety at compile time, catching errors early.</li>
+</ul>
+<div><strong>📌 Remember!</strong>Using generics with Paginator<T> means we can handle any data type without creating separate implementations. Instead of writing separate Paginator classes for posts, messages, or other content types, the generic <T> parameter allows us to write a single, flexible implementation. This not only reduces code duplication but also makes the library much more versatile and maintainable.</div>
+<p>The Paginator<T> interface needs core methods that align with our requirements:</p>
+<ol>
+  <li>Fetching individual pages, allowing users to request specific pages of data from a data source.</li>
+  <li>Fetching surrounding pages, enabling prefetch of pages around a specific page.</li>
+  <li>Cache management, providing the ability to clear specific pages from the cache.</li>
+</ol>
+<p>These translate into three methods: fetch, fetchAround, and clear. The public API definition looks like the following:</p>
+<div class="table-wrap"><table><thead><tr><th>Kotlin</th></tr></thead><tbody><tr><td>interface   Paginator < T > {
+     fun   fetch (key:  String , pageSize:  Int ) 
+
+     fun   fetchAround (
+      key:  String , pageSize:  Int ,
+      depthLevel:  Int , direction:  PageFetchDirection 
+    ) 
+
+     fun   clear (key:  String ) 
+  }</td></tr><tr><td>enum class PageFetchDirection   
+ALL, FORWARD, BACKWARD</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>Swift</th></tr></thead><tbody><tr><td>protocol   Paginator  {
+     associatedtype   T 
+
+     func   fetch ( key :  String ,  pageSize :  Int )
+
+     func   fetchAround (
+       key :  String ,  pageSize :  Int ,
+       depthLevel :  Int ,  direction :  PageFetchDirection 
+    )
+
+     func   clear ( key :  String )
+  }</td></tr><tr><td>enum PageFetchDirection   
+case all, forward, backward</td></tr></tbody></table></div>
+<p>The Paginator's methods are <strong>idempotent</strong>, ensuring that repeated calls with identical inputs yield the same results.</p>
+<div><strong>💡 Pro tip!</strong>By defining Paginator as an interface/protocol, we're not just creating an entry point to our library; we're also making it easier to test. This approach allows developers to create test double [1] versions that simulate different scenarios.</div>
+
+<h3>Supporting diverse pagination techniques</h3>
+<p>A key strength of this API is its agnosticism toward pagination techniques. The key parameter is intentionally flexible, adapting to the underlying method:</p>
+<ul>
+  <li><strong>Offset-based pagination</strong>: key might be an integer (e.g., "1" for page 1, "2" for page 2).</li>
+  <li><strong>Cursor-based pagination</strong>: the key could be a token (e.g., "cursor123") that points to the next dataset.</li>
+</ul>
+<p>This adaptability ensures that developers can use the same Paginator interface regardless of their data source's pagination strategy.</p>
+
+<h2>Data propagation</h2>
+<p>Next, we consider how the library communicates results and errors to its users. To keep it lightweight and dependency-free, we opt for <strong>native callbacks</strong>. This decision preserves flexibility, allowing developers to integrate the library without adopting a prescribed async framework.</p>
+<p>We can also make each method return a PaginatorExecution object, empowering users to cancel operations as needed.</p>
+<div><strong>📝 Note!</strong>Since we're designing an open-source library that can be used across multiple apps, we need to be thoughtful about our dependencies. Any third-party libraries we include will become required dependencies for apps using our library. To keep things lightweight and flexible, we'll use native language constructs for core functionality while making the library extensible enough to work well with popular libraries. We'll explore this design approach in more detail in the deep dives section.</div>
+<p>Here's how the improved Paginator interface looks, with new API additions in bold and existing definitions in gray:</p>
+<div class="table-wrap"><table><thead><tr><th>Kotlin</th></tr></thead><tbody><tr><td>interface   Paginator < T > {
+   fun   fetch (
+    key:  String , pageSize:  Int , 
+    listener:  PaginatorFetchListener < T >
+  ) : PaginatorExecution
+  
+   fun   fetchAround (
+    key:  String ,
+    pageSize:  Int ,
+    depthLevel:  Int , direction:  PageFetchDirection ,
+    listener:  PaginatorFetchAroundListener < T >
+  ) : PaginatorExecution
+  
+   fun   clear (key:  String ) 
+}</td></tr><tr><td>Swift</td></tr><tr><td>protocol   Paginator  {
+   associatedtype   T 
+
+   func   fetch (
+     key :  String ,  pageSize :  Int ,
+     listener :  PaginatorFetchListener < T >
+  ) ->  PaginatorExecution 
+
+   func   fetchAround (
+     key :  String ,  pageSize :  Int ,
+     depthLevel :  Int ,  direction :  PageFetchDirection ,
+     listener :  PaginatorFetchAroundListener < T >
+  ) ->  PaginatorExecution 
+
+   func   clear ( key :  String )
+}</td></tr></tbody></table></div>
+<p>Internally, each Paginator instance maintains a thread-safe cache, typically a Map that associates page keys with their data. This setup accelerates access to recently loaded pages, an aspect we'll explore in more detail in the following sections.</p>
+
+<h2>Data models</h2>
+<p>Let's look at the core data models that power the pagination library. At the heart of the design is the PaginatorPage model, which encapsulates everything needed to represent a single page of data:</p>
+<div class="table-wrap"><table><thead><tr><th>Kotlin</th><th>Swift</th></tr></thead><tbody><tr><td>public class PaginatorPage<T>   content: List<T>  key: String  expirationTime: String?  prevKey: String?  nextKey: String?</td><td>public class PaginatorPage<T>   content: [T]  key: String  expirationTime: String?  prevKey: String?  nextKey: String?</td></tr></tbody></table></div>
+<p>The PaginatorPage model serves as a container for both the paginated content and the metadata needed for navigation between pages: the current key, the previous and next keys, if available. The optional expirationTime field enables smart caching decisions, letting the library determine when cached data needs refreshing.</p>
+<div><strong>💡 Pro tip!</strong>You might notice that we're using public classes for our data models here, rather than the data classes and structs we used in previous chapters. This change is intentional and is essential for library development.In Kotlin, data classes automatically generate several methods such as copy, componentN, equals, and hashCode. While convenient for application development, these generated methods can cause binary compatibility issues in libraries. When you modify properties in a data class, the generated methods also change, potentially breaking compatibility for library consumers [2].Similarly, in Swift, structs are value types whose memory layout is part of their binary interface. Changes to stored properties can affect this layout, which in turn impacts the library's ABI stability [3] [4].By using classes instead, we maintain better control over our library's public interface and ensure compatibility across versions.</div>
+
+<h2>How apps implement the Paginator interface</h2>
+<p>When developers integrate the pagination library into their apps, they need to implement and integrate the Paginator interface within their architecture properly. Let's explore how the Paginator interface is typically used in application code.</p>
+<p>Apps that consume our pagination library generally implement it within repositories or UI state holders that:</p>
+<ul>
+  <li>Create a configured Paginator instance with appropriate data sources using the CallbackPaginator implementation (more about this in the next section).</li>
+  <li>Trigger Paginator's methods in response to specific user actions such as scrolling.</li>
+  <li>Combine PaginatorPage objects into a unified list.</li>
+  <li>Monitor pagination state to determine when additional data should be loaded.</li>
+  <li>Handle various states, including loading, errors, and empty results.</li>
+</ul>
+<p>For linear pagination scenarios such as scrolling through content, apps primarily use the fetch method to load pages sequentially. For non-linear scenarios, the fetchAround method enables apps to prefetch content surrounding the target page, ensuring a smooth navigation experience.</p>
+<p>This separation of responsibilities ensures that the Paginator focuses exclusively on efficient data retrieval and caching, while the application host code handles the presentation logic and user interactions.</p>
+
+<h2>Creating configurable Paginator instances</h2>
+<p>As we've seen, host applications need to instantiate a properly configured Paginator to handle pagination effectively. Let's explore how the library provides this flexibility through implementation classes and configuration options.</p>
+<p>While the Paginator interface defines the contract for pagination functionality, apps need concrete implementations they can configure for their specific use cases. With our library, we include the <strong>CallbackPaginator&lt;T&gt;</strong> class, a fully-featured implementation of the Paginator<T> interface that can be customized through dependency injection.</p>
+<p>CallbackPaginator serves as the primary implementation that apps will instantiate, configured with components that define its behavior:</p>
+<ol>
+  <li><strong>PaginatorDataSource&lt;T&gt;</strong> handles the actual data fetching for each page, whether from a remote API, local database, or a mix of both. By separating data retrieval into its own component, CallbackPaginator stays focused on orchestrating the process.</li>
+  <li><strong>PageValidator&lt;T&gt;</strong> ensures cached pages are still valid, checking factors such as expiration timestamps or data integrity. If a page fails validation, CallbackPaginator triggers a fresh fetch to keep data up-to-date.</li>
+  <li>(Optional) <strong>PaginatorStore&lt;T&gt;</strong> enables on-disk storage of fetched pages for offline usage. It cuts down on redundant network calls and boosts performance by keeping data locally accessible.</li>
+  <li><strong>PaginatorConfig</strong> controls aspects such as concurrency handling, cache eviction policies, and other settings.</li>
+</ol>
+<p>Let's look at the <strong>definition of the CallbackPaginator&lt;T&gt; class</strong> that embraces dependency injection to allow consumers to provide their own specialized implementations tailored to their specific use cases:</p>
+<div class="table-wrap"><table><thead><tr><th>Kotlin</th></tr></thead><tbody><tr><td>class   CallbackPaginator < T >(
+    dataSource: PaginatorDataSource<T>,
+    validator: PageValidator<T>,
+    store: PaginatorStore<T>? =  null ,
+    config: PaginatorConfig = DefaultPaginatorConfig(),
+  ) : Paginator<T> { ... }</td></tr><tr><td>class PaginatorConfig 
+threadPool: ExecutorService, 
+maxParallelCalls: Int? = null, 
+inMemoryEvictionStrategy: PaginatorEvictionStrategy, 
+storeEvictionStrategy: PaginatorEvictionStrategy? = null, 
+...</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>Swift</th></tr></thead><tbody><tr><td>class   CallbackPaginator < T >:  Paginator < T > {
+     init (
+       dataSource :  PaginatorDataSource < T >,
+       validator :  PageValidator < T >,
+       store :  PaginatorStore < T >?  =   nil ,
+       config :  PaginatorConfig   =   DefaultPaginatorConfig () 
+    ) {
+       // self.field statements 
+    }
+  }</td></tr><tr></tr></tbody></table></div>
+<div><strong>📝 Note:</strong> While some libraries use static configuration methods such as
+Paginator.init(...), this approach isn't ideal for our pagination library.
+Since each Paginator instance needs independent configuration and high
+customizability, we opted for instance-level configuration instead. This gives
+users more flexibility to configure each instance according to their specific
+needs.</div>
+<p>The library comes with several built-in common eviction policies such as LRU (Least Recently Used), FIFO (First In, First Out), and LIFO (Last In, First Out). Beyond these standard options, developers can also define custom policies based on their specific needs, whether that's time-based expiration (TTL), memory size limits, or maximum page count. This flexibility ensures the library can adapt to various caching requirements and resource constraints.</p>
+
+<h2>Step 3: High-level client architecture</h2>
+<p>With the API design established, we now shift our focus to crafting a high-level client architecture that powers our pagination library. This structure must prioritize modularity, scalability, and maintainability to integrate seamlessly into a variety of mobile applications.</p>
+<p>Figure 1 provides a visual overview, detailing the core components and their interactions—solid arrows denote data flow, dotted arrows show dependencies, and arrows pointing outside the box represent external communication. In the diagram, components with a gray background represent implementation classes contributed by developers, while the remaining components are implementations provided by the library itself.</p>
+<figure class="py-1"><div style="display: flex; justify-content: center;"><img alt="Image represents a system architecture diagram labeled 'Library,' depicting the interaction between different components of a paginator.  The central component is a large rectangle labeled 'Paginator,' which receives input from four other components: 'Paginator DataSource' (bottom-left), 'Paginator InMemory Cache' (top-center), and 'Paginator Evictor' (top-right), all connected via solid lines indicating direct data flow.  The 'Paginator Scheduler' (top-left) connects to the central 'Paginator' via a dashed line, suggesting asynchronous or scheduled communication.  The central 'Paginator' also sends data to 'Paginator Validator' (bottom-center) via a dashed line, implying validation occurs after data processing.  The 'Paginator Evictor' and 'Paginator Store' (bottom-right) are connected by a dashed line, indicating data transfer for storage or eviction purposes.  Finally, a solid upward-pointing arrow from the top of the 'Library' boundary suggests an external input or trigger initiating the pagination process.  The 'Paginator InMemory Cache' sends data to the 'Paginator Evictor' via a dashed line, suggesting a mechanism for managing cached data.  All components are rectangular boxes with their respective names clearly labeled." height="433" src="data:image/webp;base64,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" style="display: block; max-width: 100%; height: auto; margin: 0 auto" width="602"/></div><div style="display: flex; justify-content: center;"><figcaption class="py-1">Figure 1: Pagination library high-level architecture—implementations</figcaption></div></figure>
+<p>provided by developers with gray background, implementations provided by the Pagination
+library with white background.</p>
+<p>Having laid the groundwork with earlier discussions, let's introduce two critical components that enhance the Paginator's efficiency and focus:</p>
+<ul>
+  <li>The <strong>PaginatorScheduler</strong> takes charge of all request-related operations: queuing, ordering, and processing responses. It also manages debouncing, throttling, retry mechanisms, and concurrency, offloading these tasks from the Paginator to keep its responsibilities focused and streamlined.</li>
+  <li>The <strong>PaginatorEvictor</strong> manages cache efficiency for both in-memory and disk storage. This separation gives us the flexibility to implement different eviction strategies without impacting other parts of the system. It ensures our caches remain performant while keeping resource usage in check.</li>
+</ul>
+<div><strong>💡 Pro tip!</strong>Breaking functionality into dedicated components serves two purposes: (1) it demonstrates your understanding of modular design principles, and (2) it clearly shows the interviewer you're addressing specific requirements such as caching and prefetching. |</div>
+<p>This design achieves a careful balance: it offers users the flexibility to integrate custom data sources and storage solutions while entrusting the library with the intricacies of scheduling and cache management.</p>
+
+<h2>Step 4: Deep dives</h2>
+<p>With our high-level architecture in place, let's explore some key implementation details. While the specific areas to dive into during an interview often depend on your interviewer's interests and your system's particular challenges, we'll focus on several critical aspects:</p>
+<ul>
+  <li>Implementing effective caching strategies.</li>
+  <li>Priorities in API calls.</li>
+  <li>Modular API design.</li>
+  <li>Handling failures and versioning.</li>
+</ul>
+
+<h2>Implementing effective caching strategies</h2>
+<p>Caching is a pivotal element in our pagination library, directly shaping its performance and the resulting user experience. In this section, we'll explore the mechanics of our dual caching system, which integrates in-memory and disk-based approaches to streamline data retrieval.</p>
+<p>While users can optionally use the PaginatorStore for persisting PaginatorPage objects on disk, the in-memory cache significantly improves user experience. Both caching mechanisms can be fine-tuned through eviction policies defined in PaginatorConfig when initializing a Paginator instance.</p>
+
+<h3>In-memory caching</h3>
+<p>At the core of this system lies the PaginatorInMemoryCache that provides fast storage for paginated data (i.e., PaginatorPage objects).</p>
+<p>PaginatorInMemoryCache uses a Map<String, PaginatorPageResult<T>> structured as follows:</p>
+<ul>
+  <li>A String key as the unique identifier for each page (offset, page index, or cursor).</li>
+  <li>A PaginatorPageResult<T> value representing the current state of that page. This object reflects the page's lifecycle:
+
+key not present in the cache: The page awaits its initial fetch.
+Loading: A retrieval operation is underway.
+Success(page: PaginatorPage<T>): The page is ready and validated.
+Error(message: String): A fetch attempt failed, with diagnostic details provided.</li>
+</ul>
+<p>Modeling these states explicitly with PaginatorPageResult brings several key advantages: type safety that helps catch errors at compile time, clear representation of a page's status at any point, easier debugging when issues arise, and better scalability as the codebase grows.</p>
+
+<h3>How the dual caching system works</h3>
+<p>Our caching strategy operates through a tiered structure. Let's explore how the caching components work together when a user requests a page. Figure 2 illustrates the data flow during in-memory and disk cache misses.</p>
+<p>When a user calls fetch on a Paginator instance (step 0), the system implements the following caching strategy:</p>
+<ol>
+  <li><strong>In-memory cache check</strong>: The Paginator begins by querying the in-memory cache to see if an existing PaginatorPage already exists. If a valid page is found, it's returned immediately for a low-latency response.</li>
+  <li><strong>Disk cache check</strong> (optional): If the in-memory cache misses and a PaginatorStore is configured, the system consults the disk cache. A valid page found here is promoted to memory for future use and promptly returned.</li>
+  <li><strong>Data source fetch</strong>: If both caches fail to provide the requested page, the PaginatorScheduler triggers a fetch call on the PaginatorDataSource.</li>
+  <li><strong>Validator check</strong>: Once the new page is retrieved, the PageValidator verifies the data's validity, checking for proper formatting or expiration.</li>
+  <li><strong>Cache update</strong>: Once validated, the fresh page is cached in both the in-memory cache and in the disk store if configured.</li>
+  <li>Then, the fresh page is returned to the caller.</li>
+</ol>
+<figure class="py-1"><div style="display: flex; justify-content: center;"><img alt="Image represents a system architecture diagram for a paginator.  A developer, represented by a person icon with code symbol, initiates a `fetch(key, limit)` request (0). This request flows to the `Paginator` (central component), which first passes through a `Paginator Validator` (4). The `Paginator` then interacts with a `Paginator Scheduler` (3), which in turn communicates with a `Paginator DataSource` to retrieve the data.  The `Paginator` then sends the retrieved data to both a `Paginator InMemory Cache` (1, 5.1) and a `Paginator Store` (2, 5.2).  The cache is indicated as having a cache miss, implying that the data was not found in the cache and had to be fetched from the `Paginator Store`. Finally, a `PaginatorPage` (6) is returned to the developer.  The numbered arrows (1-6) indicate the flow of data and control between components.  The 'X' symbols next to the cache and store indicate that these are likely external components or services." height="507" src="data:image/webp;base64,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" style="display: block; max-width: 100%; height: auto; margin: 0 auto" width="602"/></div><div style="display: flex; justify-content: center;"><figcaption class="py-1">Figure 2: Paginator with cache misses data flow</figcaption></div></figure>
+<p>This layered design strikes a balance between speed and durability: in-memory caching ensures rapid access, while disk caching offers a dependable fallback. The PaginatorEvictor plays a key role by enforcing eviction policies, keeping both caches lean, and preventing resource overload.</p>
+
+<h3>Benefits and considerations</h3>
+<p>Our dual caching approach offers several advantages:</p>
+<ul>
+  <li>Better performance through reduced latency by avoiding network calls.</li>
+  <li>Lower network usage through intelligent request management.</li>
+  <li>Smoother user experience with faster data retrieval.</li>
+</ul>
+<p>While powerful, this caching system requires careful attention to several implementation details:</p>
+<ul>
+  <li>The system assumes that cache keys map directly to network requests. For cases where this assumption doesn't hold, we may need to implement custom key generation logic.</li>
+  <li>Since the Paginator engine operates in a multithreaded environment, we must ensure thread-safe cache access and atomic operations to prevent race conditions or data corruption.</li>
+</ul>
+<p>To support fine-tuning, we can configure the library with analytics and logger providers to capture cache hits, misses, and evictions. These insights equip developers to optimize performance for their unique needs.</p>
+<div><strong>🔍 Industry insights:</strong>The Store5 library [5] for Kotlin MultiPlatform and
+the Hyperoslo Cache library [6] for iOS can be configured to write to both in-memory
+and disk storage, giving fast in-memory reads with persistent disk backup.Google's Jetpack Paging library [7] encourages a network + database hybrid: using a local
+database as the single source of truth for paged content, and a RemoteMediator
+that fetches new pages into the DB only when the app runs out of local data.</div>
+
+<h2>Priorities in API calls</h2>
+<p>Users expect rapid responses, yet the library must juggle multiple tasks, often under constraints such as limited device resources or fluctuating network conditions. Prioritizing API calls becomes vital when:</p>
+<ul>
+  <li>Concurrent requests compete for bandwidth or processing power.</li>
+  <li>Background operations, such as prefetching, overlap with user-initiated actions.</li>
+  <li>Device limitations, such as low battery or weak connectivity, demand optimized performance.</li>
+</ul>
+<p>Consider a user scrolling to load new content: this request must outrank background prefetching to ensure immediate feedback. Likewise, in fetchAround scenarios, the explicitly requested page should load before its neighbors. To achieve this, we can enhance our public APIs with priority controls, allowing developers to dictate the execution order effectively.</p>
+<p>Here's how the improved Paginator interface looks like, with new API additions in bold and existing definitions in gray:</p>
+<div class="table-wrap"><table><thead><tr><th>Kotlin</th></tr></thead><tbody><tr><td>interface   Paginator < T > {
+     fun   fetch (
+      key:  String ,
+      pageSize:  Int ,
+      listener:  PaginatorFetchListener < T >,
+      priority:  FetchPriority  = FetchPriority.MEDIUM
+    ) : PaginatorExecution
+    
+     fun   fetchAround (
+      key:  String , pageSize:  Int ,
+      depthLevel:  Int , direction:  PageFetchDirection ,
+      listener:  PaginatorFetchAroundListener < T >,
+      keyPriority:  FetchPriority  = FetchPriority.MEDIUM,
+      aroundPriority:  FetchPriority  = FetchPriority.LOW
+    ) : PaginatorExecution
+  }</td></tr><tr><td>enum class FetchPriority   
+HIGH, MEDIUM, LOW</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>Swift</th></tr></thead><tbody><tr><td>protocol   Paginator  {
+     associatedtype   T 
+
+     func   fetch (
+       key :  String ,  pageSize :  Int ,
+       listener :  PaginatorFetchListener < T >,
+       priority :  FetchPriority 
+    ) ->  PaginatorExecution 
+
+     func   fetchAround (
+       key :  String ,  pageSize :  Int ,
+       depthLevel :  Int ,  direction :  PageFetchDirection ,
+       listener :  PaginatorFetchAroundListener < T >,
+       keyPriority :  FetchPriority ,
+       aroundPriority :  FetchPriority 
+    ) ->  PaginatorExecution 
+  }</td></tr><tr><td>enum FetchPriority 
+case high, medium, low</td></tr></tbody></table></div>
+<p>Each fetch operation accepts a priority parameter that signals its relative importance to the library. For the fetchAround call, we introduce two distinct priority levels: keyPriority for the main requested page, and aroundPriority for the surrounding pages. This granular control allows us to optimize how the library processes different types of requests.</p>
+<p>Now, let's explore how to implement this prioritization system in our library.</p>
+
+<h3>Priority-based task scheduling</h3>
+<p>Effective priority handling demands a robust scheduling strategy. Table 1 evaluates several approaches, each balancing simplicity, scalability, and concurrency in different ways.</p>
+<div class="table-wrap"><table><thead><tr><th>Option</th><th>Description</th><th>Advantages</th><th>Disadvantages</th></tr></thead><tbody><tr><td>Separate queues for each priority level</td><td>Dedicated queues per priority, processed sequentially by importance.</td><td>Simple to implement and understand, and clear separation of priorities. Direct control over task execution order.</td><td>Performance degrades with more priority levels and complex workload balancing across queues. Higher memory overhead.</td></tr><tr><td>Priority Queue</td><td>Single queue that automatically maintains tasks in priority order through heap structure. Reorders on enqueue/dequeue.</td><td>Efficient priority-based ordering and simpler architecture with a single queue. Lower memory footprint.</td><td>Potential overhead from heap reordering. No fairness guarantee, lower-priority tasks may starve.</td></tr><tr><td>ThreadPools with priority levels</td><td>Separate thread pools per priority, with more resources for higher levels.</td><td>True concurrency with hardware parallelism, and better resource utilization. Natural handling of priority levels.</td><td>Complex thread pool management. Higher resource demands.</td></tr><tr><td>Weighted Round-Robin scheduling</td><td>Cyclic processing with higher-priority tasks receiving greater execution time.</td><td>Guaranteed processing for all priorities, and predictable task execution. Good fairness properties.</td><td>Complex weight tuning needed. Higher-priority tasks may face delays.</td></tr></tbody></table></div>
+<p>Table 1: Trade-offs for implementing priority-based task scheduling</p>
+<p>The <strong>Priority Queue pattern</strong> [8] stands out as a strong choice for our library. It delivers efficient ordering, ensures high-priority tasks are executed first, and simplifies the implementation. This balance is well-suited for our mobile constraints.</p>
+<div><strong>🔍 Industry insights:</strong>Google's Volley networking library lets developers tag
+requests with a Priority so that an "immediate" request jumps ahead in the queue
+[9].</div>
+
+<h2>Modular API design</h2>
+<p>Two important considerations for designing a pagination library are handling async operations well and making testing easy. First, we'll look at managing asynchronous tasks across different setups. Then, we'll cover testing approaches that keep it reliable and simple to use.</p>
+
+<h3>Async framework compatibility layers</h3>
+<p>When designing a mobile library, we face a critical decision: how to manage async operations effectively. Frameworks such as Kotlin Coroutines or Swift's Combine offer robust solutions for async programming, and it might be tempting to build our entire library and public APIs around one of these powerful tools. However, mandating such dependencies could burden users whose projects rely on different tools. Imagine an RxJava-based app forced to adopt Coroutines solely to integrate our library. To avoid this, we should craft an API that works well with various async approaches.</p>
+<div><strong>🛠️ Platform implementation details</strong>Both the Android and iOS platforms provide several approaches for handling asynchronous operations:
+
+Android's ecosystem offers multiple async solutions, including traditional callbacks, Kotlin Coroutines and Flow, RxJava, LiveData, and CompletableFuture from Java.
+
+
+iOS developers can choose from options such as closure-based completion handlers (callbacks), the Combine framework, async/await syntax, the delegate pattern, and Grand Central Dispatch (GCD) for low-level concurrency control.
+
+</div>
+<p>Our solution is a modular design that anchors the core API in native callbacks, free of external dependencies, and complements it with optional extension modules for popular frameworks. This gives developers maximum flexibility:</p>
+<ul>
+  <li>paginator-core delivers the essential functionality with no external dependencies.</li>
+  <li>paginator-coroutines, paginator-combine, or paginator-rx provide optimized support for specific async solutions.</li>
+</ul>
+<p>This strategy offers multiple benefits:</p>
+<ul>
+  <li>Flexibility: Developers can adopt only the extensions that suit their project's tech stack.</li>
+  <li>Lightweight core: The base module remains unburdened by external frameworks, enhancing its portability.</li>
+  <li>Native integration: Each extension aligns with its framework's conventions, ensuring an intuitive developer experience.</li>
+</ul>
+<div><strong>🛠️ Platform implementation details</strong>Android and iOS handle library distribution differently.Android's build system, typically Gradle, provides built-in support for creating multiple library artifacts from a single codebase. This means you can publish each async integration as a separate artifact, giving developers the flexibility to include only what they need.iOS traditionally distributes libraries as single frameworks, but it offers several approaches to achieve modularity:
+
+Use conditional compilation to selectively include code.
+
+
+Create extension files for different async patterns that developers can optionally add.
+
+
+Leverage Swift Package Manager to define separate products or targets for different integrations.
+
+</div>
+<p>This modular approach not only keeps the library adaptable for current users but also prepares it for emerging async paradigms without disrupting existing implementations.</p>
+<p>Let's see this adaptability in action. Here are examples of how our API transforms when used with Kotlin coroutines and Swift's async/await syntax, with new API additions in bold and existing definitions in gray:</p>
+<div class="table-wrap"><table><thead><tr><th>Kotlin using coroutines and flows</th></tr></thead><tbody><tr><td>interface   Paginator < T > {
+
+     suspend   fun   fetch (key:  String , pageSize:  Int ) : PaginatorPage<T>
+
+     fun   fetchAround (
+      key:  String , pageSize:  Int ,
+      depthLevel:  Int , direction:  PageFetchDirection 
+    ) : Flow<PaginatorPageT>>
+
+     suspend   fun   clear (key:  String ) 
+  }</td></tr><tr><td>Swift using async/await</td></tr><tr><td>protocol   Paginator  {
+     associatedtype   T  
+  
+     func   fetch (
+       key :  String ,  pageSize :  Int 
+    )  async   throws  ->  PaginatorPage < T > 
+  
+     func   fetchAround (
+       key :  String ,  pageSize :  Int ,
+       depthLevel :  Int ,  direction :  PageFetchDirection 
+    ) ->  AsyncThrowingStream < PaginatorPageT >,  Error > 
+    
+     func   clear ( key :  String )  async   throws 
+  }</td></tr></tbody></table></div>
+
+<h3>Pagination library testing suite</h3>
+<p>While async flexibility is crucial for adoption, equally important is comprehensive testing support. Our design's foundation of interfaces and protocols naturally facilitates testing, but we can elevate the library's value by <strong>offering a dedicated testing-only artifact</strong>, complete with pre-built test doubles and utility tools tailored for developer convenience.</p>
+<p>This testing artifact equips developers with a practical toolkit, including:</p>
+<ul>
+  <li>Pre-built test doubles: These emulate core components such as PaginatorDataSource, PaginatorStore, and PageValidator, enabling developers to simulate diverse scenarios without crafting bespoke mocks.</li>
+  <li>Helper functions: Tools for generating sample paginated data or mimicking network latency simplify the process of setting up meaningful test cases.</li>
+  <li>Error simulation capabilities: Features that let developers test how their code handles failures or edge cases, ensuring robust error handling and recovery logic.</li>
+</ul>
+<p>By providing these resources in a standalone artifact, we empower developers to adopt our library with confidence, knowing they have the means to achieve thorough test coverage. This offers several benefits to developers:</p>
+<ul>
+  <li>Eliminate the need to create and maintain custom test implementations.</li>
+  <li>Ensure test doubles stay in sync with library updates automatically.</li>
+  <li>Promote higher test coverage by simplifying the testing of edge cases.</li>
+  <li>Demonstrate our commitment to testing best practices.</li>
+</ul>
+<div><strong>📌 Remember!</strong>A dedicated testing-only artifact complements our modular
+design while keeping the core library lightweight. This separation allows us
+to refine the testing tools independently, having them aligned with evolving
+testing frameworks and methodologies. Additionally, developers get powerful
+testing capabilities without bloating their production builds.</div>
+<div><strong>🔍 Industry insights:</strong>Google's Jetpack Paging 3 [7] takes a similar approach:
+it exposes a common PagingData stream which can be emitted as a LiveData, RxJava
+Flowable, or Kotlin Flow depending on what the app wants to use.The Moya networking
+library [10] in iOS, for example, was built with testing in mind. It lets you
+provide stubbed responses or use a sampleData property for each API endpoint, so
+that unit tests can run without real network calls [11].</div>
+
+<h2>Handling failures and versioning</h2>
+<p>Now let's address potential failure points and versioning strategies for the pagination library. These topics often come up during interviews and demonstrate your thorough understanding of library development beyond just the core functionality.</p>
+
+<h3>Handling failure points</h3>
+<p>A pagination library operates at the intersection of data sources, network, and device constraints, making it susceptible to a variety of failures. Identifying and mitigating these points of failure is essential to ensure reliability and a seamless user experience. Here are the key points specific to pagination and how our design addresses them.</p>
+
+<h5>Network failures</h5>
+<p>Fetching remote data is a common task, but network issues such as timeouts, dropped connections, or server errors can disrupt pagination.</p>
+<p><em>Mitigation</em>: The library uses retry mechanisms with exponential backoff to handle transient failures gracefully. If a fetch fails, callbacks transmit the detailed errors, enabling developers to fallback to cached data or display user-friendly messages, preventing app crashes.</p>
+
+<h5>Database errors</h5>
+<p>When paginating from a local data source, data storage query failures or data corruption can halt operations.</p>
+<p><em>Mitigation</em>: Robust error handling within PaginatorDataSource ensures that issues are caught and reported via callbacks. Developers can configure fallbacks, such as loading stale cache data, to maintain functionality when fresh data isn't available.</p>
+
+<h5>Cache inconsistencies</h5>
+<p>Stale or corrupted cache entries can lead to outdated or incorrect page displays, a critical concern in pagination where continuity matters.</p>
+<p><em>Mitigation</em>: The PageValidator checks page validity using expiration times or checksums. Invalid pages trigger cache invalidation and a fresh fetch, ensuring users see accurate content. This is paired with configurable eviction strategies in PaginatorConfig to keep the cache lean and reliable.</p>
+
+<h5>Concurrency issues</h5>
+<p>Multi-threaded environments, common in mobile apps, risk race conditions when multiple threads access the cache or fetch data simultaneously.</p>
+<p><em>Mitigation</em>: Thread-safe data structures (e.g., concurrent maps) and synchronization mechanisms safeguard the in-memory cache and PaginatorStore. This ensures a consistent state across threads, vital for smooth pagination during rapid user interactions.</p>
+
+<h5>Invalid page keys</h5>
+<p>In cursor-based or keyset pagination, users might request pages with expired or malformed keys, especially after data updates.</p>
+<p><em>Mitigation</em>: The library validates keys before processing, rejecting invalid requests with clear error messages via callbacks. This guides developers to handle such cases, perhaps by resetting to a known starting point.</p>
+
+<h5>Last notes</h5>
+<p>These mitigations prioritize user experience, ensuring that failures don't derail the app but instead degrade gracefully. Adding analytics and logging options in PaginatorConfig further empowers developers to monitor and troubleshoot issues, enhancing reliability in production.</p>
+
+<h3>Versioning</h3>
+<p>As an open-source library, maintaining a clear versioning strategy is vital for developer trust and long-term adoption. It ensures that updates, whether new features, bug fixes, or breaking changes, are predictable and manageable.</p>
+<p>For our library, we adopt <strong>Semantic Versioning (SemVer)</strong> [12] with its MAJOR.MINOR.PATCH format, tailoring it to the pagination library's evolution:</p>
+<ul>
+  <li>The MAJOR version (X.y.z) signals breaking changes that require code updates.
+
+In our pagination library, this would be the case if we modify the Paginator interface or alter the default caching behavior.</li>
+  <li>The MINOR version (x.Y.z) adds new features while maintaining compatibility.
+
+In our pagination library, this would be the case if we enhanced the PaginatorConfig's functionality without disrupting existing integrations.</li>
+  <li>The PATCH version (x.y.Z) addresses bugs and small fixes without changing behavior.</li>
+</ul>
+<div><strong>🛠️ Platform implementation details</strong>Both iOS and Android ecosystems strongly favor SemVer for their dependency management.SemVer integration is particularly important for iOS because the Swift Package Manager (SPM) uses it as the foundation for dependency resolution [13]. Using alternative versioning schemes could lead to compatibility issues and make it harder for SPM to properly manage your library's dependencies.Similarly, on Android, build tools such as Gradle and Maven are designed to work seamlessly with SemVer. Following SemVer ensures these tools can automatically resolve version conflicts and manage dependencies effectively.Without SemVer, you would lose access to much of the sophisticated dependency management these tools provide.</div>
+
+<h3>Other versioning strategies</h3>
+<p>While SemVer is widely adopted, including by our pagination library, for its clear and structured approach to versioning, other strategies such as <strong>Calendar Versioning (CalVer)</strong> are also used in certain ecosystems to meet specific needs.</p>
+<p>A prominent example is Jetpack Compose [14], which combines CalVer with elements of SemVer to manage its rapidly evolving UI toolkit and guarantee compatibility across its suite of libraries. Here's how it works:</p>
+<ul>
+  <li>Individual Compose libraries (compose-ui, compose-material, compose-foundation, etc.) strictly use SemVer.</li>
+  <li>Compose also provides a <strong>Bill of Materials (BOM)</strong> artifact, which uses Calendar Versioning (CalVer). Jetpack Compose's BOM artifacts are formatted as YYYY.MM.PATCH (e.g., 2025.02.00), where the year (YYYY) and month (MM) tie releases to a specific date.</li>
+</ul>
+<p>The Compose BOM simplifies dependency management by specifying a single, calendar-based version that corresponds to a specific set of compatible libraries. The BOM maps a specific CalVer release (e.g., 2025.02.00) to a group of compatible library versions (e.g., compose.animation:1.7.8, compose.material3:1.3.1, etc.). This guarantees compatibility across all included libraries.</p>
+
+<h2>Step 5: Wrap-up</h2>
+<p>In this chapter, we designed a flexible pagination library that works with:</p>
+<ul>
+  <li>Any kind of application data.</li>
+  <li>Different pagination techniques, such as offset-based or cursor-based pagination.</li>
+  <li>Both local and remote data sources.</li>
+</ul>
+<p>We defined a public API, designed a robust, scalable, and extensible architecture, and covered key aspects such as caching, prioritization of API calls, points of failure, testing, and versioning.</p>
+<p>If you have extra time in your interview or want to push yourself with more advanced requirements, here are a few additional areas you could explore:</p>
+<ul>
+  <li>Pagination support in the UI layer: consider integrating with common UI elements such as table views, collection views, or scrolling widgets.</li>
+  <li>Fast scrolling support: enable users to navigate quickly through large datasets, similar to how long lists often allow the skipping of entire sections.</li>
+  <li>Background services: implement prefetching of pages while the app is idle or running in the background, thus ensuring a smooth user experience without interruptions.</li>
+  <li>Custom error handling: provide a way for users to define custom error handling strategies for failed fetches, for example, retries, fallbacks to cached data, or user alerts.</li>
+  <li>Partial page loading: optimize performance by supporting partial page loads when resources are limited or users need only a subset of the data.</li>
+</ul>
+
+<h2>References</h2>
+<p>[1] Test double: <a href="https://en.wikipedia.org/wiki/Test%5C_double" rel="noopener noreferrer" target="_blank">https://en.wikipedia.org/wiki/Test\_double</a><br/>
+[2] Public API Challenges In Kotlin: <a href="https://jakewharton.com/public-api-challenges-in-kotlin/" rel="noopener noreferrer" target="_blank">https://jakewharton.com/public-api-challenges-in-kotlin/</a><br/>
+[3] Swift's ABI stability: <a href="https://github.com/swiftlang/swift/blob/main/docs/ABIStabilityManifesto.md" rel="noopener noreferrer" target="_blank">https://github.com/swiftlang/swift/blob/main/docs/ABIStabilityManifesto.md</a><br/>
+[4] Swift Library Evolution for Stable ABIs available in Swift 5.1: <a href="https://github.com/swiftlang/swift-evolution/blob/main/proposals/0260-library-evolution.md" rel="noopener noreferrer" target="_blank">https://github.com/swiftlang/swift-evolution/blob/main/proposals/0260-library-evolution.md</a><br/>
+[5] Store5 KMP library: <a href="https://github.com/MobileNativeFoundation/Store" rel="noopener noreferrer" target="_blank">https://github.com/MobileNativeFoundation/Store</a><br/>
+[6] Hyperoslo Cache iOS library: <a href="https://github.com/hyperoslo/Cache" rel="noopener noreferrer" target="_blank">https://github.com/hyperoslo/Cache</a><br/>
+[7] Google's Jetpack Paging 3 library docs: <a href="https://developer.android.com/topic/libraries/architecture/paging/v3-network-db" rel="noopener noreferrer" target="_blank">https://developer.android.com/topic/libraries/architecture/paging/v3-network-db</a><br/>
+[8] Priority Queue Pattern: <a href="https://learn.microsoft.com/en-us/azure/architecture/patterns/priority-queue" rel="noopener noreferrer" target="_blank">https://learn.microsoft.com/en-us/azure/architecture/patterns/priority-queue</a><br/>
+[9] Optimizing Android Volley: <a href="https://javanexus.com/blog/optimizing-android-volley" rel="noopener noreferrer" target="_blank">https://javanexus.com/blog/optimizing-android-volley</a><br/>
+[10] Moya iOS library: <a href="https://github.com/Moya/Moya" rel="noopener noreferrer" target="_blank">https://github.com/Moya/Moya</a><br/>
+[11] Handling Network calls in Swift with Moya: <a href="https://medium.com/simform-engineering/handling-network-calls-in-swift-with-moya-c82908c93e5" rel="noopener noreferrer" target="_blank">https://medium.com/simform-engineering/handling-network-calls-in-swift-with-moya-c82908c93e5</a><br/>
+[12] SemVer: <a href="https://semver.org/" rel="noopener noreferrer" target="_blank">https://semver.org/</a><br/>
+[13] Swift Package Manager integration with SemVer: <a href="https://docs.swift.org/package-manager/PackageDescription/PackageDescription.html" rel="noopener noreferrer" target="_blank">https://docs.swift.org/package-manager/PackageDescription/PackageDescription.html</a><br/>
+[14] Jetpack Compose: <a href="https://developer.android.com/compose" rel="noopener noreferrer" target="_blank">https://developer.android.com/compose</a></p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

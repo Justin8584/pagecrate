@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swap Odd and Even Bits</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Swap Odd and Even Bits</h1>
+</div>
+
+<div class="figure-wrap">
+  <img src="data:image/webp;base64,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" alt="Image represents a diagram illustrating a binary addition process.  The diagram shows two rows of binary numbers, representing the addends. The top row displays the binary number 10101 (which is 21 in decimal), and the bottom row displays 010110 (which is 22 in decimal). To the right of each row is the decimal equivalent in parentheses: (41) and (22) respectively.  A horizontal arrow points to the beginning of the bottom row, indicating the start of the addition.  Between the two rows, orange curved arrows connect pairs of digits, visually representing the carry-over operation in binary addition.  Each arrow connects a pair of digits where a carry is generated (1 + 1 = 10 in binary, resulting in a 0 in the current position and a carry of 1 to the next position).  The arrangement and the arrows clearly show the step-by-step process of binary addition, highlighting the carry propagation." style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+  <img src="data:image/webp;base64,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" alt="Image represents a diagram illustrating a data transformation or processing step, possibly within a coding pattern related to binary data or bit manipulation.  The diagram shows two rows of binary digits (0s and 1s), labeled (23) and (43) respectively, representing input data. A horizontal arrow pointing to the right precedes the bottom row, indicating the direction of data flow.  Three pairs of vertically stacked binary digits are shown, each pair connected by an orange curved arrow pointing upwards from the bottom digit to the top digit.  This suggests a transformation or operation is applied to each pair, potentially a bitwise operation or a simple mapping.  The top row represents the output after this transformation, with the pairs of digits seemingly undergoing the same operation. The numbers (23) and (43) likely represent identifiers or labels for the input and output data sets, possibly indicating their source or destination within a larger system." style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+  <span class="figure-caption">Given an unsigned 32-bit integern, return an integer where all ofn&#x27;s even bits areswappedwith their adjacent odd bits.</span>
+</div>
+
+<h2>Intuition</h2>
+<p>Swapping even and odd bits means that each bit in an even position is swapped with the bit in the next odd position, and vice versa. Note that the positions start at position 0, which is the position of the least significant bit.</p>
+<p>The key thing to notice is that, in order to perform the swap:</p>
+<ul>
+  <li>All bits in the even positions need to be shifted one position to the left.</li>
+  <li>All bits in the odd positions need to be shifted one position to the right.</li>
+</ul>
+<p>This suggests that if we had a way to extract all the even and odd-positioned bits separately, we could shift them accordingly and then merge them back together, so the odd-positioned bits are in the even positions, and vice versa.</p>
+<p>Let’s start by figuring out how to obtain the even and odd bits of n.</p>
+<p><strong>Obtaining all even bits</strong><br/>
+To obtain all even bits of n, we can use a mask which has all even bit positions set to 1:</p>
+<p>Performing a bitwise-AND with this mask and n gives us an integer where all the bits at odd positions are set to 0, ensuring only the bits in even positions of n are preserved:</p>
+<p><strong>Obtaining all odd bits</strong><br/>
+Similarly, to obtain all the odd bits of n, we can use a mask with all odd bit positions are set to 1:</p>
+<p>Performing a bitwise-AND with this mask and n gives us an integer where all the bits at even positions are set to 0, ensuring only the bits at odd positions of n are preserved:</p>
+<p>Now that we’ve extracted all the even bits and odd bits separately, let’s use them to obtain the result, where the bits at odd and even positions are swapped.</p>
+<p><strong>Shifting and merging the bits at odd and even positions</strong><br/>
+We can use the shift operator to shift the bits at even positions to the left once, and the bits at odd positions to the right once:</p>
+<p>Then, to merge these together, we can use the bitwise-OR operator because it combines the two sets of bits into the final result.</p>
+<p>Now, the odd-positioned bits are in the even positions and vice versa.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/bit-manipulation/swap-odd-and-even-bits" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">swap_odd_and_even_bits</span>(<span class="hljs-params">n: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">int</span>:
+    even_mask = <span class="hljs-number">0x55555555</span>   <span class="hljs-comment"># 01010101010101010101010101010101</span>
+    odd_mask = <span class="hljs-number">0xAAAAAAAA</span>  <span class="hljs-comment"># 10101010101010101010101010101010</span>
+    even_bits = n &amp; even_mask
+    odd_bits = n &amp; odd_mask
+    <span class="hljs-comment"># Shift the even bits to the left, the odd bits to the right, and merge these</span>
+    <span class="hljs-comment"># shifted values together.</span>
+    <span class="hljs-keyword">return</span> (even_bits &lt;&lt; <span class="hljs-number">1</span>) | (odd_bits &gt;&gt; <span class="hljs-number">1</span>)
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity</strong>: The time complexity of <code>swap_odd_and_even_bits</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

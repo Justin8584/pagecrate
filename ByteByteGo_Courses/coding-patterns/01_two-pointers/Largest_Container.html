@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Largest Container</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Largest Container</h1>
+</div>
+
+<div>You are given an array of numbers, each representing the height of a vertical line on a graph. A container can be formed with any pair of these lines, along with the x-axis of the graph. Return the amount of water which the <strong>largest container</strong> can hold.Example:<img src="data:image/webp;base64,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" alt="Image represents a bar chart or histogram with a horizontal x-axis ranging from 0 to 5 and a vertical y-axis ranging from 0 to 8.  The y-axis represents frequency or count, while the x-axis likely represents categories or data points.  The chart displays several vertical bars of varying heights. A bar at x=0 has a height of 2.  Bars at x=1, x=2, x=4, and x=5 all reach a height of 6, forming a plateau of light-blue filled area.  A shorter bar at x=3 reaches a height of 3.  The bars are represented by vertical black lines extending from the x-axis to their respective heights on the y-axis.  The area under the bars from y=0 to y=6 between x=1 and x=5 is filled with light blue, visually highlighting the consistent frequency across those data points." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: heights = [<span class="hljs-number">2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">3</span>, <span class="hljs-number">7</span>, <span class="hljs-number">6</span>]
+Output: <span class="hljs-number">24</span>
+</code></div>
+
+<h2>Intuition</h2>
+<p>If we have two vertical lines, <code>heights[i]</code> and <code>heights[j]</code>, the amount of water that can be contained between these two lines is <code>min(heights[i], heights[j]) * (j - i)</code>, where <code>j - i</code> represents the width of the container. We take the minimum height because filling water above this height would result in overflow.</p>
+<p>In other words, the area of the container depends on two things:</p>
+<ul>
+  <li>The <strong>width</strong> of the rectangle.</li>
+  <li>The <strong>height</strong> of the rectangle, as dictated by the shorter of the two lines.</li>
+</ul>
+<p>The brute force approach to this problem involves checking all pairs of lines, and returning the largest area found between each pair:</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">largest_container_brute_force</span>(<span class="hljs-params">heights: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]</span>) -&gt; <span class="hljs-built_in">int</span>:
+   n = <span class="hljs-built_in">len</span>(heights)
+   max_water = <span class="hljs-number">0</span>
+   <span class="hljs-comment"># Find the maximum amount of water stored between all pairs of lines.</span>
+   <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+       <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(i + <span class="hljs-number">1</span>, n):
+           water = <span class="hljs-built_in">min</span>(heights[i], heights[j]) * (j - i)
+           max_water = <span class="hljs-built_in">max</span>(max_water, water)
+   <span class="hljs-keyword">return</span> max_water
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+<p>Searching through all possible pairs of values takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1.0641em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> time, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the length of the array. Let's look for a more efficient solution.</p>
+<p>We would like both the height and width to be as large as possible to have the largest container.</p>
+<p>It’s not immediately obvious how to find the container with the largest height, as the heights of the lines in the array don’t follow a clear pattern. However, we do know the container with the maximum width: the one starting at index 0 and ending at index <code>n - 1</code>.</p>
+<p>So, we could start by maximizing the width by setting a pointer at each end of the array. Then, we can gradually reduce the width by moving these two pointers inward, hoping to find a container with a larger height that potentially yields a larger area. This suggests we can use the <strong>two-pointer</strong> pattern to solve the problem.</p>
+<blockquote>
+Moving a pointer inward means shifting either the left pointer to the right, or the right pointer to the left, effectively narrowing the gap between them.
+</blockquote>
+<p>Consider the following example:</p>
+<p>The widest container can store an area of water equal to 10. Since this is the largest container we’ve found so far, let’s set <code>max_water</code> to 10.</p>
+<p>How should we proceed? Moving either pointer inward yields a container with a shorter width. This leaves height as the determining factor. In this case, the left line is shorter than the right line, which means that the left line limits the water's height. Therefore, to find a larger container, let's move the left pointer inward:</p>
+<p>The current container can hold 24 units of water, the largest amount so far. So, let’s update <code>max_water</code> to 24. Here, the right line is shorter, limiting the water's height. To find a larger container, move the right pointer inward:</p>
+<p>After this, we encounter a situation where <strong>the height of the left and right lines are equal</strong>. In this situation, which pointer should we move inward? Well, regardless of which one, the next container is guaranteed to store less water than the current one. Let’s try to understand why.</p>
+<p>Moving either pointer inward yields a container of shorter width, leaving height as the determining factor. However, regardless of which pointer we move inward, the other pointer remains at the same line. So, even if a pointer is moved to a taller line, the other pointer will restrict the height of the water, as we take the minimum of the two lines.</p>
+<p>Therefore, since we can’t increase height by moving just one pointer, we can just move both pointers inward:</p>
+<p>Now, the right line is limiting the height of the water. So, we move the right pointer inward:</p>
+<p>Finally, the left and right pointers meet. We can conclude our search here and return <code>max_water</code>:</p>
+<p>Based on the decisions taken in the example, we can summarize the logic:</p>
+<ol>
+  <li>If the left line is smaller, move the left pointer inward.</li>
+  <li>If the right line is smaller, move the right pointer inward.</li>
+  <li>If both lines have the same height, move both pointers inward.</li>
+</ol>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/two-pointers/largest-container" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+  
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">largest_container</span>(<span class="hljs-params">heights: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]</span>) -&gt; <span class="hljs-built_in">int</span>:
+    max_water = <span class="hljs-number">0</span>
+    left, right = <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(heights) - <span class="hljs-number">1</span>
+    <span class="hljs-keyword">while</span> (left &lt; right):
+        <span class="hljs-comment"># Calculate the water contained between the current pair of lines.</span>
+        water = <span class="hljs-built_in">min</span>(heights[left], heights[right]) * (right - left)
+        max_water = <span class="hljs-built_in">max</span>(max_water, water)
+        <span class="hljs-comment"># Move the pointers inward, always moving the pointer at the shorter line. If</span>
+        <span class="hljs-comment"># both lines have the same height, move both pointers inward.</span>
+        <span class="hljs-keyword">if</span> (heights[left] &lt; heights[right]):
+            left += <span class="hljs-number">1</span>
+        <span class="hljs-keyword">elif</span> (heights[left] &gt; heights[right]):
+            right -= <span class="hljs-number">1</span>
+        <span class="hljs-keyword">else</span>:
+            left += <span class="hljs-number">1</span>
+            right -= <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> max_water
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>largest_container</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because we perform approximately <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> iterations using the two-pointer technique.</p>
+<p><strong>Space complexity:</strong> We only allocated a constant number of variables, so the space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+
+<h2>Test Cases</h2>
+<p>In addition to the examples discussed throughout this explanation, below are some other examples to consider when testing your code.</p>
+<div class="table-wrap"><table><thead><tr><th>Input</th><th>Expected output</th><th>Description</th></tr></thead><tbody><tr><td>heights = []</td><td>0</td><td>Tests an empty array.</td></tr><tr><td>heights = [1]</td><td>0</td><td>Tests an array with just one element.</td></tr><tr><td>heights = [0, 1, 0]</td><td>0</td><td>Tests an array with no containers that can contain water.</td></tr><tr><td>heights = [3, 3, 3, 3]</td><td>9</td><td>Tests an array where all heights are the same.</td></tr><tr><td>heights = [1, 2, 3]</td><td>2</td><td>Tests an array with strictly increasing heights.</td></tr><tr><td>heights = [3, 2, 1]</td><td>2</td><td>Tests an array with strictly decreasing heights.</td></tr></tbody></table></div>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

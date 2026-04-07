@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linked List Intersection</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Linked List Intersection</h1>
+</div>
+
+<div class="figure-wrap">
+  <img src="data:image/webp;base64,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" alt="The image represents a directed acyclic graph (DAG) illustrating two distinct paths, labeled &#x27;A:&#x27; and &#x27;B:&#x27;.  Path &#x27;A:&#x27; starts with a node labeled &#x27;1&#x27;, which connects to a node labeled &#x27;3&#x27;, followed by a node labeled &#x27;4&#x27;. Node &#x27;4&#x27; then branches, connecting to a node labeled &#x27;8&#x27;. Path &#x27;B:&#x27; begins with a node labeled &#x27;6&#x27;, connecting to another node labeled &#x27;4&#x27;. This second &#x27;4&#x27; node also connects to node &#x27;8&#x27;. Node &#x27;8&#x27; subsequently connects to a node labeled &#x27;7&#x27;, which finally connects to a node labeled &#x27;2&#x27;.  The arrows indicate the direction of flow between the nodes, showing a sequential progression along each path.  The paths &#x27;A&#x27; and &#x27;B&#x27; represent different sequences or processes, converging at node &#x27;8&#x27; before diverging again.  The numbers within the nodes likely represent steps or stages in a process, and the overall structure suggests a workflow or dependency diagram." style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+  <span class="figure-caption">Return the node where two singly linked listsintersect. If the linked lists don&#x27;t intersect, return null.</span>
+</div>
+
+<h2>Intuition</h2>
+<p>Let’s first understand what an intersection between two linked lists is.</p>
+<blockquote>
+An intersection occurs when two linked lists converge at a shared node and, from that point onwards, share all subsequent nodes.
+</blockquote>
+<p>Note, this intersection has nothing to do with the values of the nodes.</p>
+<p>A naive approach is to use a hash set. We can traverse the first linked list once and store each node in a hash set. Next, we traverse the second linked list until we find the first node that exists in the hash set, signifying the intersection point since it’s the first node shared between the two linked lists. This approach solves the problem linearly, but can we find a solution that uses constant space?</p>
+<p>Consider the following example:</p>
+<p>Treating these as two separate linked lists can get confusing with the above visualization. Instead, let’s visualize the input as two linked lists to help us think about the problem more clearly. Note that the tail nodes are still shared between the two linked lists, we’re just visualizing them separately:</p>
+<p>Notice that <strong>this problem is easier to solve if the two linked lists are of equal length</strong>. This is because the intersection node can be found at the same position from the heads of both linked lists. In other words, when we iterate through two linked lists of the same length, we’re guaranteed to reach the intersection node at the same time:</p>
+<p>Could we somehow replicate this behavior when dealing with linked lists of varying lengths? The key observation is that, while two linked lists ‘list A’ and ‘list B’ may have different lengths, ‘list A → list B’ has the same length as ‘list B → list A’ (where ‘→’ represents the connection of two lists). Conveniently, these combined linked lists also share the same tail nodes:</p>
+<p>We’ve now set up a scenario where we have two combined linked lists of the same length, which share the same tail nodes. By traversing these combined linked lists, we’ll eventually reach the intersection node simultaneously on both linked lists (if one exists).</p>
+<p>To do this, we can traverse both combined linked lists with two pointers, and stop once the nodes at both pointers are the same. This node would be the intersection node:</p>
+<p>If no intersection exists, both pointers will end up stopping at null nodes:</p>
+<p><strong>Traversing combined linked lists</strong><br/>
+An important observation is that to traverse through 'list A → list B', we don't actually need to connect these two linked lists together. Instead, we can traverse 'list A' and, upon reaching its end, continue by traversing 'list B':</p>
+<p>This technique allows us to traverse the entire sequence of both linked lists as if they were connected.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/linked-lists/linked-list-intersection" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> ListNode
+   
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">linked_list_intersection</span>(<span class="hljs-params">head_A: ListNode, head_B: ListNode</span>) -&gt; ListNode:
+    ptr_A, ptr_B = head_A, head_B
+    <span class="hljs-comment"># Traverse through list A with 'ptr_A' and list B with 'ptr_B' until they meet.</span>
+    <span class="hljs-keyword">while</span> ptr_A != ptr_B:
+        <span class="hljs-comment"># Traverse list A -&gt; list B by first traversing 'ptr_A' and then, upon</span>
+        <span class="hljs-comment"># reaching the end of list A, continue the traversal from the head of list B.</span>
+        ptr_A = ptr_A.<span class="hljs-built_in">next</span> <span class="hljs-keyword">if</span> ptr_A <span class="hljs-keyword">else</span> head_B
+        <span class="hljs-comment"># Simultaneously, traverse list B -&gt; list A.</span>
+        ptr_B = ptr_B.<span class="hljs-built_in">next</span> <span class="hljs-keyword">if</span> ptr_B <span class="hljs-keyword">else</span> head_A
+    <span class="hljs-comment"># At this point, 'ptr_A' and 'ptr_B' either point to the intersection node or both</span>
+    <span class="hljs-comment"># are null if the lists do not intersect. Return either pointer.</span>
+    <span class="hljs-keyword">return</span> ptr_A
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>linked_list_intersection</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n+m)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> denote the lengths of list A and B, respectively. This is because pointers linearly traverse both linked lists sequentially.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

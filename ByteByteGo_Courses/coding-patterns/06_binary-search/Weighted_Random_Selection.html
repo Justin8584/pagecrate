@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weighted Random Selection</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Weighted Random Selection</h1>
+</div>
+
+<div>Given an array of items, each with a corresponding weight, implement a function that <strong>randomly selects an item from the array</strong>, where the probability of selecting any item is proportional to its weight.In other words, the probability of picking the item at index <code>i</code> is:<br/>
+<code>weights[i] / sum(weights)</code>.Return the index of the selected item.Example:<code class="hljs language-python">Input: weights = [<span class="hljs-number">3</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>]
+</code>Explanation:<br/>
+<code>sum(weights) = 10</code><br/>
+3 has a 3/10 probability of being selected.<br/>
+1 has a 1/10 probability of being selected.<br/>
+2 has a 2/10 probability of being selected.<br/>
+4 has a 4/10 probability of being selected.<br/>
+For example, we expect index 0 to be returned 30% of the time.Constraints:
+The <code>weights</code> array contains at least one element.
+</div>
+
+<h2>Intuition</h2>
+<p>A completely uniform random selection implies every index has an equal chance of being selected. A <em>weighted</em> random selection means some items are more likely to be picked than others. If we repeatedly perform a random selection many times, the frequency of each index being picked will match their expected probabilities.</p>
+<p>The challenge with this problem is determining a method to randomly select an index based on its probability.</p>
+<p>Let’s say we had weights 1 and 4 for indexes 0 and 1, respectively:</p>
+<p>Here, index 1 should be selected with a probability of 4/5, significantly higher than index 0’s probability of 1/5:</p>
+<p>A useful observation is that all probabilities have the same denominator (which is 5 in this case). Now, imagine we had a line with the same length as this denominator, and we divided this line into two segments of size 1 and 4, respectively:</p>
+<p>If we were to randomly pick a number on this line, we’d pick the first segment with a probability of 1/5 and the second segment 4/5 times. Now, imagine index 0 represents the first segment, and index 1 represents the second segment:</p>
+<p>If we <strong>randomly select a number on this line</strong>, we’ll select index 0 with a probability of 1/5, and index 1 with a probability of 4/5. This reflects their expected probabilities.</p>
+<p>What we need now is a way to identify which numbers on the number line correspond to which index so that when we pick a random number on this line, we know which index to return.</p>
+<p>Before we continue, let’s establish the definitions of terms used in this explanation:</p>
+<ul>
+  <li>“Weights” refers to the values of the elements in the weights array.</li>
+  <li>“Indexes” refers to the indexes of the weights array.</li>
+  <li>“Numbers” or “numbers on the number line” refers to the numbers from 1 to sum(weights).</li>
+</ul>
+<p><strong>Determining which numbers on the number line correspond to which indexes</strong><br/>
+As mentioned before, to know which index to return, we need a way to tell which index our random number line number corresponds to. Consider a larger distribution of weights:</p>
+<p>One strategy is to use a hash map. In this hash map, each number on the line is a key, and its corresponding index is the value:</p>
+<p>This method uses a lot of space because we need to store a key-value pair for each number on the number line. Let's consider some other more space-efficient methods.</p>
+<p>A more efficient strategy is to store only the <strong>endpoints of each segment</strong> instead.</p>
+<p>Naturally, the endpoint of a segment marks where that segment ends. It also helps us know where the next segment begins, as each new segment starts right after the previous one ends. This way, we can determine the start and end of each index’s segment.</p>
+<p>By storing only the endpoints, we need to keep just <code>n</code> values, one for each endpoint. When storing these endpoints in an array, the array index of each endpoint is the same as its index value on the number line:</p>
+<p>The question now is, how do we find these endpoints?</p>
+<p><strong>Obtaining the endpoints of each index’s segment on the line</strong><br/>
+A key observation is that the endpoint of a segment is equal to the length of all previous segments, plus the length of the current segment. We can see how this works below:</p>
+<p>This demonstrates that each endpoint is a cumulative sum, suggesting we can obtain the endpoint of each segment by obtaining the <strong>prefix sums</strong> of the array of weights:</p>
+<p>As we can see, the prefix sums array stores the endpoint of each segment.</p>
+<p>Now, let's see how the prefix sums array helps us. When we pick a random number from 1 to 10, we need to determine which index it corresponds to using the prefix sum array. Let's see how we can do this.</p>
+<p><strong>Using the prefix sums to determine which numbers correspond to which indexes</strong><br/>
+Let’s say we pick a random number from 1 to 10 and get 5. How can we use the prefix sum array to determine which index that 5 corresponds to? To determine the segment, we’ll need to find its corresponding endpoint. We know that:</p>
+<ul>
+  <li>Either 5 itself is the endpoint, since 5 could be the endpoint of its own segment, or:</li>
+  <li>The endpoint is somewhere to the right of 5 since its endpoint cannot be to the left.</li>
+</ul>
+<p>Among all the endpoints to the right of 5, the closest one to 5 will be the endpoint of its segment. Endpoints farther away belong to different segments:</p>
+<p>This means for any target, we’re looking for the <strong>first prefix sum (endpoint) greater than or equal to the target</strong>. Below, we can see which prefix sum first meets this condition for a target of 5:</p>
+<p>As we can see, the first prefix sum that satisfies this condition is the same as the lower-bound prefix sum that satisfies this condition. Therefore, we can perform a <strong>lower-bound binary search</strong> to find it.</p>
+<p>Let’s see how this works over our example with a random target of 5. The <strong>search space</strong> should encompass all prefix sum values:</p>
+<p>Let’s begin narrowing the search space. Remember that we’re looking for the lower-bound prefix sum which satisfies the condition <strong><code>prefix_sums[mid] ≥ target</code></strong>.</p>
+<p>The initial midpoint value is 4, which is less than the target of 5. This means the lower bound is somewhere to the right of the midpoint, so let’s narrow the search space toward the right:</p>
+<p>The midpoint value is now 6, which is greater than the target. This midpoint satisfies our condition, so it could be the lower bound. If it isn’t, then the lower bound is somewhere further to the left. So, let’s narrow the search space toward the left while including the midpoint:</p>
+<p>Now, the left and right pointers have met with the search space consisting of a single value which represents the lower bound. So, we can exit the binary search and return the index that corresponds to this prefix sum: left:</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/binary-search/weighted-random-selection" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+<span class="hljs-keyword">import</span> random
+    
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">WeightedRandomSelection</span>:
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, weights: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]</span>):
+        <span class="hljs-variable language_">self</span>.prefix_sums = [weights[<span class="hljs-number">0</span>]]
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-built_in">len</span>(weights)):
+            <span class="hljs-variable language_">self</span>.prefix_sums.append(<span class="hljs-variable language_">self</span>.prefix_sums[-<span class="hljs-number">1</span>] + weights[i])
+      
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">select</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">int</span>:
+        <span class="hljs-comment"># Pick a random target between 1 and the largest endpoint on the number</span>
+        <span class="hljs-comment"># line.</span>
+        target = random.randint(<span class="hljs-number">1</span>, <span class="hljs-variable language_">self</span>.prefix_sums[-<span class="hljs-number">1</span>])
+        left, right = <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>.prefix_sums) - <span class="hljs-number">1</span>
+        <span class="hljs-comment"># Perform lower-bound binary search to find which endpoint (i.e., prefix</span>
+        <span class="hljs-comment"># sum value) corresponds to the target.</span>
+        <span class="hljs-keyword">while</span> left &lt; right:
+            mid = (left + right) // <span class="hljs-number">2</span>
+            <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.prefix_sums[mid] &lt; target:
+                left = mid + <span class="hljs-number">1</span>
+            <span class="hljs-keyword">else</span>:
+                right = mid
+        <span class="hljs-keyword">return</span> left
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of the constructor is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because we iterate through each weight in the weights array once. The time complexity of select is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(\log(n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span> since we perform binary search over the <code>prefix_sums</code> array.</p>
+<p><strong>Space complexity:</strong> The space complexity of the constructor is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> due to the <code>prefix_sums</code> array. The space complexity of select is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

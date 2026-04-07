@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Count Islands</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Count Islands</h1>
+</div>
+
+<div>Given a binary matrix representing 1s as land and 0s as water, <strong>return the number of islands</strong>.An island is formed by connecting adjacent lands 4-directionally (up, down, left, and right).Example:<img src="data:image/webp;base64,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" alt="Image represents a 4x4 matrix, visually depicting a concept likely related to identifying &#x27;islands&#x27; within a grid.  The matrix cells contain either a &#x27;1&#x27; or a &#x27;0&#x27;.  Two distinct groups of adjacent cells containing &#x27;1&#x27;s are highlighted in a peach/light orange color. These groups are labeled &#x27;island&#x27; with orange curved arrows pointing to each group.  The &#x27;1&#x27;s within each highlighted group are directly adjacent (horizontally or vertically, not diagonally), forming two distinct, unconnected clusters. The remaining cells contain &#x27;0&#x27;s, representing areas outside the islands. The overall arrangement demonstrates a visual representation of a data structure where connected components (islands of &#x27;1&#x27;s) are identified within a larger matrix." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Output: <span class="hljs-number">2</span>
+</code></div>
+
+<h2>Intuition</h2>
+<p>Before determining how to find all the islands in a matrix, let’s consider an input that contains only one island.</p>
+<p><strong>Matrix with just one island</strong><br/>
+Consider the following matrix containing one island:</p>
+<p>When we iterate through the matrix starting from the top left, the first land cell we encounter is cell (0, 2). From here, we’d like to find the rest of the island.</p>
+<p>The key observation is that we should be able to access every land cell on the same island by moving horizontally or vertically through neighboring land cells. This means that all 1s forming an island are connected either directly or indirectly through adjacent 1s. Conceptually, this is similar to a graph, where each cell is a node, and each connection to an adjacent cell is an edge:</p>
+<p>This demonstrates that we can identify the rest of the island by performing a graph traversal algorithm. Most traversal algorithms will suit this purpose. In this explanation, we'll use DFS.</p>
+<p><strong>Depth-first search</strong><br/>
+For each cell we visit during the traversal, we need to mark that cell as visited to ensure it’s not visited again. There are two ways to do this:</p>
+<ol>
+  <li>Use a separate data structure, such as a hash set, to keep track of the coordinates of visited cells.</li>
+  <li>Modify the matrix by <strong>changing the value of a visited cell from 1 to -1</strong>, ensuring it doesn’t get revisited.</li>
+</ol>
+<p>We’ll proceed with the second option because it doesn’t require the use of extra space.</p>
+<p>Now, let’s begin DFS traversal. Mark the first cell, (0, 2), as visited by modifying its value to -1. Then, continue exploring by calling DFS on any neighboring land cells. Here, the only neighboring land cell is cell (1, 2):</p>
+<p>From cell (1, 2), we similarly mark it as visited and explore its neighboring land cells. Again, there's only one neighboring land cell: (1, 1). So, let's make a recursive DFS call to it:</p>
+<p>From cell (1, 1), mark it as visited and explore both of its neighboring land cells. Let’s continue exploring from cell (1, 0) first:</p>
+<p>At (1, 0), there's no neighboring land. So, the recursive process naturally goes back to cell (1, 1) to continue exploring any other neighboring land cells:</p>
+<p>We've now finished exploring this island:</p>
+<p>With this island completely explored, let’s increment a variable count to indicate that one new island has been found. Now, let’s consider the main problem where there could be multiple islands in the matrix.</p>
+<p><strong>Matrix with multiple islands</strong><br/>
+We can identify all islands using the following steps:</p>
+<ol>
+  <li>Search through the matrix, starting from cell (0, 0), until we find a land cell.</li>
+  <li>Upon encountering a land cell, explore its island using DFS, marking each land cell we encounter as visited (-1) to avoid visiting them again.</li>
+  <li>Increment count by 1, indicating the discovery of the island we just explored.</li>
+  <li>Keep searching the matrix for any unvisited land cells. When we find one, repeat steps 2 to 4.</li>
+</ol>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/graphs/count-islands" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<p>To traverse the matrix 4-directionally, we can use an array of <strong>direction vectors</strong>:</p>
+<blockquote>
+<code>dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]</code>
+</blockquote>
+<p>Each pair in the array represents the changes needed to move one step in a specific direction:</p>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">count_islands</span>(<span class="hljs-params">matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>) -&gt; <span class="hljs-built_in">int</span>:
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> matrix:
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>
+    count = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> r <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(matrix)):
+        <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(matrix[<span class="hljs-number">0</span>])):
+            <span class="hljs-comment"># If a land cell is found, perform DFS to explore the full island, and</span>
+            <span class="hljs-comment"># include this island in our count.</span>
+            <span class="hljs-keyword">if</span> matrix[r][c] == <span class="hljs-number">1</span>:
+                dfs(r, c, matrix)
+                count += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> count
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">dfs</span>(<span class="hljs-params">r: <span class="hljs-built_in">int</span>, c: <span class="hljs-built_in">int</span>, matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>) -&gt; <span class="hljs-literal">None</span>:
+    <span class="hljs-comment"># Mark the current land cell as visited.</span>
+    matrix[r][c] = -<span class="hljs-number">1</span>
+    <span class="hljs-comment"># Define direction vectors for up, down, left, and right.</span>
+    dirs = [(-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>), (<span class="hljs-number">1</span>, <span class="hljs-number">0</span>), (<span class="hljs-number">0</span>, -<span class="hljs-number">1</span>), (<span class="hljs-number">0</span>, <span class="hljs-number">1</span>)]
+    <span class="hljs-comment"># Recursively call DFS on each neighboring land cell to continue exploring this</span>
+    <span class="hljs-comment"># island.</span>
+    <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> dirs:
+        next_r, next_c = r + d[<span class="hljs-number">0</span>], c + d[<span class="hljs-number">1</span>]
+        <span class="hljs-keyword">if</span> is_within_bounds(next_r, next_c, matrix) <span class="hljs-keyword">and</span> matrix[next_r][next_c] == <span class="hljs-number">1</span>:
+            dfs(next_r, next_c, matrix)
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">is_within_bounds</span>(<span class="hljs-params">r: <span class="hljs-built_in">int</span>, c: <span class="hljs-built_in">int</span>, matrix: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>) -&gt; <span class="hljs-built_in">bool</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span> &lt;= r &lt; <span class="hljs-built_in">len</span>(matrix) <span class="hljs-keyword">and</span> <span class="hljs-number">0</span> &lt;= c &lt; <span class="hljs-built_in">len</span>(matrix[<span class="hljs-number">0</span>])
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>count_islands</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m\cdot n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> denotes the number of rows and <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the number of columns. This is because each cell of the matrix is visited at most twice: once when searching for land cells in the <code>count_islands</code> function, and up to one more time during DFS.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo>⋅</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m\cdot n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> mostly due to the recursive call stack during DFS, which can grow up to <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>⋅</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">m\cdot n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4445em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> in size.</p>
+
+<h2>Interview Tip</h2>
+<p><em>Tip: Check with an interviewer if modifications to the input are acceptable.</em><br/>
+During DFS, we marked cells as visited by modifying the input directly. However, in some situations, input modification may not be desirable. As such, it’s worth confirming this with the interviewer before making in-place modifications to the input.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary Search Tree Validation</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Binary Search Tree Validation</h1>
+</div>
+
+<div>Verify whether a binary tree is a <strong>valid binary search tree</strong> (BST). A BST is a binary tree where each node meets the following criteria:
+
+A node's <strong>left</strong> subtree contains only nodes of <strong>lower</strong> values than the node's value.
+
+
+A node's <strong>right</strong> subtree contains only nodes of <strong>greater</strong> values than the node's value.
+
+Example:<img src="data:image/webp;base64,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" alt="Image represents a binary tree structure where nodes are represented by circles containing numerical values.  The root node, at the top, contains the number &#x27;5&#x27;.  This root node connects to two child nodes: &#x27;2&#x27; on the left and &#x27;7&#x27; on the right. Node &#x27;2&#x27; further branches into two leaf nodes: &#x27;1&#x27; on the left and &#x27;6&#x27; on the right. Similarly, node &#x27;7&#x27; branches into leaf nodes &#x27;7&#x27; on the left and &#x27;9&#x27; on the right.  Crucially, curved red arrows labeled &#x27;invalid&#x27; point from node &#x27;2&#x27; to node &#x27;6&#x27; and from node &#x27;7&#x27; to the other node &#x27;7&#x27;, indicating that these connections or the data within these nodes are considered invalid within the context of the tree&#x27;s structure or the algorithm it represents.  The overall structure visually depicts a hierarchical data organization with highlighted invalid elements." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Output: <span class="hljs-literal">False</span>
+</code>Explanation: This tree has two violations of the BST criteria:
+Node 5's left subtree contains node 6, and node 6's value is greater than 5.
+Node 7 has a left child with the same value of 7.
+</div>
+
+<h2>Intuition</h2>
+<p>A BST maintains a logically sorted order of values by complying with the criteria specified in the problem description. That is, the left subtree of a node with value x must consist of values less than x, and its right subtree must consist of values strictly greater than x.</p>
+<p>In addition, all nodes in the left and right subtrees of the above diagram must follow these criteria, too.</p>
+<p>Since evaluating subtrees is important in determining if a tree is a BST, let’s try a recursive DFS approach to solve this problem.</p>
+<p>Consider this example:</p>
+<p>There’s nothing to assess at the root node because it can contain any value. So, let’s have a look at its children. Here’s how we assess these nodes based on the BST rules:</p>
+<ul>
+  <li>All nodes to the left of node 5 should be less than 5. So, when we make a recursive call to its left child, we pass in an upper bound of 5.</li>
+  <li>All nodes to the right of node 5 should be greater than 5. So, when we make a recursive call to its right child, we pass in a lower bound of 5.</li>
+</ul>
+<p>Let’s now consider node 2. It satisfies its specified lower and upper bounds of - and 5, respectively. So, let’s verify its subtrees. Applying the same logic as before, node 2’s left child should have an upper bound of 2, while its right child should have a lower bound of 2.</p>
+<p>Above, we see that node 6 violates its expected upper bound of 5 (since 6 > 5). This violation indicates we’re dealing with an invalid binary tree. Note, node 6 has an upper bound of 5 because it’s a left descendant of node 5.</p>
+<p>We now have a strategy for our DFS function, <code>is_within_bounds(node, lower_bound, upper_bound)</code>:</p>
+<ol>
+  <li>Check if the <code>node.val</code> falls between <code>lower_bound</code> and <code>upper_bound</code>. If it does, continue to the next step. If not, the tree is an invalid BST: return false.</li>
+  <li>Call <code>is_within_bounds</code> on the left child with an updated upper bound set to the current node’s value: <code>is_within_bounds(node.left, </code><strong><code>lower_bound</code></strong><code>, </code><strong><code>node.val</code></strong><code>)</code>.</li>
+  <li>Call is_within_bounds on the right child with an updated lower bound set to the current node’s value: <code>is_within_bounds(node.right, </code><strong><code>node.val</code></strong><code>, </code><strong><code>upper_bound</code></strong><code>)</code>.</li>
+  <li>If both recursive calls return true, then the current node’s subtree is a valid BST: return true.</li>
+</ol>
+<p>A minor optimization to make here is to check if the value we get from the recursive call at step 2 is false. If it’s false, we don’t have to perform step 3 and can just return false straight away, as we already know this tree isn’t a BST.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/trees/binary-search-tree-validation" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> TreeNode
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">binary_search_tree_validation</span>(<span class="hljs-params">root: TreeNode</span>) -&gt; <span class="hljs-built_in">bool</span>:
+    <span class="hljs-comment"># Start validation at the root node. The root node can contain any value, so set</span>
+    <span class="hljs-comment"># the initial lower and upper bounds to -infinity and +infinity, respectively.</span>
+    <span class="hljs-keyword">return</span> is_within_bounds(root, <span class="hljs-built_in">float</span>(<span class="hljs-string">'-inf'</span>), <span class="hljs-built_in">float</span>(<span class="hljs-string">'inf'</span>))
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">is_within_bounds</span>(<span class="hljs-params">node: TreeNode, lower_bound: <span class="hljs-built_in">int</span>, upper_bound: <span class="hljs-built_in">int</span></span>) -&gt; <span class="hljs-built_in">bool</span>:
+    <span class="hljs-comment"># Base case: if the node is null, it satisfies the BST condition.</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> node:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>
+    <span class="hljs-comment"># If the current node's value is not within the valid bounds, this tree is not a</span>
+    <span class="hljs-comment"># valid BST.</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> lower_bound &lt; node.val &lt; upper_bound:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+    <span class="hljs-comment"># If the left subtree isn't a BST, this tree isn't a BST.</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> is_within_bounds(node.left, lower_bound, node.val):
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+    <span class="hljs-comment"># Otherwise, return true if the right subtree is also a BST.</span>
+    <span class="hljs-keyword">return</span> is_within_bounds(node.right, node.val, upper_bound)
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>binary_search_tree_validation</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the number of nodes in the tree. This is because we process each node recursively at most once.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> due to the space taken up by the recursive call stack, which can grow as large as the height of the binary tree. The largest possible height of a binary tree is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>.</p>
+
+<h2>Detailed Recursive Demonstration</h2>
+<p>You may be curious why recursion works for problems like this. When we make a recursive DFS call in the middle of the code, how is the program able to return to this code and continue running the rest of it, after this recursive call finishes? This problem provides an excellent opportunity to demonstrate how this is possible.</p>
+<p>The answer is that recursion makes use of a <strong>recursive call stack</strong> to manage each instance of a recursive function call. To illustrate this, we'll revisit the binary tree example discussed earlier, stepping through the recursive calls for the first few nodes. We'll also display the recursive call stack to help track the state of each call more clearly.</p>
+<p>The first DFS call is made to the root node, which is given a lower and upper bound of -<code>∞</code> and +<code>∞</code>, respectively:</p>
+<p>We see that node 5 satisfies its specified lower and upper bounds.</p>
+<p>At each node, after we confirm that its value falls within its expected lower and upper bounds, we make a recursive call to its left child before any right children are processed:</p>
+<p>After processing node 1, which has no children, recursion naturally progresses back to the recursive call to node 2, which is now at the top of the stack:</p>
+<p>Continuing from where we left off at this instance, it now processes its right child by making a recursive call to it:</p>
+<p>Once we reach node 6, the algorithm notices that its value violates its expected upper bound. As such, it returns false.</p>
+<p>In this DFS solution, the recursion starts at the root node, but values start being returned from the leaf nodes and bubble upwards to their parent nodes. Below is a diagram showing how the boolean result at each node moves up from the leaf nodes to the root:</p>
+<p>Note that nodes 5, 2, and 7 return false because, while their values fall within their bounds, at least one node in their subtrees does not.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

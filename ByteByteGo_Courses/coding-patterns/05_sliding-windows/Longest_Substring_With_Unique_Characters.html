@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Longest Substring With Unique Characters</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Longest Substring With Unique Characters</h1>
+</div>
+
+<div>Given a string, determine the length of its longest substring that consists only of <strong>unique characters</strong>.Example:<code class="hljs language-python">Input: s = <span class="hljs-string">'abcba'</span>
+Output: <span class="hljs-number">3</span>
+</code>Explanation: Substring "abc" is the longest substring of length 3 that contains unique characters ("cba" also fits this description).</div>
+
+<h2>Intuition</h2>
+<p>The brute force approach involves examining all possible substrings and checking if any consist of exclusively unique characters. Let’s break down this approach:</p>
+<ul>
+  <li>Checking a substring for uniqueness can be done in <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> time by scanning the substring and using a <strong>hash set</strong> to keep track of each character, where n denotes the length of s. If we encounter a character already in the hash set, we know it’s a duplicate character.</li>
+  <li>Iterating through all possible substrings takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^2)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1.0641em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> time.</li>
+</ul>
+<p>This means the brute force approach would take <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>3</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n^3)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1.0641em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.8141em;"><span style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> time overall. This is quite slow, largely because we look through every substring. Is there a way to reduce the number of substrings we examine?</p>
+<p><strong>Sliding window</strong><br/>
+Sliding window approaches can be quite useful for problems that involve substrings. In particular, because we’re looking for the longest substring that satisfies a specific condition (i.e., contains unique characters), a <strong>dynamic sliding window</strong> algorithm might be the way to go, as discussed in the introduction.</p>
+<p>We can categorize any window in two ways. A window either:</p>
+<ol>
+  <li>Consists only of unique characters (a window with no duplicate characters).</li>
+</ol>
+<ol>
+  <li>Contains at least one character of a frequency greater than 1.
+<img src="data:image/webp;base64,UklGRuIPAABXRUJQVlA4WAoAAAAgAAAA+wAASQAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDgg9A0AALBDAJ0BKvwASgA+JQ6FQiGG2qNkBgCRLOAaxIYJOY6/S5nX/tv6b+4D8yewB+pnS+8wH68+sT/KP2O9yP+E9QD/Gf5nrD/Q2/XL02fZQ/dH0uev/6T/pX/M/xJ7/v6r+J/7g+Yf6F+k/hn+0n924IL+d9Cv4j9UPpn4r/vB/pfev+Z/jX+N3tv70dQL8T/iH9J/Ff+u/8D/V+pn+AHjF07/s34q/AF6j/Dv7L+Pf+A/Z/2NP1X8gPcD6V/bN9AH8X/jP91/JX/Bf/L53/qv9w8izuz/Ge4H/EP5h/nf8R+8P+C+lb9a/yH+N/vP+q/2n//93f5N/af9p/j/x2+wP+N/yz/Af2n/I/6z+6//D/j/cB6wv2x9ir9XWDv7/qvh22AosRVDeYk3TdQ5wdsppolTTRiVNTW7eMxmZmNJy3TNbfrcpmIS+ulud+W3Nmd8MDkcT+nIZ1O5DOr7Wau5XLKZlEdtgHfnfnKFqHdRr6LBAOEADuTlQcjfDuFASstCofuek8AAdwDHhs7lOorGsnY65YZIY6J24+E89IzyDIh2MrCEVYOdA4ge0TAhvyFFMrwHKFlywljvjsKhc1RSQ9Y1UPsWAxnM6uVW1ZwQ9q1QQ4vzKh6GlI/GxtQYSGXowD5ciUBJzylglWVg0y/Uz81+ix3jjOIZEeTbrb1c3mEvxHo9WdhAkE3S8yd9O00sz3FPeqXXnEzDIQ/C4njDUODFBvOehAAA/v98iRzitGyJP5eklhpZ/IW0YNx2AHqubBudqw4PH9HnbUPxQs79pb2nLFz4+oM8eDHtZ4AyVwzDQr/n33apbuHbPWNRVtih7e/Vgv8jNa4XstoJpQpkUxJL2e5l3T+xpW7cYmhallckDsZRUjtWM5pg815Ki2Q9T5K8ldvKqzKqIT7JlGJDBKkDnZyOpUFzUokcO7Nu0xN63cqt9mdoE8PO0I7/vYSs5icQ5k+WwC0dkER5e6NHpLCLCnN52XG5C2V3SXMBXLw0s9adWSHvKFsuOncsillOu/rKJIeSbpcu68h+UPdjHQccevER3Cj/TObvkKNa1bo28nUSzNwSTRMXdUS6/4n4wGjdzQi6U82XljsxXhO+KI7QKcJqQ5VueEYb+HFBo5Vr0thHaRgOrZT1VPXBgc01DOSoEjnsnA3QCyKhZZm0C8kKLull41iCwvhLYQKSYnVFQ3kP+U/if7+/tOdoqo3UiiYeUOR6caal0kX/Bg1NjVC6kSs7C346cilpgg9S+67JVEykf4DtA5DHaC5/wUtEgwJhcR7M+Q8nYmSEno1WeUATG8M7Yh07yde/4yDkkcvNFX7IYxn+xbt8RD3Zt3ivGwInedzjMslogzpxyQIHG02XEsBG3rtk7lkifu4dSAQTiNekVZzJ2Fn846uW8k5ekHFZ9+l17Jr6s41h8Hjl8GpP86fa+QOkr4MFFd2d6RcWlCyVSZpLCIJdKRRPSQSYIDChP0Ky2V58UCZKJwdx7ULK4SH3bRSR3RS2ljtOwkZvlBNExmnRCCKIRisN9Na92gaHI2o4gsSacny+LngnEZphXLNecE7rX73OXLshu39O6L51WWUTu+0bPfg6P6pY0FcX8Qaq1nlgParu2S5Am+hZh4gFQFpU1DGugKe6+n9vouRmPyTFIqh6hHp1+6WxN7Dx5QLgzzPHqfCMeI5h9Sv/jBsxtVTQ/N9x3EuWnHH+lYtVKZMXwR4lHGURRWRag7II51SKCzhfngPsLH0KzjFq+9grnd0eT7ldjipcWiJZCEEyiXnKeLFFLxSKCjkSI5ECIdlqC8RF9SlmmlE+HWD4bLmpl6WJgQdh0dqog5mDduKu1CBL7EBqBc8RLCWc0P5ZR4ZaDcgUqNpO8qdPZVroJ/p2ETRvk3MKy+diQ/OGK1O0xaLHS0M9zvmq14jbWiFshS6b7Nu8mqksONZRULessDszurIXrkQK6j8EE3zfXdRBE2J4TQGd+PRh6+wLjKLidunTm3dxfXKYDuT4Tp1W3l/uy983TTc+GLninQ4hc0Ic6Sv5UHnlSVptNDovwtq9S4liwSEZ+ZXESoaMgCl6zf9QwNDlKxaHDOML5y79YfiGeLOkK3FxOpkUlFXeRadeaSGVpYdQZcPX+sOe0dyr5fkSxv0T++84W1fj5ym+1Oj3enLZSa3u/c3wo5rZeOPCfbzYTgtqyNJiwlgx0OWMQSmTD+Y/a8wH8HOxpmStlF7aw6llZBisY0uda7F2NIsUW6iskpvtjKAwg/W0T697C/XNA+ZSMyt5fnG+zrqp3pyLNQBRJBRRIVKV4tgP3HhJdzWvDo6Hor4ECc/0y6T/Ycbft180H5wHYi+BcamtSQMlOBle5+yKVSvCOuOxFuX9em0RCYbx4BJRM3E6jPZYLpSK7A+/Vw47FFYFey1mP3Uv7cAPR8ZyF7G5HWisHozSumWy8IuCne/vwpCzL1+6xbBMh1RCaY86D9pzYxE40wVb3GPVHUJpTbEwafptnaRFjdSqcpxyqHq9XwN+fRFfcQrIQjpDtFbSL7+URKNZu7l6rFUNr5xaDgg8l51DT39qBfbBuLAqo6Y5qicj2xlZ0wzp1XWU4JmrZTLz1wdXOZ1sGlQHCXYwqCfmUEXAaMcXgwaajPrVy9g0UAJmMAfRn16e0khifnKv0RPtzjn8DafMFYyBMI/T007MWWGE1j6rAZms7n1IngwP53FLUReprrSytODNBt5lhhe5d0EN3rU4qF7sd4EaBstWAkcFs3j1zztc93RZjXFSvl+7WnR55kmJkVOHwFEUArgSMlxj6baV/ZQRx/V2y5t1JY/BpnZwwyn8CbD0dKI2p6L8ANTX6fRWdTY/16QtsgMOOnq+9oXEQROvVmmikTuG/XjD9ams1JOq92sf3m0QfI3nBaCJXU5gyQ1m3+zTwe2t+9rDEaJVm0fdu5x4JqzP98Kqyke8oLDntk74YgkzlyzMbBQ9vjf0BmyuFT51YbXx0yBVP4Y2t/l9xyCnUcr5MlaWoHommTrYhcmiSkdW7BaDy3BVObEKUkr59H2rbAdex1quwD9t+MV8r5ubUrLWCo0gsRXoj6pd0qrHt2S7P/6bHQGxF2g5XlAodwSygqnneZRTDYo2q9mrPEKzDee/5J3dEYpFG3qcraQPPR77mtQcuqUOxlFpo8wMqKiTjRNyXWfNjKNk/kmV7PW5yEpqBj2jNEI8WYXjzzFtBIM1zd0WfZzwxmWAwqGaLw7KnnaF9kV1YTbVCqEGvGN0VcI0gqD4jGWo+T5yH53zTzVdOSUnsXSy9NJUIVRZCmYc+gJIMjlGrnqRQqirSjGn7v34J/F+lg8n0KjZmWYCDn6KgaiDo6aL6+wqkqFttyS1J/5kmU3uC46S6wQ2YGwJowBi4d+sEwPFkRkM3KA9qsXUt7eLdqsNaUrngyjyIJMNOnXKmfBD/Smgg1v/FUPN3SyOhIZ9Xn8YoSqieU6pS9Em/reh4K5k9Sr6Wh91d/AgFv8hePCaW3+8WGym6hgh9EUBojnKnu3+sE5PvqV++nKjdStDQvgaP3AVs3+wII4SST+NEIol9Pjy/pqRe8jpahqXWJHAckNyrLZ/auKNmnr3+EgLXzyqrQcMdPQbhO62GTWZzN3NAyfIW4d8DSzH2XbMsmcXsejD1ANPc7SusCxydfO9iX632ir6uy5UnKwVcvHVsDSAHC++WCrq7bc2cE0TrXjrF6zuOK9BvuO62tBAmphfaRyGB3oJraz5oIIROL6V2h+yorLYGo4YzvvrE9GDaZ3s1YjxYc7EqGw1YvqouuX0KNImGb2u+8nkeAzpt4ngDtL+I3JprU+JqhqNiNcoFMevWfJOJnI76EzDrOPBH5FMUgg3KwZPxLpJT8YgEQmVWYfALGbOGrEPSD4BNgk3rj6L5CCKpPkv2LWM3jJdtF3eVUdtV6imEd/DRLEmweA/TcFw0ILABv3yI9xiUh8/9Hl/HCT5T6e1HMeMr+5T6dvirf0U1GLQvif/+UrfI8TvLScBEbtVYYrZab+plle0RhSyKyFKcVxj3P13lSS3XmKchCIth5kohgWRjTKp8Bb5Z56H+avc44yLWrFs8sfIvXFKyjQ7fBnqTQTDeKKpJW/Kht5QcsHz7fosWne5HroNMO2aSYrJX7iwAl3bRIEuGs3BEpfxlFRyr4WepDVOwWRbNaLB7hGZ/xVBNJU1hsBMpGfv8uPevZq2AXP4AlxApnKWMGdM7PaRcracWr97YIJtENjtVrQIjVvpWuFGpPj70he393kkVH8yjkaRQKWk893pW/aRXBdyZxafo6I3aFbNrMRlivXmhkdjJm6u2zqwLgc5vVm13DagV3N8A7P+L2gJrFtHO+UiXbNq8RlhZMt9ZGk8BspnFAtiSoI8z7LnRZzWT5oicugfvYKTZctc1HeY7iFcismrl+vj+sx7FKt2N6d3aRiIOmEgIY7Pbhx6xK3kIad1YPKMb3gVJ4xpUjW/+yDonG3rI52+qbhFCSjraxSGBYbbMyvwJXfdwgEed4CnKMwBSOkjjEtSBd5fCu+Geg4jfGle3gHFqcrDVxshecSxnNR5ov3SDdAwsPpsG6TqflHsrdKqGdWUEGHHftP2GdZjB4Opqu0zqGCJFCnUj/kIHSxGaGfk6ZkPHRJVB5JM0Ugy/MNg4X6Xvza9XZE4qjsJbzfGZdjRxsY6u5+OHJWUP1731FGFum9oJCCPJdBuLBF9ZfP4NXHUvprf74povlFYDfQzvlomUQyDFf8keuCHAAAA" alt="The image represents a sequence of characters &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, &#x27;b&#x27;, &#x27;a&#x27; enclosed within a light-blue rectangular box.  A gray line underlines the sequence from &#x27;a&#x27; to &#x27;b&#x27;, indicating a selection or subset of the data. A downward-pointing arrow extends from the middle of the underline, visually connecting the highlighted portion to the text below. This text, &#x27; &#x27;b&#x27; is a duplicate&#x27;, explains that the character &#x27;b&#x27; appears more than once within the selected sequence. The overall diagram illustrates the concept of identifying duplicate elements within a data set, specifically highlighting the repeated occurrence of &#x27;b&#x27; within the sequence &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;, &#x27;b&#x27;, &#x27;a&#x27;." style="display: block; max-width: 100%; height: auto; margin: 0 auto"></li>
+</ol>
+<p>If A is true, we should <strong>expand</strong> the window by advancing the right pointer to find a longer window that also contains no duplicates.</p>
+<p>If B is true because we encounter a duplicate character in the window, we should <strong>shrink</strong> the window by advancing the left pointer until it no longer contains a duplicate.</p>
+<p>Let’s try this strategy over the following example. We initialize a hash set to keep track of the characters in a window.</p>
+<p>To implement the sliding window technique, we should establish the following:</p>
+<ul>
+  <li>Left and right pointers: Initialize both at the start of the string to define the window's boundaries.</li>
+  <li><code>hash_set</code>: Maintain a hash set to record the unique characters within the window, updating it as the window expands. Note, the hash set shown in the diagram displays its state before the character at the right pointer is added to it.</li>
+</ul>
+<p>Now, let’s start looking for the longest window. Expand the window from the beginning of the string by advancing the right pointer. Keep expanding until a duplicate character is found:</p>
+<p>We see above that the ‘b’ at index 3 is a duplicate character in the window because ‘b’ is already in the hash set.</p>
+<p>Now that we found a duplicate, we should shrink the window by advancing the left pointer until the window no longer contains a duplicate ‘b’. Once the window is valid again, continue expanding:</p>
+<p>Expanding the window any further will cause the right pointer to exceed the string’s boundary, at which point we end our search. The longest substring we’ve found with no duplicates is of length 3. We can use the variable <strong><code>max_len</code></strong> to keep track of this length during our search.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/sliding-window/longest-substring-with-unique-characters" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">longest_substring_with_unique_chars</span>(<span class="hljs-params">s: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">int</span>:
+    max_len = <span class="hljs-number">0</span>
+    hash_set = <span class="hljs-built_in">set</span>()
+    left = right = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">while</span> right &lt; <span class="hljs-built_in">len</span>(s):
+        <span class="hljs-comment"># If we encounter a duplicate character in the window, shrink the window until</span>
+        <span class="hljs-comment"># it’s no longer a duplicate.</span>
+        <span class="hljs-keyword">while</span> s[right] <span class="hljs-keyword">in</span> hash_set:
+            hash_set.remove(s[left])
+            left += <span class="hljs-number">1</span>
+        <span class="hljs-comment"># Once there are no more duplicates in the window, update 'max_len' if the</span>
+        <span class="hljs-comment"># current window is larger.</span>
+        max_len = <span class="hljs-built_in">max</span>(max_len, right - left + <span class="hljs-number">1</span>)
+        hash_set.add(s[right])
+        <span class="hljs-comment"># Expand the window.</span>
+        right += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> max_len
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>longest_substring_with_unique_chars</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because we traverse the string linearly with two pointers.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span> because we use a hash set to store unique characters, where m represents the total number of unique characters within the string.</p>
+
+<h2>Optimization</h2>
+<p>The above approach solves the problem, but we can still optimize it. The optimization has to do with how we shrink the window when encountering a duplicate character. Consider the following example, where the right pointer encounters a duplicate ‘c’:</p>
+<p>In the previous approach, we respond to encountering a duplicate by continuously advancing the left pointer to shrink the window until the window no longer contains a duplicate:</p>
+<p>The crucial insight here is that we advanced the left pointer until it passed the <strong>previous occurrence</strong> of ‘c’ in the window. This indicates that if we know the index of the previous occurrence of ‘c’, we can move our left pointer immediately past that index to remove it from the window:</p>
+<p>This gives us a new strategy for advancing the left pointer: if the right pointer encounters a character whose previous index (i.e., previous occurrence) is in the window, move the left pointer one index past that previous index.</p>
+<p>We can use a hash map (<code>prev_indexes</code>) to store the previous index of each character in the string.</p>
+<p>Now we just need to ensure the previous index of a character is in the window. To do this, we compare its index to the left pointer:</p>
+<ul>
+  <li>If this index is after the left pointer, it’s inside the window.</li>
+  <li>If it is before the left pointer, it’s outside the window</li>
+</ul>
+<p>Below is a visual of how to check whether a character is inside the window:</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/sliding-window/longest-substring-with-unique-characters" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation - Optimized Approach</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">longest_substring_with_unique_chars_optimized</span>(<span class="hljs-params">s: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">int</span>:
+    max_len = <span class="hljs-number">0</span>
+    prev_indexes = {}
+    left = right = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">while</span> right &lt; <span class="hljs-built_in">len</span>(s):
+        <span class="hljs-comment"># If a previous index of the current character is present in the current</span>
+        <span class="hljs-comment"># window, it's a duplicate character in the window.</span>
+        <span class="hljs-keyword">if</span> s[right] <span class="hljs-keyword">in</span> prev_indexes <span class="hljs-keyword">and</span> prev_indexes[s[right]] &gt;= left:
+            <span class="hljs-comment"># Shrink the window to exclude the previous occurrence of this character.</span>
+            left = prev_indexes[s[right]] + <span class="hljs-number">1</span>
+        <span class="hljs-comment"># Update 'max_len' if the current window is larger.</span>
+        max_len = <span class="hljs-built_in">max</span>(max_len, right - left + <span class="hljs-number">1</span>)
+        prev_indexes[s[right]] = right
+        <span class="hljs-comment"># Expand the window.</span>
+        right += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">return</span> max_len
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of the optimized implementation is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> because we traverse the string linearly with two pointers.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(m)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span> because we use a hash map to store unique characters, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> represents the total number of unique characters within the string.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

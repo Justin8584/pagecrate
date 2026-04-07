@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to Sort and Search</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Introduction to Sort and Search</h1>
+</div>
+
+
+<h2>Intuition</h2>
+<p>When sorting and searching items in data structures, efficiency is key. This chapter covers common sorting methods and their roles in efficient searching.</p>
+<p>First, we present a comparison of the time and space complexities for various sorting algorithms. Below, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the number of elements in the data structure:</p>
+<div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Time complexity</th><th></th><th></th><th>Space complexity</th></tr></thead><tbody><tr><td></td><td>Best case</td><td>Average case</td><td>Worst case</td><td></td></tr><tr><td>Insertion sort  [1]</td><td>O ( n ) O(n) O ( n )</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( 1 ) O(1) O ( 1 )</td></tr><tr><td>Selection sort  [2]</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( 1 ) O(1) O ( 1 )</td></tr><tr><td>Bubble sort  [3]</td><td>O ( n ) O(n) O ( n )</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( 1 ) O(1) O ( 1 )</td></tr><tr><td>Merge sort</td><td>O ( n log ⁡ ( n ) ) O(n\log(n)) O ( n lo g ( n ))</td><td>O ( n log ⁡ ( n ) ) O(n\log(n)) O ( n lo g ( n ))</td><td>O ( n log ⁡ ( n ) ) O(n\log(n)) O ( n lo g ( n ))</td><td>O ( n ) O(n) O ( n )</td></tr><tr><td>Quicksort</td><td>O ( n log ⁡ ( n ) ) O(n\log(n)) O ( n lo g ( n ))</td><td>O ( n log ⁡ ( n ) ) O(n\log(n)) O ( n lo g ( n ))</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( log ⁡ ( n ) ) O(\log(n)) O ( lo g ( n ))  (average)  O ( n ) O(n) O ( n )  (worst)</td></tr><tr><td>Heapsort  [4]</td><td>O ( n log ⁡ ( n ) ) O(n\log(n)) O ( n lo g ( n ))</td><td>O ( n log ⁡ ( n ) ) O(n\log(n)) O ( n lo g ( n ))</td><td>O ( n log ⁡ ( n ) ) O(n\log(n)) O ( n lo g ( n ))</td><td>O ( 1 ) O(1) O ( 1 )</td></tr><tr><td>Counting sort 1</td><td>O ( n + k ) O(n+k) O ( n + k )</td><td>O ( n + k ) O(n+k) O ( n + k )</td><td>O ( n + k ) O(n+k) O ( n + k )</td><td>O ( n + k ) O(n+k) O ( n + k )</td></tr><tr><td>Bucket sort 2   [5]</td><td>O ( n + k ) O(n+k) O ( n + k )</td><td>O ( n + k ) O(n+k) O ( n + k )</td><td>O ( n 2 ) O(n^2) O ( n 2 )</td><td>O ( n + k ) O(n+k) O ( n + k )</td></tr><tr><td>Radix sort 3   [6]</td><td>O ( d ( n + k ) ) O(d(n+k)) O ( d ( n + k ))</td><td>O ( d ( n + k ) ) O(d(n+k)) O ( d ( n + k ))</td><td>O ( d ( n + k ) ) O(d(n+k)) O ( d ( n + k ))</td><td>O ( n + k ) O(n+k) O ( n + k )</td></tr></tbody></table></div>
+<p>This chapter focuses on merge sort, quicksort, and counting sort. There is additional information on the other algorithms in the references provided, as well as a tool for visualizing how these algorithms work <a href="https://www.toptal.com/developers/sorting-algorithms" rel="noopener noreferrer" target="_blank">[7]</a>.</p>
+<p><strong>Fundamental concepts for sorting algorithms</strong><br/>
+Here’s a list of fundamental attributes of sorting algorithms you should be familiar with:</p>
+<ul>
+  <li><strong>Stability:</strong> A sorting algorithm is considered stable if it preserves the relative order of equal elements in the sorted output. If two elements have equal values, their order in the sorted output is the same as in the input.</li>
+  <li><strong>In-place sorting:</strong> An in-place sorting algorithm transforms the input using a constant amount of extra storage space. It involves sorting the elements within the original data structure.</li>
+  <li><p><strong>Comparison-based sorting:</strong> Comparison-based sorting algorithms sort elements by comparing them pairwise. These algorithms typically have a lower bound of <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>log</mi><mo>⁡</mo><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n\log(n))</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right: 0.1667em;"></span><span class="mop">lo<span style="margin-right: 0.01389em;">g</span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">))</span></span></span></span>, whereas non-comparison-based sorting algorithms can achieve linear time complexity, but require specific assumptions about the input data.</p></li>
+</ul>
+<p>These concepts are referenced throughout the problems in this chapter.</p>
+
+<h2>Real-world Example</h2>
+<p><strong>Sorting products by category:</strong> When users search for products, the platform often sorts the results based on various criteria such as lowest to highest price, highest to lowest rating, or even relevance to the search query. Efficient sorting algorithms ensure large datasets of products can be quickly arranged according to user preferences.</p>
+
+<h2>Chapter Outline</h2>
+<section class="footnotes" data-footnotes="true"><h2 class="sr-only" id="footnote-label">Footnotes</h2>
+<ol>
+<li id="user-content-fn-1">
+<p>In counting sort, k represents the range of the values in the input array. <a aria-label="Back to reference 1" class="data-footnote-backref" data-footnote-backref="" href="/courses/coding-patterns/sort-and-search/introduction-to-sort-and-search#user-content-fnref-1">↩</a></p>
+</li>
+<li id="user-content-fn-2">
+<p>In bucket sort, k represents the number of buckets used. <a aria-label="Back to reference 2" class="data-footnote-backref" data-footnote-backref="" href="/courses/coding-patterns/sort-and-search/introduction-to-sort-and-search#user-content-fnref-2">↩</a></p>
+</li>
+<li id="user-content-fn-3">
+<p>In radix sort, k represents the range of the inputs and d represents the number of digits in the maximum element. <a aria-label="Back to reference 3" class="data-footnote-backref" data-footnote-backref="" href="/courses/coding-patterns/sort-and-search/introduction-to-sort-and-search#user-content-fnref-3">↩</a></p>
+</li>
+</ol>
+</section>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

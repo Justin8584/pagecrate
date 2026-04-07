@@ -47,11 +47,17 @@ $RECYCLE.BIN/
 .project
 .settings/
 
-# ── Saved HTML/PDF output (don't commit large files) ──
-*.pdf
-*.html
-!README.md
-!DESIGN.md
+# ── Saved HTML/PDF output (don't commit large generated files) ──
+websaver_output/**/*.html
+websaver_output/**/*.pdf
+bbg_offline/**/*.html
+bbg_offline/**/*.pdf
+raw/**/*.html
+raw/**/*.pdf
+clean/**/*.html
+clean/**/*.pdf
+clean_output/**/*.html
+clean_output/**/*.pdf
 
 # ── Misc ──
 *.log

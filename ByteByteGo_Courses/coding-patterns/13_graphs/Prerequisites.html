@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prerequisites</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Prerequisites</h1>
+</div>
+
+<div>Given an integer <code>n</code> representing the number of courses labeled from <code>0</code> to <code>n - 1</code>, and an array of prerequisite pairs, determine if it's possible to enroll in all courses.Each prerequisite is represented as a pair <code>[a, b]</code>, indicating that course <code>a</code> must be taken before course <code>b</code>.Example:<img src="data:image/webp;base64,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" alt="Image represents a directed graph illustrating a simple coding pattern, possibly related to data flow or state transitions.  The graph contains three nodes represented as circles.  One node is labeled &#x27;θ&#x27; (theta), suggesting an initial state or input. Another node is labeled &#x27;1&#x27;, and the third is labeled &#x27;2&#x27;.  A directed edge (arrow) connects the &#x27;θ&#x27; node to the &#x27;1&#x27; node, indicating a unidirectional flow of information or a transition from &#x27;θ&#x27; to &#x27;1&#x27;.  Two curved, bidirectional edges connect nodes &#x27;1&#x27; and &#x27;2&#x27;, showing a reciprocal relationship or iterative interaction between these two states; information or control flows in both directions between &#x27;1&#x27; and &#x27;2&#x27;.  The overall structure suggests a sequence where an initial input (&#x27;θ&#x27;) triggers a process (&#x27;1&#x27;) that interacts iteratively with another component (&#x27;2&#x27;) before potentially completing or transitioning to another state (not shown)." style="display: block; max-width: 100%; height: auto; margin: 0 auto"><code class="hljs language-python">Input: n = <span class="hljs-number">3</span>, prerequisites = [[<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>]]
+Output: <span class="hljs-literal">False</span>
+</code>Explanation: Course 1 cannot be taken without first completing course 2 and, and vice versa.Constraints:
+For any prerequisite <code>[a, b]</code>, <code>a</code> will not equal <code>b</code>.
+</div>
+
+<h2>Intuition</h2>
+<p>Our goal is to check if enrollment into all courses is possible. Let’s start by identifying which situations make enrollment impossible.</p>
+<p>Consider a simple case where there are just two courses. A scenario where enrollment into all courses is impossible occurs when each course is a prerequisite to the other, as graphically represented below:</p>
+<p>Here are a couple of impossible enrollment scenarios that could occur with prerequisites for three courses:</p>
+<p>What do we notice about these cases and their graphical representations? They both have a circular relationship: a cycle. This highlights that it’s impossible to enroll in all courses if there exists a circular dependency between courses. In other words, <strong>there must not be a cycle in the graphical representation of the courses</strong> for complete enrollment to be possible.</p>
+<p>Another thing to note is that the first courses which can be completed are those without prerequisites. In the graphical representation, such a course would have no directed arrows pointing at them. Let’s refer to the number of directed edges incoming to a node as the <strong>in-degree</strong> of that node.</p>
+<p>In the example below, each node's in-degree is displayed at the top right:</p>
+<p>Courses 0 and 3 have an in-degree of 0. So, let’s complete them first and remove them from the graph. By doing this, we reduce the number of prerequisites for courses 1 and 2. Course 1's indegree then decreases by 1, and course 2's indegree decreases by 2:</p>
+<p>Now, courses 1 and 2 have an in-degree of 0, which means we can enroll in them and remove them from the graph. Observe what happens when we continue the process of removing courses with an in-degree of 0 from the graph:</p>
+<p>By the end of this process, no courses remain, indicating it’s possible to enroll in all courses.</p>
+<p>Now, consider an example with a cyclic dependency:</p>
+<p>Let's follow the same steps of removing courses with an in-degree of 0:</p>
+<p>Here, there is no way to progress because there aren't any courses with an in-degree of 0. When this happens, and there are still unvisited courses, a cyclic dependency exists, meaning enrolment is impossible.</p>
+<p>Now, let’s identify a way to simulate the above process algorithmically.</p>
+<p><strong>Topological sort</strong><br/>
+The process we described above is essentially topological sorting, where vertices of a graph are sorted in such a way that for every directed edge u → v, node u comes before node v in the ordering of the topological sort.</p>
+<p>An algorithm designed to perform topological sort is <strong>Kahn’s algorithm</strong>. Let’s see how we can use it to solve this problem.</p>
+<p>The first step of Kahn's algorithm is to determine the in-degree of each course. This can be achieved by counting the number of times each course appears as a dependent in the prerequisite pairs: for a pair [a, b], course b depends on course a, so course b’s in-degree is incremented by one:</p>
+<p>Now, we want to process all the courses with an in-degree of 0 first. We can add these courses to a queue to be processed:</p>
+<p>To begin processing, pop the first course from the queue: course 0. Then, for each course that has course 0 as a prerequisite (i.e., courses pointed to by course 0), reduce their in-degree by one:</p>
+<p>If any of the courses have an in-degree of 0 after being decremented, add them to the queue. Course 1 now has an in-degree of 0, so we add it to the queue:</p>
+<p>We can continue the above process until the queue is empty, indicating that there aren't any more courses with an in-degree of 0.</p>
+<ul>
+  <li>If we've processed all n courses, enrollment to all courses is possible.</li>
+  <li>If we couldn’t process all n courses, a cycle was found, indicating enrollment to all courses is impossible.</li>
+</ul>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/graphs/prerequisites" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+<span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> defaultdict, deque
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">prerequisites</span>(<span class="hljs-params">n: <span class="hljs-built_in">int</span>, prerequisites: <span class="hljs-type">List</span>[<span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]]</span>) -&gt; <span class="hljs-built_in">bool</span>:
+    graph = defaultdict(<span class="hljs-built_in">list</span>)
+    in_degrees = [<span class="hljs-number">0</span>] * n
+    <span class="hljs-comment"># Represent the graph as an adjacency list and record the in-degree of each</span>
+    <span class="hljs-comment"># course.</span>
+    <span class="hljs-keyword">for</span> prerequisite, course <span class="hljs-keyword">in</span> prerequisites:
+        graph[prerequisite].append(course)
+        in_degrees[course] += <span class="hljs-number">1</span>
+    queue = deque()
+    <span class="hljs-comment"># Add all courses with an in-degree of 0 to the queue.</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+        <span class="hljs-keyword">if</span> in_degrees[i] == <span class="hljs-number">0</span>:
+            queue.append(i)
+    enrolled_courses = <span class="hljs-number">0</span>
+    <span class="hljs-comment"># Perform topological sort.</span>
+    <span class="hljs-keyword">while</span> queue:
+        node = queue.popleft()
+        enrolled_courses += <span class="hljs-number">1</span>
+        <span class="hljs-keyword">for</span> neighbor <span class="hljs-keyword">in</span> graph[node]:
+            in_degrees[neighbor] -= <span class="hljs-number">1</span>
+            <span class="hljs-comment"># If the in-degree of a neighboring course becomes 0, add it to the queue.</span>
+            <span class="hljs-keyword">if</span> in_degrees[neighbor] == <span class="hljs-number">0</span>:
+                queue.append(neighbor)
+    <span class="hljs-comment"># Return true if we've successfully enrolled in all courses.</span>
+    <span class="hljs-keyword">return</span> enrolled_courses == n
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of prerequisites is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n+e)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">e</span><span class="mclose">)</span></span></span></span> where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi></mrow><annotation encoding="application/x-tex">e</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">e</span></span></span></span> denotes the number of edges derived from the prerequisites array. Here’s why:</p>
+<ul>
+  <li><p>Creating the adjacency list and recording the in-degrees takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(e)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">e</span><span class="mclose">)</span></span></span></span> time because we iterate through each prerequisite once.</p></li>
+  <li><p>Adding all courses with in-degree 0 to the queue takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> time because we check the in-degree of each course once.</p></li>
+  <li><p>Performing Kahn’s algorithm takes <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n+e)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">e</span><span class="mclose">)</span></span></span></span> time because each course and prerequisite is processed at most once during the traversal.</p></li>
+</ul>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n+e)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">e</span><span class="mclose">)</span></span></span></span>, since the adjacency list takes up <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo>+</mo><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n+e)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal">e</span><span class="mclose">)</span></span></span></span> space, while the <code>in_degrees</code> array and queue each take up <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span> space.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

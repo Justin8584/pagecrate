@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gas Stations</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Gas Stations</h1>
+</div>
+
+<div>There's a circular route which contains gas stations. At each station, you can fill your car with a certain amount of gas, and moving from that station to the next one consumes some fuel.Find the <strong>index of the gas station you would need to start at</strong>, in order to complete the circuit <strong>without running out of gas</strong>. Assume your car starts with an empty tank. If it's not possible to complete the circuit, return -1. If it's possible, assume only one solution exists.Example:<code class="hljs language-python">Input: gas = [<span class="hljs-number">2</span>, <span class="hljs-number">5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>], cost = [<span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>]
+Output: <span class="hljs-number">1</span>
+</code>Explanation:Start at station 1: gain 5 gas (tank = 5), costs 2 gas to go to station 2 (tank = 3).<br/>
+At station 2: gain 1 gas (tank = 4), costs 1 gas to go to station 3 (tank = 3).<br/>
+At station 3: gain 3 gas (tank = 6), costs 4 gas to go to station 0 (tank = 2).<br/>
+At station 0: gain 2 gas (tank = 4), costs 3 gas to go to station 1 (tank = 1).<br/>
+We started and finished the circuit at station 1 without running out of gas.</div>
+
+<h2>Intuition</h2>
+<p>Before deciding which gas station to start with, let's first determine if it's even possible to complete the circuit with the total amount of gas available.</p>
+<p><strong>Total gas vs total cost</strong><br/>
+Case 1: <code>sum(gas) &lt; sum(cost)</code>:<br/>
+The first thing to realize is if the total gas is less than the total cost, <strong>it's impossible to complete the circuit</strong>. No matter where we start, we'll run out of gas before completing the circuit. So, in this situation, we should return -1.</p>
+<p>Case 2: <code>sum(gas) ≥ sum(cost)</code>:<br/>
+Now, let's consider the more interesting case where the total travel cost is less than or equal to the total amount of gas available.</p>
+<p>Here's a potential hypothesis:</p>
+<p>Since there's enough total gas to cover the total cost of travel, there must be a start point in the circuit that allows us to complete it without ever running out of gas.</p>
+<p>It's tough to confirm this hypothesis without examining an example, so let's dive into one.</p>
+<p><strong>Finding a start point</strong><br/>
+Consider the following example where <code>sum(gas) &gt; sum(cost)</code>:</p>
+<p>We don't necessarily need to consider the gas and cost separately. At any station <code>i</code>, we collect <code>gas[i]</code> and consume <code>cost[i]</code> to move to the next station. We can consider both at the same time by getting the difference between these values, which provides the net gas gained or lost at each station:</p>
+<p>Let's start at station 0 with an empty gas tank and see how far we can go. The net gas at this station is positive (1), which means we have enough gas to reach the next station. Let's add 1 to our tank:</p>
+<p>Note that index <code>i</code> refers to the current gas station, whereas start refers to the gas station we started from.</p>
+<p>At station 1, we encounter the same situation:</p>
+<p>At station 2, our tank falls below 0, indicating we don't have enough gas to make it to the next station:</p>
+<p>This means we cannot start our journey at station 0. Should we go back and try station 1? The key observation here is that if we didn't have enough gas to get from station 0 to station 3, we also wouldn't have enough if we started at any other station before station 3:</p>
+<p>This is a general rule:</p>
+<blockquote>
+If we cannot make it to station b from station a, we cannot make it to station b from any of the stations in between, either:
+</blockquote>
+<p>Let's try to understand why. If we only just ran out of gas right before reaching station b, this means our tank maintained a non-negative amount of gas until station b:</p>
+<p>Consequently, starting anywhere else before station b will result in us missing a non-negative amount of gas from the previous stations. Therefore, starting at any of these in-between stations doesn't allow us to progress to station b.</p>
+<p>Back to our example. Let's now try resetting our tank to 0 and restarting at station 3 (at <code>i + 1</code>), since we just discussed how starting at stations 0 to <code>i</code> doesn't work:</p>
+<p>We continue until we reach a point where we cannot proceed to the next station:</p>
+<p>As we can see, we ran out of gas at station 5, which means we can't start from stations 3 to 5, either. So, let's try restarting at station 6.</p>
+<p>After resetting the tank to 0, let's continue traveling through the stations:</p>
+<p>We've reached the end of the array. Should we go back to the start of the array to check if starting from station 6 allows us to complete the circuit? Or is reaching the end from station 6 enough to finish the circuit? Let's look into this.</p>
+<p><strong>Proving we have enough gas to complete the circuit after reaching the end of the array</strong><br/>
+We can determine this via a proof by contradiction. If the gas we have by the end of the array is not enough, that means no solution exists: no station at which we could start in order to complete the circuit. This implies that no matter where we start, we will hit a deficit (i.e., a point where our tank falls below 0) before completing the circuit.</p>
+<p>Consider a segment of the circuit where we run into a deficit:</p>
+<p>We learned earlier that we cannot start at any station between a and b (inclusive)
+without running into a deficit. So, we can characterize this entire segment as having
+less total gas than the total cost required to travel through it.</p>
+<p>After concluding that we cannot start anywhere from stations a to b, we decide to restart at the next station after b, which represents the start of the next segment. Keep in mind that since there is no solution in this proof, every segment in the circuit will end with a deficit:</p>
+<p>This means each of these segments has less total gas than total cost. Therefore, for there to be no starting point, <code>sum(gas)</code> would have to be less than <code>sum(cost)</code>.</p>
+<p>However, we know that <code>sum(gas) ≥ sum(cost)</code>, confirming <strong>there must be a valid start point that allows us to complete the circuit</strong>.</p>
+<p>Therefore, in our example, we can confirm that station 6 is the answer for the following reasons.</p>
+<ul>
+  <li><code>sum(gas) ≥ sum(cost)</code> implies that a solution must exist.</li>
+  <li>We confirmed that starting anywhere before station 6 will result in us running into a deficit.</li>
+  <li>We didn't encounter any deficit from station 6 to the last station in the array.</li>
+</ul>
+<p>So, we just need to return start, which is station 6 in our example.</p>
+<p>This is considered a <strong>greedy solution</strong> because we assume the first station we encounter that doesn't run into a deficit by the end of our array, is the start point that allows us to complete the circuit without testing every possible station in the array as the start point. The locally optimal choices (moving forward when possible, resetting when encountering a deficit) lead to the globally optimal solution (finding the correct starting point).</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/greedy/gas-stations" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">gas_stations</span>(<span class="hljs-params">gas: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>], cost: <span class="hljs-type">List</span>[<span class="hljs-built_in">int</span>]</span>) -&gt; <span class="hljs-built_in">int</span>:
+    <span class="hljs-comment"># If the total gas is less than the total cost, completing the circuit is</span>
+    <span class="hljs-comment"># impossible.</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">sum</span>(gas) &lt; <span class="hljs-built_in">sum</span>(cost):
+        <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>
+    start = tank = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(gas)):
+        tank += gas[i] - cost[i]
+        <span class="hljs-comment"># If our tank has negative gas, we cannot continue through the circuit from</span>
+        <span class="hljs-comment"># the current start point, nor from any station before or including the</span>
+        <span class="hljs-comment"># current station 'i'.</span>
+        <span class="hljs-keyword">if</span> tank &lt; <span class="hljs-number">0</span>:
+            <span class="hljs-comment"># Set the next station as the new start point and reset the tank.</span>
+            start, tank = i + <span class="hljs-number">1</span>, <span class="hljs-number">0</span>
+    <span class="hljs-keyword">return</span> start
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>gas_stations</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>, where <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> denotes the length of the input arrays. This is because we iterate through each element in the gas and cost arrays.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+
+<h2>Interview Tip</h2>
+<p><em>Tip: Demonstrate your greedy solution with examples if proving it formally is too difficult</em><br/>
+In some problems, such as this one, proving that a greedy solution works might be complicated, especially in an interview setting. If you and the interviewer are on the same page about this, a good compromise is to demonstrate the solution's correctness with a few diverse examples. This approach allows both you and the interviewer to have confidence in your solution in the absence of a thorough proof.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>

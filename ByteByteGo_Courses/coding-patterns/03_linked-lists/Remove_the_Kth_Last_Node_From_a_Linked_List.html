@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remove the Kth Last Node From a Linked List</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.75; color: #1a1a2e; background: #fff;
+    max-width: 780px; margin: 0 auto; padding: 40px 32px 80px;
+  }
+  .chapter-header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 3px solid #16a34a; }
+  .chapter-number {
+    display: block; font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 3.2rem; font-weight: 800; color: #16a34a; line-height: 1; margin-bottom: 8px;
+  }
+  h1 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 2rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+  h2 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.55rem; font-weight: 700; color: #1a1a2e; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+  h3 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.3rem; font-weight: 600; color: #374151; margin: 36px 0 12px; }
+  h4 { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 1.1rem; font-weight: 600; color: #4b5563; margin: 28px 0 10px; }
+  p { margin: 0 0 16px; text-align: justify; hyphens: auto; }
+  strong, b { font-weight: 700; color: #111827; }
+  ul, ol { margin: 0 0 16px; padding-left: 28px; }
+  li { margin-bottom: 8px; }
+  .figure-wrap { margin: 28px 0; text-align: center; }
+  .figure-wrap img { display: block; max-width: 100%; height: auto; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .figure-caption { display: block; margin-top: 10px; font-size: 0.88rem; color: #6b7280; font-style: italic; text-align: center; }
+  img { max-width: 100%; height: auto; }
+  .table-wrap { margin: 24px 0; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  thead { background: #f8fafc; }
+  th { font-weight: 700; text-align: left; padding: 12px 14px; border-bottom: 2px solid #d1d5db; color: #1f2937; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; vertical-align: top; color: #374151; }
+  tr:last-child td { border-bottom: 2px solid #d1d5db; }
+  .katex-display { margin: 20px 0; overflow-x: auto; padding: 8px 0; }
+  .math { font-size: 1.05em; }
+  blockquote { margin: 20px 0; padding: 14px 20px; border-left: 4px solid #16a34a; background: #f0fdf4; color: #374151; border-radius: 0 6px 6px 0; }
+  code { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.88em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+  pre { margin: 16px 0; padding: 16px; background: #1e293b; color: #e2e8f0; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.6; }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 40px 0; }
+  @media print {
+    body { padding: 0; font-size: 11pt; max-width: none; }
+    .chapter-header { page-break-after: avoid; }
+    h2, h3, h4 { page-break-after: avoid; }
+    .figure-wrap, table { page-break-inside: avoid; }
+    img { max-height: 400px; object-fit: contain; }
+  }
+  @media (max-width: 600px) {
+    body { padding: 20px 16px 60px; font-size: 16px; }
+    .chapter-number { font-size: 2.4rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter-header">
+  <h1>Remove the Kth Last Node From a Linked List</h1>
+</div>
+
+<div class="figure-wrap">
+  <img src="data:image/webp;base64,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" alt="The image represents a linked list data structure illustrating the concept of finding the k&lt;sup&gt;th&lt;/sup&gt; to last element.  The top row shows a linked list with nodes containing the values 1, 2, 4, 7, and 3, connected by unidirectional arrows indicating the next element in the sequence.  A value &#x27;k = 2&#x27; is displayed above, indicating that we are searching for the second to last element. The node containing &#x27;7&#x27; is highlighted in red and labeled &#x27;k&lt;sup&gt;th&lt;/sup&gt; last,&#x27; signifying its position as the second to last element in the list. A downward arrow points from the &#x27;4&#x27; node in the top row to the &#x27;4&#x27; node in the bottom row. The bottom row shows the same linked list after the removal of the last element (3).  The structure of the bottom row is identical to the top row except for the absence of the last node, demonstrating the process of iterating through the list to find the k&lt;sup&gt;th&lt;/sup&gt; to last element." style="display: block; max-width: 100%; height: auto; margin: 0 auto" loading="lazy">
+  <span class="figure-caption">Return the head of a singly linked list after removing the kth node from the end of it.</span>
+</div>
+
+<h2>Intuition</h2>
+<p>We can divide this problem into two objectives:</p>
+<ol>
+  <li>Find the position of the kth last node.</li>
+  <li>Remove this node.</li>
+</ol>
+<p>Let’s first understand how node removal works. Consider the example below, where we need to remove node b. To do this, we need access to the node preceding it (node a), so we can redirect the pointer of node a to skip over node b. This ensures node b is no longer reachable through linked list traversal:</p>
+<p>This indicates <strong>we need to find the node directly before the kth last node</strong> in order to remove it.</p>
+<p>A naive solution to this problem is to first obtain the length of the linked list (n) by traversing it. Then, use this length to determine the number of steps required to arrive at the node before the kth last node, which is just n - k - 1 steps. This solution involves two for-loops, but is there a cleaner way to approach this problem?</p>
+<p>The challenge with navigating a singly linked list in a single for-loop is that as we traverse, it’s hard to tell how far we are from the final node. The only way we’d know this is when we reach the final node itself, since its next node is null. How can we make use of this information?</p>
+<p>Consider using two pointers instead of one. Could we create a scenario where, by the time one pointer reaches the end of the linked list, another pointer is positioned before the kth last node? Let’s explore this logic using the following example:</p>
+<p>We denote the first pointer as leader and the pointer that follows it as trailer. When the leader pointer reaches the last node of the linked list, we want the trailer pointer to end up at node 4 (the node right before the kth last node) to prepare for deletion. In other words, the leader should be k nodes in front of the trailer when the leader reaches the last node.</p>
+<p>To achieve this, we can start by advancing the leader pointer through the linked list for k steps. When the leader pointer is k nodes ahead of the trailer, we can advance both pointers together until the leader reaches the last node. This process will be explained in more detail soon.</p>
+<p>However, there’s an important edge case to consider first: <strong>what if the head itself is the node we need to remove?</strong> In this case, there’s no node before the head, so we cannot perform the removal, as mentioned earlier. To circumvent this, we can create a <code>dummy</code> node, place it before the head node, and start our traversal from there.</p>
+<p>Let’s now try incorporating our strategy into the example.</p>
+<p>First, advance the leader pointer k (2) times so it’s k nodes ahead of the trailer pointer:</p>
+<p>With the leader k nodes ahead, we can move both the trailer and leader pointers until the leader reaches the last node:</p>
+<p>With the trailer pointer at the ideal position, we can remove node 7:</p>
+<p>After this removal, we just return <code>dummy.next</code>, which points at the head of the modified linked list.</p>
+<div>Try it yourselfWrite your solution to the problem before checking the reference implementation.<a href="/exercises/coding-patterns/linked-lists/remove-the-kth-last-node-from-a-linked-list" target="_blank"><button class="ant-btn css-133v4sd ant-btn-default ant-btn-color-default ant-btn-variant-outlined style_openBtn__F_m3N" type="button"><span>Open Code Editor</span></button></a></div>
+
+<h2>Implementation</h2>
+<div>PythonJavaScriptJava<span aria-label="ellipsis" class="anticon anticon-ellipsis" role="img"><svg aria-hidden="true" data-icon="ellipsis" fill="currentColor" focusable="false" height="1em" viewbox="64 64 896 896" width="1em"><path d="M176 511a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0zm280 0a56 56 0 10112 0 56 56 0 10-112 0z"></path></svg></span><code class="hljs language-python"><span class="hljs-keyword">from</span> ds <span class="hljs-keyword">import</span> ListNode
+    
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">remove_kth_last_node</span>(<span class="hljs-params">head: ListNode, k: <span class="hljs-built_in">int</span></span>) -&gt; ListNode:
+    <span class="hljs-comment"># A dummy node to ensure there's a node before 'head' in case we need to remove</span>
+    <span class="hljs-comment"># the head node.</span>
+    dummy = ListNode(-<span class="hljs-number">1</span>)
+    dummy.<span class="hljs-built_in">next</span> = head
+    trailer = leader = dummy
+    <span class="hljs-comment"># Advance 'leader' k steps ahead.</span>
+    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(k):
+        leader = leader.<span class="hljs-built_in">next</span>
+        <span class="hljs-comment"># If k is larger than the length of the linked list, no node needs to be</span>
+        <span class="hljs-comment"># removed.</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> leader:
+            <span class="hljs-keyword">return</span> head
+    <span class="hljs-comment"># Move 'leader' to the end of the linked list, keeping 'trailer' k nodes behind.</span>
+    <span class="hljs-keyword">while</span> leader.<span class="hljs-built_in">next</span>:
+        leader = leader.<span class="hljs-built_in">next</span>
+        trailer = trailer.<span class="hljs-built_in">next</span>
+    <span class="hljs-comment"># Remove the kth node from the end.</span>
+    trailer.<span class="hljs-built_in">next</span> = trailer.<span class="hljs-built_in">next</span>.<span class="hljs-built_in">next</span>
+    <span class="hljs-keyword">return</span> dummy.<span class="hljs-built_in">next</span>
+</code><img src="data:image/webp;base64,UklGRlgCAABXRUJQVlA4WAoAAAAwAAAADwAADwAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZBTFBIRgAAAAEnIBBI4WYXEREGg0iSnEz9Kfgg4AEDVywGPvhXRVYQ0f8J4GaVtAFN0jBogBsxxohbnXPO4uYG/GCGs8gZ+CGpALukwE1WUDggHAAAAJABAJ0BKhAAEAAAgA4lpAADOj0bQAD+/7CAAAA=" alt="" style="display: block; max-width: 100%; height: auto; margin: 0 auto"></div>
+
+<h2>Complexity Analysis</h2>
+<p><strong>Time complexity:</strong> The time complexity of <code>remove_kth_last_node</code> is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(n)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span>. This is because the algorithm first traverses at most <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> nodes of the linked list, and then two pointers traverse the linked list at most once each.</p>
+<p><strong>Space complexity:</strong> The space complexity is <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(1)</annotation></semantics></math></span><span aria-hidden="true" class="katex-html"><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span>.</p>
+<div><span class="style_emptySquare__K6JN0"></span><span>Mark as Complete</span></div>
+</body>
+</html>
